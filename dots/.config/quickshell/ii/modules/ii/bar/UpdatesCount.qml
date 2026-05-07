@@ -6,6 +6,7 @@ import qs
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 
 MouseArea {
     id: root
@@ -15,13 +16,83 @@ MouseArea {
     implicitWidth:  vertical ? Appearance.sizes.verticalBarWidth : rowLayout.implicitWidth + 12
     implicitHeight: vertical ? colLayout.implicitHeight + 8 : Appearance.sizes.barHeight
     cursorShape: Qt.PointingHandCursor
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-    onClicked: {
-        Quickshell.execDetached([
+    onClicked: (mouse) => {
+        if (mouse.button === Qt.LeftButton) {
+            updateProc.running = true
+        }
+    }
+
+    onPressed: (mouse) => {
+        if (mouse.button === Qt.RightButton) {
+            Updates.refresh()
+            Quickshell.execDetached(["notify-send",
+                Translation.tr("Updates"),
+                Translation.tr("Checking for updates..."),
+                "-a", "Shell"
+            ])
+            mouse.accepted = false
+        }
+    }
+
+    Process {
+        id: updateProc
+        command: [
             "kitty", "--hold",
             "fish", "-i", "-l", "-c",
             "yay -Syu --combinedupgrade=false"
-        ])
+        ]
+        onExited: (exitCode, exitStatus) => {
+            Updates.refresh()
+            notifyTimer.restart()
+        }
+    }
+
+    Timer {
+        id: notifyTimer
+        interval: 5000
+        repeat: false
+        onTriggered: {
+            if (Updates.count === 0) {
+                Quickshell.execDetached(["notify-send",
+                    Translation.tr("Updates"),
+                    Translation.tr("System up to date"),
+                    "-a", "Shell"
+                ])
+            } else {
+                Quickshell.execDetached(["notify-send",
+                    Translation.tr("Updates"),
+                    Translation.tr("Update cancelled - %1 updates still pending").arg(Updates.count),
+                    "-a", "Shell", "-u", "normal"
+                ])
+            }
+        }
+    }
+
+    Component {
+        id: textComp
+        StyledText {
+            font.pixelSize: Appearance.font.pixelSize.small
+            color: Appearance.colors.colOnLayer1
+            text: Updates.count
+        }
+    }
+
+    Component {
+        id: spinnerComp
+        MaterialSymbol {
+            text: "progress_activity"
+            iconSize: Appearance.font.pixelSize.normal
+            color: Appearance.colors.colOnLayer1
+            RotationAnimation on rotation {
+                from: 0
+                to: 360
+                duration: 1000
+                loops: Animation.Infinite
+                running: true
+            }
+        }
     }
 
     // Horizontal
@@ -39,11 +110,10 @@ MouseArea {
                  : Updates.updateAdvised ? Appearance.colors.colTertiary
                  : Appearance.colors.colOnLayer1
         }
-        StyledText {
+
+        Loader {
             Layout.alignment: Qt.AlignVCenter
-            font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnLayer1
-            text: Updates.checking ? "..." : Updates.count > 0 ? `${Updates.count}` : "✓"
+            sourceComponent: Updates.checking ? spinnerComp : textComp
         }
     }
 
@@ -62,11 +132,10 @@ MouseArea {
                  : Updates.updateAdvised ? Appearance.colors.colTertiary
                  : Appearance.colors.colOnLayer1
         }
-        StyledText {
+
+        Loader {
             Layout.alignment: Qt.AlignHCenter
-            font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnLayer1
-            text: Updates.checking ? "..." : Updates.count > 0 ? `${Updates.count}` : "✓"
+            sourceComponent: Updates.checking ? spinnerComp : textComp
         }
     }
 }

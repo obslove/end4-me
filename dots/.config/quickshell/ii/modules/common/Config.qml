@@ -348,11 +348,14 @@ Singleton {
             property JsonObject dock: JsonObject {
                 property bool enable: false
                 property bool showBackground: true
+                property bool showMedia: true
                 property bool monochromeIcons: true
                 property real height: 60
                 property real hoverRegionHeight: 2
                 property bool pinnedOnStartup: false
                 property bool hoverToReveal: true // When false, only reveals on empty workspace
+                property bool windowPreviews: true
+                property bool windowPreviewIcons: true
                 property list<string> pinnedApps: [ // IDs of pinned entries
                     "org.kde.dolphin", "kitty",]
                 property list<string> ignoredAppRegexes: []
@@ -453,6 +456,8 @@ Singleton {
                 property bool orderRightLeft: false
                 property bool orderBottomUp: false
                 property bool centerIcons: true
+                property bool windowPreviews: true
+                property bool windowIcons: true
             }
 
             property JsonObject regionSelector: JsonObject {

@@ -51,6 +51,7 @@ Item { // Window
     property real iconToWindowRatioCompact: 0.6
     property string iconPath: Quickshell.iconPath(AppSearch.guessIcon(windowData?.class), "image-missing")
     property bool compactMode: Appearance.font.pixelSize.smaller * 4 > targetWindowHeight || Appearance.font.pixelSize.smaller * 4 > targetWindowWidth
+    property bool windowPreviews: Config.options.overview.windowPreviews
 
     property bool indicateXWayland: windowData?.xwayland ?? false
 
@@ -90,55 +91,64 @@ Item { // Window
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
 
-    ScreencopyView {
-        id: windowPreview
+    Rectangle {
         anchors.fill: parent
-        captureSource: GlobalStates.overviewOpen ? root.toplevel : null
-        live: true
+        color: Appearance.colors.colSurfaceContainer
+    }
 
-        // Color overlay for interactions
-        Rectangle {
-            anchors.fill: parent
-            topLeftRadius: root.topLeftRadius
-            topRightRadius: root.topRightRadius
-            bottomRightRadius: root.bottomRightRadius
-            bottomLeftRadius: root.bottomLeftRadius
-            color: pressed ? ColorUtils.transparentize(Appearance.colors.colLayer2Active, 0.5) : 
-                hovered ? ColorUtils.transparentize(Appearance.colors.colLayer2Hover, 0.7) : 
-                ColorUtils.transparentize(Appearance.colors.colLayer2)
-            border.color : ColorUtils.transparentize(Appearance.m3colors.m3outline, 0.88)
-            border.width : Appearance.sizes.borderWidth
+    Loader {
+        anchors.fill: parent
+        active: root.windowPreviews && GlobalStates.overviewOpen
+
+        sourceComponent: ScreencopyView {
+            captureSource: GlobalStates.overviewOpen ? root.toplevel : null
+            live: false
         }
+    }
 
-        StyledImage {
-            id: windowIcon
-            property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
-            anchors {
-                top: root.centerIcons ? undefined : parent.top
-                left: root.centerIcons ? undefined : parent.left
-                centerIn: root.centerIcons ? parent : undefined
-                margins: baseSize * root.iconGapRatio
-            }
-            property var iconSize: {
-                // console.log("-=-=-", root.toplevel.title, "-=-=-")
-                // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
-                // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
-                // console.log("Scale:", root.monitorData.scale)
-                // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
-                return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
-            }
-            mipmap: true
-            Layout.alignment: Qt.AlignHCenter
-            source: root.iconPath
-            width: iconSize
-            height: iconSize
+    // Color overlay for interactions
+    Rectangle {
+        anchors.fill: parent
+        topLeftRadius: root.topLeftRadius
+        topRightRadius: root.topRightRadius
+        bottomRightRadius: root.bottomRightRadius
+        bottomLeftRadius: root.bottomLeftRadius
+        color: pressed ? ColorUtils.transparentize(Appearance.colors.colLayer2Active, 0.5) :
+            hovered ? ColorUtils.transparentize(Appearance.colors.colLayer2Hover, 0.7) :
+            ColorUtils.transparentize(Appearance.colors.colLayer2)
+        border.color : ColorUtils.transparentize(Appearance.m3colors.m3outline, 0.88)
+        border.width : Appearance.sizes.borderWidth
+    }
 
-            Behavior on width {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-            }
-            Behavior on height {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-            }
+    StyledImage {
+        id: windowIcon
+        visible: Config.options.overview.windowIcons
+        property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
+        anchors {
+            top: root.centerIcons ? undefined : parent.top
+            left: root.centerIcons ? undefined : parent.left
+            centerIn: root.centerIcons ? parent : undefined
+            margins: baseSize * root.iconGapRatio
+        }
+        property var iconSize: {
+            // console.log("-=-=-", root.toplevel.title, "-=-=-")
+            // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
+            // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
+            // console.log("Scale:", root.monitorData.scale)
+            // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
+            return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
+        }
+        mipmap: true
+        Layout.alignment: Qt.AlignHCenter
+        source: root.iconPath
+        width: iconSize
+        height: iconSize
+
+        Behavior on width {
+            animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+        }
+        Behavior on height {
+            animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
         }
     }
 }

@@ -55,9 +55,27 @@ ContentPage {
             ConfigSwitch {
                 buttonIcon: "center_focus_strong"
                 text: Translation.tr("Center icons")
+                visible: Config.options.overview.windowIcons
+                Layout.fillWidth: visible
                 checked: Config.options.overview.centerIcons
                 onCheckedChanged: {
                     Config.options.overview.centerIcons = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "preview"
+                text: Translation.tr("Window previews")
+                checked: Config.options.overview.windowPreviews
+                onCheckedChanged: {
+                    Config.options.overview.windowPreviews = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "image"
+                text: Translation.tr("Show icons")
+                checked: Config.options.overview.windowIcons
+                onCheckedChanged: {
+                    Config.options.overview.windowIcons = checked;
                 }
             }
             ContentSubsection {
@@ -204,11 +222,35 @@ ContentPage {
                 }
             }
             ConfigSwitch {
+                buttonIcon: "music_note"
+                text: Translation.tr("Media Player")
+                checked: Config.options.dock.showMedia
+                onCheckedChanged: {
+                    Config.options.dock.showMedia = checked;
+                }
+            }
+            ConfigSwitch {
                 buttonIcon: "colors"
                 text: Translation.tr("Tint app icons")
                 checked: Config.options.dock.monochromeIcons
                 onCheckedChanged: {
                     Config.options.dock.monochromeIcons = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "preview"
+                text: Translation.tr("Window previews")
+                checked: Config.options.dock.windowPreviews
+                onCheckedChanged: {
+                    Config.options.dock.windowPreviews = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "image"
+                text: Translation.tr("Show icons")
+                checked: Config.options.dock.windowPreviewIcons
+                onCheckedChanged: {
+                    Config.options.dock.windowPreviewIcons = checked;
                 }
             }
         }

@@ -374,8 +374,8 @@ Item {
                             onClicked: { windowButton.modelData?.activate() }
 
                             contentItem: ColumnLayout {
-                                implicitWidth: previewSurface.implicitWidth
-                                implicitHeight: previewSurface.implicitHeight
+                                implicitWidth:  screencopyView.implicitWidth
+                                implicitHeight: screencopyView.implicitHeight
 
                                 ButtonGroup {
                                     contentWidth: parent.width - anchors.margins * 2
@@ -408,43 +408,26 @@ Item {
                                 }
 
                                 Item {
-                                    id: previewSurface
                                     Layout.fillWidth: true
                                     Layout.fillHeight: true
-                                    implicitHeight: root.maxWindowPreviewHeight
-                                    implicitWidth: root.maxWindowPreviewWidth
+                                    implicitHeight: screencopyView.height
+                                    implicitWidth:  screencopyView.width
 
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        radius: Appearance.rounding.small
-                                        color: Appearance.colors.colSurfaceContainer
-                                        visible: !Config.options.dock.windowPreviews || !previewPopup.show
-
-                                        IconImage {
-                                            anchors.centerIn: parent
-                                            visible: Config.options.dock.windowPreviewIcons
-                                            implicitSize: Math.min(parent.width, parent.height) * 0.32
-                                            source: Quickshell.iconPath(AppSearch.guessIcon(windowButton.modelData?.appId), "image-missing")
-                                        }
-                                    }
-
-                                    Loader {
-                                        anchors.fill: parent
-                                        active: Config.options.dock.windowPreviews && previewPopup.show
-
-                                        sourceComponent: ScreencopyView {
-                                            anchors.centerIn: parent
-                                            captureSource: previewPopup.show ? windowButton.modelData : null
-                                            live: false
-                                            paintCursor: true
-                                            constraintSize: Qt.size(root.maxWindowPreviewWidth, root.maxWindowPreviewHeight)
-                                            layer.enabled: true
-                                            layer.effect: OpacityMask {
-                                                maskSource: Rectangle {
-                                                    width: root.maxWindowPreviewWidth
-                                                    height: root.maxWindowPreviewHeight
-                                                    radius: Appearance.rounding.small
-                                                }
+                                    ScreencopyView {
+                                        id: screencopyView
+                                        anchors.centerIn: parent
+                                        captureSource: windowButton.modelData
+                                        live: true
+                                        paintCursor: true
+                                        constraintSize: Qt.size(
+                                            root.maxWindowPreviewWidth,
+                                            root.maxWindowPreviewHeight)
+                                        layer.enabled: true
+                                        layer.effect: OpacityMask {
+                                            maskSource: Rectangle {
+                                                width:  screencopyView.width
+                                                height: screencopyView.height
+                                                radius: Appearance.rounding.small
                                             }
                                         }
                                     }

@@ -12,9 +12,11 @@ MouseArea {
     id: root
     property bool vertical: false
     property bool borderless: Config.options.bar.borderless
+    property bool isMaterial: Config.options.bar.cornerStyle === 3
 
-    implicitWidth:  vertical ? Appearance.sizes.verticalBarWidth : rowLayout.implicitWidth + 12
-    implicitHeight: vertical ? colLayout.implicitHeight + 8 : Appearance.sizes.barHeight
+    implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : (isMaterial ? (rowLoader.item?.implicitWidth ?? 0) : (rowLoader.item?.implicitWidth ?? 0) + 12)
+    implicitHeight: vertical ? (colLoader.item?.implicitHeight ?? 0) + 8 : Appearance.sizes.barHeight
+
     cursorShape: Qt.PointingHandCursor
     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
@@ -63,7 +65,7 @@ MouseArea {
             } else {
                 Quickshell.execDetached(["notify-send",
                     Translation.tr("Updates"),
-                    Translation.tr("Update cancelled - %1 updates still pending").arg(Updates.count),
+                    Translation.tr("Update cancelled — %1 updates still pending").arg(Updates.count),
                     "-a", "Shell", "-u", "normal"
                 ])
             }
@@ -73,8 +75,10 @@ MouseArea {
     Component {
         id: textComp
         StyledText {
+            leftPadding: 5
+            rightPadding: 3
             font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnLayer1
+            color: isMaterial ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer1
             text: Updates.count
         }
     }
@@ -82,12 +86,13 @@ MouseArea {
     Component {
         id: spinnerComp
         MaterialSymbol {
+            leftPadding: 5
+            rightPadding: 3
             text: "progress_activity"
             iconSize: Appearance.font.pixelSize.normal
-            color: Appearance.colors.colOnLayer1
+            color: isMaterial ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer1
             RotationAnimation on rotation {
-                from: 0
-                to: 360
+                from: 0; to: 360
                 duration: 1000
                 loops: Animation.Infinite
                 running: true
@@ -96,46 +101,134 @@ MouseArea {
     }
 
     // Horizontal
-    RowLayout {
-        id: rowLayout
-        visible: !root.vertical
+    Loader {
+        id: rowLoader
+        active: !root.vertical
+        visible: active
         anchors.centerIn: parent
-        spacing: 4
+        sourceComponent: root.isMaterial ? rowMaterial : rowDefault
 
-        MaterialSymbol {
-            Layout.alignment: Qt.AlignVCenter
-            text: "package"
-            iconSize: Appearance.font.pixelSize.normal
-            color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
-                 : Updates.updateAdvised ? Appearance.colors.colTertiary
-                 : Appearance.colors.colOnLayer1
+        Component {
+            id: rowDefault
+            RowLayout {
+                spacing: 4
+                MaterialSymbol {
+                    Layout.alignment: Qt.AlignVCenter
+                    text: "package"
+                    iconSize: Appearance.font.pixelSize.normal
+                    color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
+                        : Updates.updateAdvised ? Appearance.colors.colTertiary
+                        : Appearance.colors.colOnLayer1
+                }
+                Loader {
+                    Layout.alignment: Qt.AlignVCenter
+                    sourceComponent: Updates.checking ? spinnerComp : textComp
+                }
+            }
         }
 
-        Loader {
-            Layout.alignment: Qt.AlignVCenter
-            sourceComponent: Updates.checking ? spinnerComp : textComp
+        Component {
+            id: rowMaterial
+            Rectangle {
+                color: Appearance.colors.colPrimaryContainer
+                radius: Appearance.rounding.full
+                implicitHeight: 30
+                implicitWidth: pillRow.implicitWidth + 8
+
+                RowLayout {
+                    id: pillRow
+                    anchors.centerIn: parent
+                    spacing: 3
+
+                    Rectangle {
+                        width: 24
+                        height: 24
+                        radius: Appearance.rounding.full
+                        color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
+                            : Updates.updateAdvised ? Appearance.colors.colTertiary
+                            : Appearance.colors.colPrimary
+
+                        MaterialSymbol {
+                            anchors.centerIn: parent
+                            text: "package"
+                            iconSize: Appearance.font.pixelSize.normal
+                            color: Appearance.colors.colOnPrimary
+                        }
+                    }
+
+                    Loader {
+                        Layout.alignment: Qt.AlignVCenter
+                        sourceComponent: Updates.checking ? spinnerComp : textComp
+                    }
+                }
+            }
         }
     }
 
     // Vertical
-    ColumnLayout {
-        id: colLayout
-        visible: root.vertical
+    Loader {
+        id: colLoader
+        active: root.vertical
+        visible: active
         anchors.centerIn: parent
-        spacing: 4
+        sourceComponent: root.isMaterial ? colMaterial : colDefault
 
-        MaterialSymbol {
-            Layout.alignment: Qt.AlignHCenter
-            text: "package"
-            iconSize: Appearance.font.pixelSize.normal
-            color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
-                 : Updates.updateAdvised ? Appearance.colors.colTertiary
-                 : Appearance.colors.colOnLayer1
+        Component {
+            id: colDefault
+            ColumnLayout {
+                spacing: 4
+                MaterialSymbol {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "package"
+                    iconSize: Appearance.font.pixelSize.normal
+                    color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
+                        : Updates.updateAdvised ? Appearance.colors.colTertiary
+                        : Appearance.colors.colOnLayer1
+                }
+                Loader {
+                    Layout.alignment: Qt.AlignHCenter
+                    sourceComponent: Updates.checking ? spinnerComp : textComp
+                }
+            }
         }
 
-        Loader {
-            Layout.alignment: Qt.AlignHCenter
-            sourceComponent: Updates.checking ? spinnerComp : textComp
+        Component {
+            id: colMaterial
+            Rectangle {
+                color: Appearance.colors.colPrimaryContainer
+                radius: Appearance.rounding.full
+                implicitWidth: 30
+                implicitHeight: pillCol.implicitHeight + 8
+
+                ColumnLayout {
+                    id: pillCol
+                    anchors.centerIn: parent
+                    spacing: 3
+
+                    Rectangle {
+                        width: 24
+                        height: 24
+                        radius: Appearance.rounding.full
+                        color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
+                            : Updates.updateAdvised ? Appearance.colors.colTertiary
+                            : Appearance.colors.colPrimary
+                        Layout.alignment: Qt.AlignHCenter
+
+                        MaterialSymbol {
+                            anchors.centerIn: parent
+                            text: "package"
+                            iconSize: Appearance.font.pixelSize.normal
+                            color: Appearance.colors.colOnPrimary
+                        }
+                    }
+
+                    Loader {
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.topMargin: 3
+                        sourceComponent: Updates.checking ? spinnerComp : textComp
+                    }
+                }
+            }
         }
     }
 }

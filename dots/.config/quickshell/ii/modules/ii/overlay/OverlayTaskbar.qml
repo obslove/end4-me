@@ -20,7 +20,7 @@ Rectangle {
     color: Appearance.m3colors.m3surfaceContainer
     radius: Appearance.rounding.large
     border.color: Appearance.colors.colOutlineVariant
-    border.width: Appearance.sizes.borderWidth
+    border.width: 1
 
     Behavior on opacity {
         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)

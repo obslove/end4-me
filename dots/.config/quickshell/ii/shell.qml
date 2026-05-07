@@ -23,6 +23,8 @@ ShellRoot {
     ReloadPopup {}
 
     Component.onCompleted: {
+        if (Config.ready)
+            root.ensurePanelFamily()
         MaterialThemeLoader.reapplyTheme()
         Hyprsunset.load()
         FirstRunExperience.load()
@@ -34,11 +36,24 @@ ShellRoot {
 
 
     // Panel families
-    property list<string> families: ["ii", "waffle"]
+    property list<string> families: ["ii"]
+    function ensurePanelFamily() {
+        if (families.indexOf(Config.options.panelFamily) === -1)
+            Config.options.panelFamily = families[0]
+    }
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)
         const nextIndex = (currentIndex + 1) % families.length
         Config.options.panelFamily = families[nextIndex]
+    }
+
+    Connections {
+        target: Config
+
+        function onReadyChanged() {
+            if (Config.ready)
+                root.ensurePanelFamily()
+        }
     }
 
     component PanelFamilyLoader: LazyLoader {
@@ -51,12 +66,6 @@ ShellRoot {
         identifier: "ii"
         component: IllogicalImpulseFamily {}
     }
-
-    PanelFamilyLoader {
-        identifier: "waffle"
-        component: WaffleFamily {}
-    }
-
 
     // Shortcuts
     IpcHandler {
@@ -74,4 +83,3 @@ ShellRoot {
         onPressed: root.cyclePanelFamily()
     }
 }
-

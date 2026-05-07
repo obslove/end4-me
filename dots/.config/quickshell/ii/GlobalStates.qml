@@ -15,6 +15,7 @@ Singleton {
     property bool sidebarRightOpen: false
     property bool mediaControlsOpen: false
     property bool osdBrightnessOpen: false
+    property bool settingsOpen: false
     property bool osdVolumeOpen: false
     property bool oskOpen: false
     property bool overlayOpen: false
@@ -30,6 +31,8 @@ Singleton {
     property bool superReleaseMightTrigger: true
     property bool wallpaperSelectorOpen: false
     property bool workspaceShowNumbers: false
+    property string settingsPage: ""
+    property Item currentPageInstance: null
 
     onSidebarRightOpenChanged: {
         if (GlobalStates.sidebarRightOpen) {

@@ -9,9 +9,9 @@ ContentSubsection {
 
     property string sectionTitle
     property var layout
-    property var getWidgetName: id => id
+    property var getWidgetName: (id) => id
     property var availableWidgets: []
-    property var onUpdate: list => {}
+    property var onUpdate: (list) => {}
 
     title: sectionTitle
     Layout.fillWidth: true
@@ -37,8 +37,7 @@ ContentSubsection {
                         required property var modelData
                         required property int index
                         isDragging: dragHandler.active
-                        leftmost: true
-                        rightmost: true
+                        leftmost: true; rightmost: true
                         buttonIcon: "close"
                         buttonText: root.getWidgetName(modelData)
                         toggled: !dragHandler.active
@@ -48,71 +47,70 @@ ContentSubsection {
                             target: null
 
                             function findNewIndex(dragX, dragY) {
-                                let newIndex = index;
-                                let minDist = Infinity;
+                                let newIndex = index
+                                let minDist = Infinity
 
                                 for (let i = 0; i < itemRepeater.count; i++) {
-                                    if (i === index)
-                                        continue;
-                                    const child = itemRepeater.itemAt(i);
-                                    if (!child)
-                                        continue;
-                                    const childCenter = child.mapToItem(null, child.width / 2, child.height / 2);
-                                    const dx = dragX - childCenter.x;
-                                    const dy = dragY - childCenter.y;
-                                    const dist = Math.sqrt(dx * dx + dy * dy);
+                                    if (i === index) continue
+                                    const child = itemRepeater.itemAt(i)
+                                    if (!child) continue
+                                    const childCenter = child.mapToItem(null, child.width / 2, child.height / 2)
+                                    const dx = dragX - childCenter.x
+                                    const dy = dragY - childCenter.y
+                                    const dist = Math.sqrt(dx * dx + dy * dy)
                                     if (dist < minDist) {
-                                        minDist = dist;
-                                        newIndex = i;
+                                        minDist = dist
+                                        newIndex = i
                                     }
                                 }
-                                return newIndex;
+                                return newIndex
                             }
 
                             onActiveChanged: {
                                 if (!active) {
-                                    dropIndicator.visible = false;
-                                    dropIndicator.targetIndex = -1;
-                                    const dragX = dragHandler.centroid.scenePosition.x;
-                                    const dragY = dragHandler.centroid.scenePosition.y;
-                                    const newIndex = findNewIndex(dragX, dragY);
+                                    dropIndicator.visible = false
+                                    dropIndicator.targetIndex = -1
+                                    const dragX = dragHandler.centroid.scenePosition.x
+                                    const dragY = dragHandler.centroid.scenePosition.y
+                                    const newIndex = findNewIndex(dragX, dragY)
                                     if (newIndex !== index) {
-                                        let list = root.layout.slice();
-                                        const item = list.splice(index, 1)[0];
-                                        list.splice(newIndex, 0, item);
-                                        root.onUpdate(list);
+                                        let list = root.layout.slice()
+                                        const item = list.splice(index, 1)[0]
+                                        list.splice(newIndex, 0, item)
+                                        root.onUpdate(list)
                                     }
                                 }
                             }
 
                             onCentroidChanged: {
-                                if (!active)
-                                    return;
-                                const dragX = dragHandler.centroid.scenePosition.x;
-                                const dragY = dragHandler.centroid.scenePosition.y;
-                                const newIndex = findNewIndex(dragX, dragY);
+                                if (!active) return
+                                const dragX = dragHandler.centroid.scenePosition.x
+                                const dragY = dragHandler.centroid.scenePosition.y
+                                const newIndex = findNewIndex(dragX, dragY)
 
                                 if (newIndex !== index) {
-                                    const refChild = itemRepeater.itemAt(newIndex);
+                                    const refChild = itemRepeater.itemAt(newIndex)
                                     if (refChild) {
-                                        const refLocal = refChild.mapToItem(itemFlow, 0, 0);
-                                        dropIndicator.x = newIndex < index ? refLocal.x - 5 : refLocal.x + refChild.width + 1;
-                                        dropIndicator.y = refLocal.y;
-                                        dropIndicator.height = refChild.height;
-                                        dropIndicator.visible = true;
-                                        dropIndicator.targetIndex = newIndex;
+                                        const refLocal = refChild.mapToItem(itemFlow, 0, 0)
+                                        dropIndicator.x = newIndex < index
+                                            ? refLocal.x - 5
+                                            : refLocal.x + refChild.width + 1
+                                        dropIndicator.y = refLocal.y
+                                        dropIndicator.height = refChild.height
+                                        dropIndicator.visible = true
+                                        dropIndicator.targetIndex = newIndex
                                     }
                                 } else {
-                                    dropIndicator.visible = false;
-                                    dropIndicator.targetIndex = -1;
+                                    dropIndicator.visible = false
+                                    dropIndicator.targetIndex = -1
                                 }
                             }
                         }
 
                         onClicked: {
-                            let list = root.layout.slice();
-                            list.splice(index, 1);
-                            root.onUpdate(list);
+                            let list = root.layout.slice()
+                            list.splice(index, 1)
+                            root.onUpdate(list)
                         }
                     }
                 }
@@ -123,7 +121,7 @@ ContentSubsection {
                 property int targetIndex: -1
                 visible: false
                 width: 3
-                height: 32
+                height: 32 
                 radius: 2
                 color: Appearance.colors.colPrimary
 
@@ -135,9 +133,7 @@ ContentSubsection {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
                     anchors.topMargin: -4
-                    width: 8
-                    height: 8
-                    radius: 4
+                    width: 8; height: 8; radius: 4
                     color: Appearance.colors.colPrimary
                 }
 
@@ -145,9 +141,7 @@ ContentSubsection {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: -4
-                    width: 8
-                    height: 8
-                    radius: 4
+                    width: 8; height: 8; radius: 4
                     color: Appearance.colors.colPrimary
                 }
             }
@@ -182,28 +176,23 @@ ContentSubsection {
 
             Flow {
                 id: dropdownFlow
-                anchors {
-                    fill: parent
-                    margins: 8
-                }
+                anchors { fill: parent; margins: 8 }
                 spacing: 2
-
                 Repeater {
                     model: root.availableWidgets
                     delegate: SelectionGroupButton {
                         required property var modelData
-                        leftmost: true
-                        rightmost: true
+                        leftmost: true; rightmost: true
                         buttonText: modelData.name
+                        buttonIcon: modelData.icon ?? ""  
                         onClicked: {
-                            let list = root.layout.slice();
-                            list.push(modelData.id);
-                            root.onUpdate(list);
-                            dropdown.visible = false;
+                            let list = root.layout.slice()
+                            list.push(modelData.id)
+                            root.onUpdate(list)
+                            dropdown.visible = false
                         }
                     }
                 }
-
                 StyledText {
                     visible: root.availableWidgets.length === 0
                     text: Translation.tr("No widgets available")

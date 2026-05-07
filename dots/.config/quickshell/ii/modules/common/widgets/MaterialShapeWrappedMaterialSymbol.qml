@@ -14,7 +14,7 @@ MaterialShape {
     color: Appearance.colors.colSecondaryContainer
     colSymbol: Appearance.colors.colOnSecondaryContainer
     shape: root.wrappedShape
-    implicitSize: Math.max(symbol.implicitWidth, symbol.implicitHeight, symbol.iconSize) + padding * 2
+    implicitSize: Math.max(symbol.implicitWidth, symbol.implicitHeight) + padding * 2
 
     MaterialSymbol {
         id: symbol

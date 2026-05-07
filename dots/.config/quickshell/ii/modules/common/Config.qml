@@ -78,7 +78,7 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
 
-            property string panelFamily: "ii"
+            property string panelFamily: "ii" // "ii", "waffle"
 
             property JsonObject policies: JsonObject {
                 property int ai: 1 // 0: No | 1: Yes | 2: Local
@@ -149,6 +149,12 @@ Singleton {
                 }
             }
 
+            property JsonObject hyprland: JsonObject { // in case you want to add other things here later
+                property JsonObject animations: JsonObject {
+                    property string animation: "normal"
+                }
+            }
+
             property JsonObject apps: JsonObject {
                 property string bluetooth: "kcmshell6 kcm_bluetooth"
                 property string changePassword: "kitty -1 --hold=yes fish -i -c 'passwd'"
@@ -209,16 +215,28 @@ Singleton {
                         property real x: 400
                         property real y: 100
                     }
+
+                    property JsonObject media: JsonObject {
+                        property bool enable: false
+                        property bool showControls: true
+                        property bool showLyrics: false
+                        property bool showTitles: true
+                        property string backgroundShape: "Cookie4Sided"
+                        property string placementStrategy: "free" // "free", "leastBusy", "mostBusy"
+                        property real x: 800
+                        property real y: 500
+                    }
                 }
                 property string wallpaperPath: ""
+                property string wallpaperAnimation: "circle"
                 property string thumbnailPath: ""
                 property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {
                     property bool vertical: false
                     property bool autoVertical: false
-                    property bool enableWorkspace: false
-                    property real workspaceZoom: 1.07 // Relative to wallpaper size
-                    property bool enableSidebar: false
+                    property bool enableWorkspace: true
+                    property real workspaceZoom: 1.0 // Relative to wallpaper size
+                    property bool enableSidebar: true
                     property real widgetsFactor: 1.2
                 }
             }
@@ -234,7 +252,7 @@ Singleton {
                     }
                 }
                 property bool bottom: false // Instead of top
-                property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Islands
+                property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
                 property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
                 property bool borderless: false // true for no grouping of items
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
@@ -242,27 +260,36 @@ Singleton {
                 property bool verbose: true
                 property bool vertical: false
                 property JsonObject resources: JsonObject {
-                    property bool alwaysShowSwap: true
+                    property string style: "filled"
+                    property bool alwaysShowSwap: false
                     property bool alwaysShowCpu: true
+                    property bool alwaysShowCpuTemp: false
+                    property bool alwaysShowDisk: false
+                    property bool alwaysShowRam: true
                     property int memoryWarningThreshold: 95
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
                 }
+
                 property JsonObject layouts: JsonObject {
-                    property list<string> leftLayout: ["leftSidebarButton", "activeWindow"]
-                    property list<string> middleLayout: ["resources", "media", "workspaces", "clockWidget", "utilButtons", "batteryIndicator"]
-                    property list<string> rightLayout: ["systemIcons", "sysTray", "weatherBar"]
+                    property list<string> leftLayout: ["workspaces"]
+                    property list<string> middleLayout: ["clockWidget"]
+                    property list<string> rightLayout: ["systemIcons"]
                 }
+                
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: false
                     property bool showMicToggle: false
                     property bool showKeyboardToggle: true
+                    property bool showWallpaperToggle: false
                     property bool showDarkModeToggle: true
                     property bool showPerformanceProfileToggle: false
-                    property bool showScreenRecord: false
+                    property bool showScreenRecord: false       
+                    property bool isRecording: false
                 }
+
                 property JsonObject workspaces: JsonObject {
                     property bool monochromeIcons: true
                     property int shown: 10
@@ -301,22 +328,6 @@ Singleton {
                 property string locale: "en-GB"
             }
 
-            property JsonObject cheatsheet: JsonObject {
-                // Use a nerdfont to see the icons
-                // 0: 󰖳  | 1: 󰌽 | 2: 󰘳 | 3:  | 4: 󰨡
-                // 5:  | 6:  | 7: 󰣇 | 8:  | 9: 
-                // 10:  | 11:  | 12:  | 13:  | 14: 󱄛
-                property string superKey: ""
-                property bool useMacSymbol: false
-                property bool splitButtons: false
-                property bool useMouseSymbol: false
-                property bool useFnSymbol: false
-                property JsonObject fontSize: JsonObject {
-                    property int key: Appearance.font.pixelSize.smaller
-                    property int comment: Appearance.font.pixelSize.smaller
-                }
-            }
-
             property JsonObject conflictKiller: JsonObject {
                 property bool autoKillNotificationDaemons: false
                 property bool autoKillTrays: false
@@ -329,6 +340,7 @@ Singleton {
 
             property JsonObject dock: JsonObject {
                 property bool enable: false
+                property bool showBackground: true
                 property bool monochromeIcons: true
                 property real height: 60
                 property real hoverRegionHeight: 2
@@ -427,6 +439,7 @@ Singleton {
 
             property JsonObject overview: JsonObject {
                 property bool enable: true
+                property string style: "default"
                 property real scale: 0.18 // Relative to screen size
                 property real rows: 2
                 property real columns: 5
@@ -486,6 +499,7 @@ Singleton {
                     property string app: ">"
                     property string clipboard: ";"
                     property string emojis: ":"
+                    property string symbols: "."
                     property string math: "="
                     property string shellCommand: "$"
                     property string webSearch: "?"
@@ -502,6 +516,15 @@ Singleton {
                     property bool enable: false
                     property int delay: 300 // Delay before sending request. Reduces (potential) rate limits and lag.
                 }
+                property JsonObject media: JsonObject {
+                    property bool enable: true
+                    property bool artColors: false
+                }
+
+                property JsonObject wallpapers: JsonObject {
+                    property bool enable: true
+                }
+                
                 property JsonObject ai: JsonObject {
                     property bool textFadeIn: false
                 }
@@ -548,6 +571,11 @@ Singleton {
                 }
             }
 
+            property JsonObject custom: JsonObject {
+                property string distroIcon: ""
+                property bool colorizeIcon: true
+            }
+
             property JsonObject screenRecord: JsonObject {
                 property string savePath: Directories.videos.replace("file://","") // strip "file://"
             }
@@ -587,7 +615,21 @@ Singleton {
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
             }
+
+            property JsonObject wallpapers: JsonObject {
+                property string service: "wallhaven"
+                property string sort: "favourites"
+                property bool showAnimeResults: false
+                property JsonObject paths: JsonObject {
+                    property string download: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers`)
+                    property string nsfw: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers/NSFW`)
+                }
+            }
             
+            property JsonObject wallhaven: JsonObject {
+                property string apiKey: "" // opcional, solo para NSFW o más resultados
+            }
+
             property JsonObject windows: JsonObject {
                 property bool showTitlebar: true // Client-side decoration for shell apps
                 property bool centerTitle: true
@@ -608,7 +650,6 @@ Singleton {
                     property list<string> linkKeywords: ["hentai", "porn", "sukebei", "hitomi.la", "rule34", "gelbooru", "fanbox", "dlsite"]
                 }
             }
-
         }
     }
 }

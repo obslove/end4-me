@@ -11,7 +11,6 @@ import Quickshell.Hyprland
 
 import qs.modules.ii.sidebarRight.quickToggles
 import qs.modules.ii.sidebarRight.quickToggles.classicStyle
-
 import qs.modules.ii.sidebarRight.bluetoothDevices
 import qs.modules.ii.sidebarRight.nightLight
 import qs.modules.ii.sidebarRight.volumeMixer
@@ -56,7 +55,7 @@ Item {
         implicitHeight: parent.height - Appearance.sizes.hyprlandGapsOut * 2
         implicitWidth: sidebarWidth - Appearance.sizes.hyprlandGapsOut * 2
         color: Appearance.colors.colLayer0
-        border.width: Appearance.sizes.borderWidth
+        border.width: 1
         border.color: Appearance.colors.colLayer0Border
         radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 5
 
@@ -196,7 +195,8 @@ Item {
                 root[toggleDialogLoader.shownPropertyString] = false;
             }
             function onVisibleChanged() {
-                if (!toggleDialogLoader.item.visible && !root[toggleDialogLoader.shownPropertyString]) toggleDialogLoader.active = false;
+                if (toggleDialogLoader.item && !toggleDialogLoader.item.visible && !root[toggleDialogLoader.shownPropertyString])
+                    toggleDialogLoader.active = false;
             }
         }
     }

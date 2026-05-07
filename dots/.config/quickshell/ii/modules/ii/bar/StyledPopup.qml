@@ -18,6 +18,7 @@ LazyLoader {
 
         // Bring contentItem reference into this scope
         property Item innerContent: root.contentItem
+        readonly property real shadowMargin: Appearance.sizes.elevationMargin
 
         color: "transparent"
         anchors.left: !Config.options.bar.vertical || (Config.options.bar.vertical && !Config.options.bar.bottom)
@@ -34,32 +35,57 @@ LazyLoader {
         exclusionMode: ExclusionMode.Ignore
         exclusiveZone: 0
 
+        function clamp(value, lower, upper) {
+            return Math.max(lower, Math.min(value, upper))
+        }
+
+        function targetPoint(x, y) {
+            return root.QsWindow?.mapFromItem(root.hoverTarget, x, y) ?? Qt.point(0, 0)
+        }
+
         margins {
             left: {
                 if (!Config.options.bar.vertical) {
-                    const base = root.QsWindow?.mapFromItem(
-                        root.hoverTarget,
-                        (root.hoverTarget.width - popupBackground.implicitWidth) / 2, 0
-                    ).x
-                    const margin = Appearance.sizes.elevationMargin
-                    const maxLeft = popupWindow.screen.width - popupBackground.implicitWidth - margin - 10
-                    return Math.max(margin, Math.min(base, maxLeft))
+                    const desiredBackgroundLeft = popupWindow.targetPoint((root.hoverTarget.width - popupBackground.implicitWidth) / 2, 0).x
+                    const maxLeft = popupWindow.screen.width - popupWindow.implicitWidth
+                    return popupWindow.clamp(desiredBackgroundLeft - popupWindow.shadowMargin, 0, maxLeft)
                 }
-                if (!Config.options.bar.bottom) return Appearance.sizes.verticalBarWidth
+                if (!Config.options.bar.bottom) {
+                    const desiredBackgroundLeft = popupWindow.targetPoint(root.hoverTarget.width, 0).x
+                    const maxLeft = popupWindow.screen.width - popupWindow.implicitWidth
+                    return popupWindow.clamp(desiredBackgroundLeft - popupWindow.shadowMargin, 0, maxLeft)
+                }
                 return 0
             }
             top: {
-                if (!Config.options.bar.vertical) return Appearance.sizes.barHeight
-                const base = root.QsWindow?.mapFromItem(
-                    root.hoverTarget,
-                    0, (root.hoverTarget.height - popupBackground.implicitHeight) / 2
-                ).y  
-                const margin = Appearance.sizes.elevationMargin
-                const maxTop = popupWindow.screen.height - popupBackground.implicitHeight - margin - 15
-                return Math.max(margin, Math.min(base, maxTop))
+                if (!Config.options.bar.vertical && !Config.options.bar.bottom) {
+                    const desiredBackgroundTop = popupWindow.targetPoint(0, root.hoverTarget.height).y
+                    const maxTop = popupWindow.screen.height - popupWindow.implicitHeight
+                    return popupWindow.clamp(desiredBackgroundTop - popupWindow.shadowMargin, 0, maxTop)
+                }
+                if (Config.options.bar.vertical) {
+                    const desiredBackgroundTop = popupWindow.targetPoint(0, (root.hoverTarget.height - popupBackground.implicitHeight) / 2).y
+                    const maxTop = popupWindow.screen.height - popupWindow.implicitHeight
+                    return popupWindow.clamp(desiredBackgroundTop - popupWindow.shadowMargin, 0, maxTop)
+                }
+                return 0
             }
-            right: Config.options.bar.vertical && Config.options.bar.bottom ? Appearance.sizes.verticalBarWidth : 0  
-            bottom: Config.options.bar.vertical ? 0 : Appearance.sizes.barHeight  
+            right: {
+                if (Config.options.bar.vertical && Config.options.bar.bottom) {
+                    const desiredBackgroundRight = popupWindow.screen.width - popupWindow.targetPoint(0, 0).x
+                    const maxRight = popupWindow.screen.width - popupWindow.implicitWidth
+                    return popupWindow.clamp(desiredBackgroundRight - popupWindow.shadowMargin, 0, maxRight)
+                }
+                return 0
+            }
+            bottom: {
+                if (!Config.options.bar.vertical && Config.options.bar.bottom) {
+                    const desiredBackgroundBottom = popupWindow.screen.height - popupWindow.targetPoint(0, 0).y
+                    const maxBottom = popupWindow.screen.height - popupWindow.implicitHeight
+                    return popupWindow.clamp(desiredBackgroundBottom - popupWindow.shadowMargin, 0, maxBottom)
+                }
+                return 0
+            }
         }
         WlrLayershell.namespace: "quickshell:popup"
         WlrLayershell.layer: WlrLayer.Overlay

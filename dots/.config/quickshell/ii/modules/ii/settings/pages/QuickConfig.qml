@@ -280,6 +280,7 @@ ContentPage {
             }
 
             ConfigRow {
+                uniform: true
                 ContentSubsection {
                     title: Translation.tr("Bar position")
                     ConfigSelectionArray {
@@ -313,36 +314,6 @@ ContentPage {
                     }
                 }
                 ContentSubsection {
-                    title: Translation.tr("Bar style")
-
-                    ConfigSelectionArray {
-                        currentValue: Config.options.bar.cornerStyle
-                        onSelected: newValue => {
-                            Config.options.bar.cornerStyle = newValue; // Update local copy
-                        }
-                        options: [
-                            {
-                                displayName: Translation.tr("Hug"),
-                                icon: "line_curve",
-                                value: 0
-                            },
-                            {
-                                displayName: Translation.tr("Float"),
-                                icon: "view_day",
-                                value: 1
-                            },
-                            {
-                                displayName: Translation.tr("Islands"),
-                                icon: "crop_3_2",
-                                value: 2
-                            }
-                        ]
-                    }
-                }
-            }
-
-            ConfigRow {
-                ContentSubsection {
                     title: Translation.tr("Screen round corner")
 
                     ConfigSelectionArray {
@@ -369,7 +340,34 @@ ContentPage {
                         ]
                     }
                 }
-                
+            }
+
+            ContentSubsection {
+                title: Translation.tr("Bar style")
+
+                ConfigSelectionArray {
+                    currentValue: Config.options.bar.cornerStyle
+                    onSelected: newValue => {
+                        Config.options.bar.cornerStyle = newValue; // Update local copy
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Hug"),
+                            icon: "line_curve",
+                            value: 0
+                        },
+                        {
+                            displayName: Translation.tr("Float"),
+                            icon: "view_day",
+                            value: 1
+                        },
+                        {
+                            displayName: Translation.tr("Islands"),
+                            icon: "crop_3_2",
+                            value: 2
+                        }
+                    ]
+                }
             }
         }
     }

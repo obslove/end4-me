@@ -16,6 +16,8 @@ GroupButton {
     property string buttonIcon
     property bool leftmost: false
     property bool rightmost: false
+    property bool isDragging: false
+    property color colText: root.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSecondaryContainer
     leftRadius: (toggled || leftmost) ? (height / 2) : Appearance.rounding.unsharpenmore
     rightRadius: (toggled || rightmost) ? (height / 2) : Appearance.rounding.unsharpenmore
     colBackground: Appearance.colors.colSecondaryContainer
@@ -36,7 +38,7 @@ GroupButton {
                     anchors.centerIn: parent
                     text: root.buttonIcon
                     iconSize: Appearance.font.pixelSize.larger
-                    color: root.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSecondaryContainer
+                    color: root.colText
                 }
             }
         }
@@ -54,7 +56,7 @@ GroupButton {
             StyledText {
                 id: textItem
                 anchors.centerIn: parent
-                color: root.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSecondaryContainer
+                color: root.colText
                 text: root.buttonText
             }
         }

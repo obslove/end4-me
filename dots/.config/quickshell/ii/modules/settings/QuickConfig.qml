@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
-import Quickshell.Io
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -10,18 +9,6 @@ import qs.modules.common.functions
 
 ContentPage {
     forceWidth: true
-
-    Process {
-        id: randomWallProc
-        property string status: ""
-        property string scriptPath: `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`
-        command: ["bash", "-c", FileUtils.trimFileProtocol(randomWallProc.scriptPath)]
-        stdout: SplitParser {
-            onRead: data => {
-                randomWallProc.status = data.trim();
-            }
-        }
-    }
 
     component SmallLightDarkPreferenceButton: RippleButton {
         id: smallLightDarkPreferenceButton
@@ -66,7 +53,7 @@ ContentPage {
 
             Item {
                 implicitWidth: 340
-                implicitHeight: 200
+                implicitHeight: 210
                 
                 StyledImage {
                     id: wallpaperPreview
@@ -78,7 +65,7 @@ ContentPage {
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
                             width: 360
-                            height: 200
+                            height: 220
                             radius: Appearance.rounding.normal
                         }
                     }
@@ -86,72 +73,6 @@ ContentPage {
             }
 
             ColumnLayout {
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    visible: Config.options.policies.weeb === 1
-                    Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
-                    materialIcon: "ifl"
-                    mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: Konachan")
-                    onClicked: {
-                        randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`;
-                        randomWallProc.running = true;
-                    }
-                    StyledToolTip {
-                        text: Translation.tr("Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers")
-                    }
-                }
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    visible: Config.options.policies.weeb === 1
-                    Layout.fillWidth: true
-                    buttonRadius: Appearance.rounding.small
-                    materialIcon: "ifl"
-                    mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random: osu! seasonal")
-                    onClicked: {
-                        randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_osu_wall.sh`;
-                        randomWallProc.running = true;
-                    }
-                    StyledToolTip {
-                        text: Translation.tr("Random osu! seasonal background\nImage is saved to ~/Pictures/Wallpapers")
-                    }
-                }
-                RippleButtonWithIcon {
-                    Layout.fillWidth: true
-                    materialIcon: "wallpaper"
-                    StyledToolTip {
-                        text: Translation.tr("Pick wallpaper image on your system")
-                    }
-                    onClicked: {
-                        Quickshell.execDetached(`${Directories.wallpaperSwitchScriptPath}`);
-                    }
-                    mainContentComponent: Component {
-                        RowLayout {
-                            spacing: 10
-                            StyledText {
-                                font.pixelSize: Appearance.font.pixelSize.small
-                                text: Translation.tr("Choose file")
-                                color: Appearance.colors.colOnSecondaryContainer
-                            }
-                            RowLayout {
-                                spacing: 3
-                                KeyboardKey {
-                                    key: "Ctrl"
-                                }
-                                KeyboardKey {
-                                    key: Config.options.cheatsheet.superKey ?? "󰖳"
-                                }
-                                StyledText {
-                                    Layout.alignment: Qt.AlignVCenter
-                                    text: "+"
-                                }
-                                KeyboardKey {
-                                    key: "T"
-                                }
-                            }
-                        }
-                    }
-                }
                 RowLayout {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.fillWidth: true
@@ -165,6 +86,39 @@ ContentPage {
                     SmallLightDarkPreferenceButton {
                         Layout.fillHeight: true
                         dark: true
+                    }
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    MaterialTextArea {
+                        Layout.fillWidth: true
+                        placeholderText: Translation.tr("Accent Color")
+                        text: Config.options.appearance.palette.accentColor
+                        wrapMode: TextEdit.Wrap
+                        onTextChanged: {
+                            Config.options.appearance.palette.accentColor = text;
+                            debounceTimer.restart();
+                        }
+                        Timer {
+                            id: debounceTimer
+                            interval: 600
+                            repeat: false
+                            onTriggered: {
+                                const color = parent.text.trim();
+                                const isValidHex = /^#[0-9A-Fa-f]{6}$/.test(color);
+                                if (!isValidHex) return;
+                                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color", color]);
+                            }
+                        }
+                    }
+
+                    ToolbarPairedFab {
+                        iconText: "colorize"
+                        onClicked: {
+                            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color"]);
+                        }
                     }
                 }
             }
@@ -217,7 +171,7 @@ ContentPage {
         }
 
         ConfigSwitch {
-            buttonIcon: "ev_shadow"
+            buttonIcon: "motion_mode"
             text: Translation.tr("Transparency")
             checked: Config.options.appearance.transparency.enable
             onCheckedChanged: {
@@ -230,9 +184,19 @@ ContentPage {
         icon: "screenshot_monitor"
         title: Translation.tr("Bar & screen")
 
+        ConfigSwitch {
+            buttonIcon: "variable_insert"
+            text: Translation.tr("Background")
+            checked: Config.options.bar.showBackground
+            onCheckedChanged: {
+                Config.options.bar.showBackground = checked;
+            }
+        }
+
         ConfigRow {
             ContentSubsection {
                 title: Translation.tr("Bar position")
+                Layout.fillWidth: true
                 ConfigSelectionArray {
                     currentValue: (Config.options.bar.bottom ? 1 : 0) | (Config.options.bar.vertical ? 2 : 0)
                     onSelected: newValue => {
@@ -263,8 +227,12 @@ ContentPage {
                     ]
                 }
             }
+        }
+
+        ConfigRow {
             ContentSubsection {
                 title: Translation.tr("Bar style")
+                Layout.fillWidth: true
 
                 ConfigSelectionArray {
                     currentValue: Config.options.bar.cornerStyle
@@ -279,12 +247,12 @@ ContentPage {
                         },
                         {
                             displayName: Translation.tr("Float"),
-                            icon: "page_header",
+                            icon: "view_day",
                             value: 1
                         },
                         {
-                            displayName: Translation.tr("Rect"),
-                            icon: "toolbar",
+                            displayName: Translation.tr("Islands"),
+                            icon: "crop_3_2",
                             value: 2
                         }
                     ]
@@ -295,6 +263,7 @@ ContentPage {
         ConfigRow {
             ContentSubsection {
                 title: Translation.tr("Screen round corner")
+                Layout.fillWidth: true
 
                 ConfigSelectionArray {
                     currentValue: Config.options.appearance.fakeScreenRounding
@@ -324,36 +293,4 @@ ContentPage {
         }
     }
 
-    NoticeBox {
-        Layout.fillWidth: true
-        text: Translation.tr('Not all options are available in this app. You should also check the config file by hitting the "Config file" button on the topleft corner or opening %1 manually.').arg(Directories.shellConfigPath)
-
-        Item {
-            Layout.fillWidth: true
-        }
-        RippleButtonWithIcon {
-            id: copyPathButton
-            property bool justCopied: false
-            Layout.fillWidth: false
-            buttonRadius: Appearance.rounding.small
-            materialIcon: justCopied ? "check" : "content_copy"
-            mainText: justCopied ? Translation.tr("Path copied") : Translation.tr("Copy path")
-            onClicked: {
-                copyPathButton.justCopied = true
-                Quickshell.clipboardText = FileUtils.trimFileProtocol(`${Directories.config}/illogical-impulse/config.json`);
-                revertTextTimer.restart();
-            }
-            colBackground: ColorUtils.transparentize(Appearance.colors.colPrimaryContainer)
-            colBackgroundHover: Appearance.colors.colPrimaryContainerHover
-            colRipple: Appearance.colors.colPrimaryContainerActive
-
-            Timer {
-                id: revertTextTimer
-                interval: 1500
-                onTriggered: {
-                    copyPathButton.justCopied = false
-                }
-            }
-        }
-    }
 }

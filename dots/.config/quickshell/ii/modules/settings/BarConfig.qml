@@ -5,7 +5,38 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    id: rootPage
     forceWidth: true
+
+    property var allWidgets: [
+        { id: "leftSidebarButton", name: Translation.tr("Left Sidebar Button") },
+        { id: "activeWindow", name: Translation.tr("Active Window") },
+        { id: "workspaces", name: Translation.tr("Workspaces") },
+        { id: "resources", name: Translation.tr("Resources") },
+        { id: "media", name: Translation.tr("Media") },
+        { id: "clockWidget", name: Translation.tr("Clock") },
+        { id: "utilButtons", name: Translation.tr("Util Buttons") },
+        { id: "batteryIndicator", name: Translation.tr("Battery") },
+        { id: "systemIcons", name: Translation.tr("System Icons") },
+        { id: "sysTray", name: Translation.tr("Tray") },
+        { id: "weatherBar", name: Translation.tr("Weather") },
+        { id: "powerButton", name: Translation.tr("Power Button") },
+        { id: "updatesCount", name: Translation.tr("Updates") }
+    ]
+
+    function availableFor() {
+        let used = [
+            ...Config.options.bar.layouts.leftLayout,
+            ...Config.options.bar.layouts.middleLayout,
+            ...Config.options.bar.layouts.rightLayout
+        ];
+        return allWidgets.filter(w => !used.includes(w.id));
+    }
+
+    function getWidgetName(id) {
+        const widget = allWidgets.find(w => w.id === id);
+        return widget ? widget.name : id;
+    }
 
     ContentSection {
         icon: "notifications"
@@ -20,6 +51,35 @@ ContentPage {
         }
     }
     
+    ContentSection {
+        icon: "splitscreen_add"
+        title: Translation.tr("Bar layout")
+
+        LayoutSection {
+            sectionTitle: Config.options.bar.vertical ? Translation.tr("Top") : Translation.tr("Left")
+            layout: Config.options.bar.layouts.leftLayout
+            availableWidgets: rootPage.availableFor()
+            getWidgetName: rootPage.getWidgetName
+            onUpdate: list => Config.options.bar.layouts.leftLayout = list
+        }
+
+        LayoutSection {
+            sectionTitle: Translation.tr("Center")
+            layout: Config.options.bar.layouts.middleLayout
+            availableWidgets: rootPage.availableFor()
+            getWidgetName: rootPage.getWidgetName
+            onUpdate: list => Config.options.bar.layouts.middleLayout = list
+        }
+
+        LayoutSection {
+            sectionTitle: Config.options.bar.vertical ? Translation.tr("Bottom") : Translation.tr("Right")
+            layout: Config.options.bar.layouts.rightLayout
+            availableWidgets: rootPage.availableFor()
+            getWidgetName: rootPage.getWidgetName
+            onUpdate: list => Config.options.bar.layouts.rightLayout = list
+        }
+    }
+
     ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")
@@ -85,6 +145,7 @@ ContentPage {
         }
 
         ConfigRow {
+            uniform: true
             
             ContentSubsection {
                 title: Translation.tr("Corner style")
@@ -103,12 +164,12 @@ ContentPage {
                         },
                         {
                             displayName: Translation.tr("Float"),
-                            icon: "page_header",
+                            icon: "view_day",
                             value: 1
                         },
                         {
-                            displayName: Translation.tr("Rect"),
-                            icon: "toolbar",
+                            displayName: Translation.tr("Islands"),
+                            icon: "crop_3_2",
                             value: 2
                         }
                     ]
@@ -117,7 +178,7 @@ ContentPage {
 
             ContentSubsection {
                 title: Translation.tr("Group style")
-                Layout.fillWidth: false
+                Layout.fillWidth: true
 
                 ConfigSelectionArray {
                     currentValue: Config.options.bar.borderless

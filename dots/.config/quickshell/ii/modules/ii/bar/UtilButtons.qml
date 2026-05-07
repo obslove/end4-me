@@ -11,12 +11,14 @@ import Quickshell.Services.UPower
 Item {
     id: root
     property bool borderless: Config.options.bar.borderless
-    implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
-    implicitHeight: rowLayout.implicitHeight
+    property bool vertical: Config.options.bar.vertical
+    implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : buttonFlow.implicitWidth + buttonFlow.spacing * 2
+    implicitHeight: vertical ? buttonFlow.implicitHeight + buttonFlow.spacing * 2 : buttonFlow.implicitHeight
 
-    RowLayout {
-        id: rowLayout
+    Flow {
+        id: buttonFlow
 
+        flow: root.vertical ? Flow.TopToBottom : Flow.LeftToRight
         spacing: 4
         anchors.centerIn: parent
 

@@ -9,11 +9,12 @@ MaterialShape {
     property alias font: symbol.font
     property alias colSymbol: symbol.color
     property real padding: 6
+    property var wrappedShape: MaterialShape.Shape.Clover4Leaf
 
     color: Appearance.colors.colSecondaryContainer
     colSymbol: Appearance.colors.colOnSecondaryContainer
-    shape: MaterialShape.Shape.Clover4Leaf
-    implicitSize: Math.max(symbol.implicitWidth, symbol.implicitHeight) + padding * 2
+    shape: root.wrappedShape
+    implicitSize: Math.max(symbol.implicitWidth, symbol.implicitHeight, symbol.iconSize) + padding * 2
 
     MaterialSymbol {
         id: symbol

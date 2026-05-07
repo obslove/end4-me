@@ -234,7 +234,7 @@ Singleton {
                     }
                 }
                 property bool bottom: false // Instead of top
-                property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
+                property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Islands
                 property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
                 property bool borderless: false // true for no grouping of items
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
@@ -247,6 +247,11 @@ Singleton {
                     property int memoryWarningThreshold: 95
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
+                }
+                property JsonObject layouts: JsonObject {
+                    property list<string> leftLayout: ["leftSidebarButton", "activeWindow"]
+                    property list<string> middleLayout: ["resources", "media", "workspaces", "clockWidget", "utilButtons", "batteryIndicator"]
+                    property list<string> rightLayout: ["systemIcons", "sysTray", "weatherBar"]
                 }
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
                 property JsonObject utilButtons: JsonObject {

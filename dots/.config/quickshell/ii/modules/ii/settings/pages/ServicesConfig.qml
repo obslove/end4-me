@@ -59,6 +59,67 @@ ContentPage {
         }
 
         ContentSection {
+            icon: "lyrics"
+            shape: MaterialShape.Shape.Cookie6Sided
+            title: Translation.tr("Lyrics")
+
+            ConfigSwitch {
+                buttonIcon: "lyrics"
+                text: Translation.tr("Enable lyrics")
+                checked: Config.options.lyricsService.enable
+                onCheckedChanged: {
+                    Config.options.lyricsService.enable = checked;
+                }
+            }
+
+            ContentSubsection {
+                title: Translation.tr("Style")
+
+                ConfigSelectionArray {
+                    currentValue: Config.options.lyricsService.style
+                    onSelected: newValue => {
+                        Config.options.lyricsService.style = newValue;
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Scroller"),
+                            icon: "keyboard_double_arrow_up",
+                            value: "scroller"
+                        },
+                        {
+                            displayName: Translation.tr("Static"),
+                            icon: "format_size",
+                            value: "static"
+                        }
+                    ]
+                }
+            }
+
+            ConfigSwitch {
+                enabled: Config.options.lyricsService.enable && Config.options.lyricsService.style !== "static"
+                buttonIcon: "gradient"
+                text: Translation.tr("Use scroller mask")
+                checked: Config.options.lyricsService.useGradientMask
+                onCheckedChanged: {
+                    Config.options.lyricsService.useGradientMask = checked;
+                }
+            }
+
+            ConfigSpinBox {
+                enabled: Config.options.lyricsService.enable
+                icon: "format_size"
+                text: Translation.tr("Font size")
+                value: Config.options.lyricsService.fontSize
+                from: 12
+                to: 32
+                stepSize: 1
+                onValueChanged: {
+                    Config.options.lyricsService.fontSize = value;
+                }
+            }
+        }
+
+        ContentSection {
             icon: "music_cast"
             shape: MaterialShape.Shape.Oval
             title: Translation.tr("Music Recognition")

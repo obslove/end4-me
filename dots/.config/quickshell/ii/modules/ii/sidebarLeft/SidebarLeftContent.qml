@@ -1,15 +1,11 @@
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.ii.mediaControls
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Qt.labs.synchronizer
-import Quickshell.Io
-import Quickshell.Services.Mpris
-
 
 Item {
     id: root
@@ -75,10 +71,11 @@ Item {
             bottomRightRadius: Appearance.rounding.normal
             color: Appearance.colors.colLayer1
 
-            SwipeView {
+            SwipeView { // Content pages
                 id: swipeView
                 anchors.fill: parent
                 spacing: 10
+
                 clip: true
                 layer.enabled: true
                 layer.effect: OpacityMask {
@@ -89,27 +86,17 @@ Item {
                     }
                 }
 
-                Component.onCompleted: {
-                    if (root.aiChatEnabled)
-                        addItem(aiChat.createObject(swipeView))
-                    if (root.translatorEnabled)
-                        addItem(translator.createObject(swipeView))
-                    if (root.mediaEnabled)
-                        addItem(media.createObject(swipeView))
-                    if (root.tabButtonList.length === 0 || (!root.aiChatEnabled && !root.translatorEnabled && root.animeCloset))
-                        addItem(placeholder.createObject(swipeView))
-                    if (root.wallpapersEnabled)
-                        addItem(wallpaperBrowser.createObject(swipeView))
-                    if (root.animeEnabled)
-                        addItem(anime.createObject(swipeView))
-                }
+                contentChildren: [
+                    ...(root.aiChatEnabled ? [aiChat.createObject()] : []),
+                    ...(root.translatorEnabled ? [translator.createObject()] : []),
+                    ...(root.mediaEnabled ? [media.createObject()] : []),
+                    ...(root.wallpapersEnabled ? [wallpaperBrowser.createObject()] : []),
+                    ...((root.tabButtonList.length === 0 || (!root.aiChatEnabled && !root.translatorEnabled && root.animeCloset)) ? [placeholder.createObject()] : []),
+                    ...(root.animeEnabled ? [anime.createObject()] : []),
+                ]
             }
         }
 
-        Component {
-            id: media
-            SidebarPlayerControl {}
-        }
         Component {
             id: aiChat
             AiChat {}
@@ -117,6 +104,10 @@ Item {
         Component {
             id: translator
             Translator {}
+        }
+        Component {
+            id: media
+            SidebarPlayerControl {}
         }
         Component {
             id: wallpaperBrowser

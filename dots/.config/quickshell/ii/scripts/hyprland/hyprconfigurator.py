@@ -28,11 +28,12 @@ def generate_config_line(key, value):
     return f'hl.config({{{nested_structure}}})\n'
 
 def edit_hyprland_config(file_path, set_args, reset_args):
-    if os.path.exists(file_path):
+    try:
         with open(file_path, 'r') as file:
             lines = file.readlines()
-    else:
-        lines = []
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+        return
     
     set_dict = {k: v for k, v in set_args} if set_args else {}
     reset_set = set(reset_args) if reset_args else set()
@@ -86,18 +87,12 @@ def edit_hyprland_config(file_path, set_args, reset_args):
                 new_lines.append(generate_config_line(key, value))
                 
     dir_name = os.path.dirname(os.path.abspath(file_path))
-    os.makedirs(dir_name, exist_ok=True)
     temp_path = None
     try:
         with tempfile.NamedTemporaryFile(mode='w', dir=dir_name, delete=False) as temp_file:
             temp_file.writelines(new_lines)
             temp_path = temp_file.name
-        
-        if os.path.exists(file_path):
-            os.chmod(temp_path, os.stat(file_path).st_mode)
-        else:
-            os.chmod(temp_path, 0o644)
-            
+        os.chmod(temp_path, os.stat(file_path).st_mode)
         os.replace(temp_path, file_path)
     except Exception as e:
         if temp_path and os.path.exists(temp_path):

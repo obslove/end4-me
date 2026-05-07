@@ -15,7 +15,7 @@ import Quickshell.Services.Mpris
 
 Item {
     id: root
-    property var player: Mpris.players.values[playerSelector.currentIndex] ?? Mpris.players.values[0]
+    property var player: MprisController.activePlayer
     property var artUrl: player?.trackArtUrl ?? ""
     property string artDownloadLocation: Directories.coverArt
     property string artFileName: Qt.md5(artUrl)
@@ -100,11 +100,24 @@ Item {
             // ── Player selector ──
             StyledComboBox {
                 id: playerSelector
-                visible: Mpris.players.values.length > 1
+                visible: MprisController.players.length > 1
                 Layout.fillWidth: true
                 Layout.bottomMargin: 8
-                model: Mpris.players.values.map(p => p.identity ?? p.desktopEntry ?? "Unknown")
-                currentIndex: 0
+                textRole: "displayName"
+                model: MprisController.players.map(player => {
+                    return {
+                        displayName: MprisController.playerName(player),
+                        value: MprisController.playerId(player),
+                        icon: player.isPlaying ? "pause_circle" : "music_note"
+                    };
+                })
+                currentIndex: {
+                    const index = model.findIndex(item => MprisController.playerMatchesId(root.player, item.value));
+                    return index >= 0 ? index : 0;
+                }
+                onActivated: index => {
+                    Config.options.media.preferredPlayer = model[index]?.value ?? "";
+                }
             }
 
             // ── Album art ──

@@ -17,7 +17,7 @@ Scope {
     property bool visible: false
     readonly property MprisPlayer activePlayer: MprisController.activePlayer
     readonly property var realPlayers: MprisController.players
-    readonly property var meaningfulPlayers: filterDuplicatePlayers(realPlayers)
+    readonly property var meaningfulPlayers: prioritizeActivePlayer(filterDuplicatePlayers(realPlayers))
     readonly property real osdWidth: Appearance.sizes.osdWidth
     readonly property real widgetWidth: Appearance.sizes.mediaControlsWidth
     readonly property real widgetHeight: Appearance.sizes.mediaControlsHeight
@@ -49,8 +49,10 @@ Scope {
                 }
             }
 
-            // Pick the one with non-empty trackArtUrl, or fallback to the first
-            let chosenIdx = group.find(idx => players[idx].trackArtUrl && players[idx].trackArtUrl.length > 0);
+            // Keep the configured primary player in the popup when duplicates collapse.
+            let chosenIdx = group.find(idx => MprisController.playerMatchesId(players[idx], MprisController.playerId(root.activePlayer)));
+            if (chosenIdx === undefined)
+                chosenIdx = group.find(idx => players[idx].trackArtUrl && players[idx].trackArtUrl.length > 0);
             if (chosenIdx === undefined)
                 chosenIdx = group[0];
 
@@ -58,6 +60,22 @@ Scope {
             group.forEach(idx => used.add(idx));
         }
         return filtered;
+    }
+
+    function prioritizeActivePlayer(players) {
+        if (!root.activePlayer) {
+            return players;
+        }
+
+        const index = players.findIndex(player => MprisController.playerMatchesId(player, MprisController.playerId(root.activePlayer)));
+        if (index <= 0) {
+            return players;
+        }
+
+        let ordered = players.slice();
+        const primary = ordered.splice(index, 1)[0];
+        ordered.unshift(primary);
+        return ordered;
     }
 
     Process {

@@ -18,7 +18,8 @@ Singleton {
 	id: root;
 	property list<MprisPlayer> players: Mpris.players.values.filter(player => isRealPlayer(player));
 	property MprisPlayer trackedPlayer: null;
-	property MprisPlayer activePlayer: trackedPlayer ?? Mpris.players.values[0] ?? null;
+	readonly property MprisPlayer preferredPlayer: findPreferredPlayer();
+	property MprisPlayer activePlayer: preferredPlayer ?? (isSelectablePlayer(trackedPlayer) ? trackedPlayer : null) ?? players[0] ?? null;
 	signal trackChanged(reverse: bool);
 
 	property bool __reverse: false;
@@ -29,6 +30,9 @@ Singleton {
 		p => p.dbusName?.startsWith('org.mpris.MediaPlayer2.plasma-browser-integration')
 	)
 	function isRealPlayer(player) {
+        if (!player) {
+            return false;
+        }
         if (!Config.options.media.filterDuplicatePlayers) {
             return true;
         }
@@ -41,6 +45,70 @@ Singleton {
             !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
     }
 
+	function normalizePlayerId(id) {
+		return String(id ?? "")
+			.trim()
+			.toLowerCase()
+			.replace(/^org\.mpris\.mediaplayer2\./, "")
+			.replace(/\.instance\d+$/, "");
+	}
+
+	function playerId(player) {
+		if (!player) {
+			return "";
+		}
+
+		return player.dbusName || player.desktopEntry || player.identity || "";
+	}
+
+	function playerName(player) {
+		if (!player) {
+			return Translation.tr("Unknown player");
+		}
+
+		return player.identity || player.desktopEntry || normalizePlayerId(player.dbusName) || Translation.tr("Unknown player");
+	}
+
+	function playerAliases(player) {
+		if (!player) {
+			return [];
+		}
+
+		const aliases = [];
+		const add = value => {
+			const normalized = normalizePlayerId(value);
+			if (normalized.length > 0 && !aliases.includes(normalized)) {
+				aliases.push(normalized);
+			}
+		};
+
+		add(player.dbusName);
+		add(player.desktopEntry);
+		add(player.identity);
+		add(player.uniqueId);
+		add(playerId(player));
+
+		return aliases;
+	}
+
+	function playerMatchesId(player, id) {
+		const normalized = normalizePlayerId(id);
+		return normalized.length > 0 && playerAliases(player).includes(normalized);
+	}
+
+	function isSelectablePlayer(player) {
+		return player && players.some(candidate => playerMatchesId(candidate, playerId(player)));
+	}
+
+	function findPreferredPlayer() {
+		const preferred = Config.options.media.preferredPlayer ?? "";
+		if (preferred.length === 0) {
+			return null;
+		}
+
+		return players.find(player => playerMatchesId(player, preferred)) ?? null;
+	}
+
 	// Original stuff from fox below
 	Instantiator {
 		model: Mpris.players;
@@ -50,14 +118,14 @@ Singleton {
 			target: modelData;
 
 			Component.onCompleted: {
-				if (root.trackedPlayer == null || modelData.isPlaying) {
+				if (root.isRealPlayer(modelData) && (root.trackedPlayer == null || modelData.isPlaying)) {
 					root.trackedPlayer = modelData;
 				}
 			}
 
 			Component.onDestruction: {
 				if (root.trackedPlayer == null || !root.trackedPlayer.isPlaying) {
-					for (const player of Mpris.players.values) {
+					for (const player of root.players) {
 						if (player.playbackState.isPlaying) {
 							root.trackedPlayer = player;
 							break;
@@ -65,13 +133,13 @@ Singleton {
 					}
 
 					if (trackedPlayer == null && Mpris.players.values.length != 0) {
-						trackedPlayer = Mpris.players.values[0];
+						trackedPlayer = root.players[0] ?? null;
 					}
 				}
 			}
 
 			function onPlaybackStateChanged() {
-				if (root.trackedPlayer !== modelData) root.trackedPlayer = modelData;
+				if (root.isRealPlayer(modelData) && root.trackedPlayer !== modelData) root.trackedPlayer = modelData;
 			}
 		}
 	}
@@ -154,11 +222,11 @@ Singleton {
 	}
 
 	function setActivePlayer(player: MprisPlayer) {
-		const targetPlayer = player ?? Mpris.players[0];
+		const targetPlayer = player ?? root.players[0];
 		console.log(`[Mpris] Active player ${targetPlayer} << ${activePlayer}`)
 
 		if (targetPlayer && this.activePlayer) {
-			this.__reverse = Mpris.players.indexOf(targetPlayer) < Mpris.players.indexOf(this.activePlayer);
+			this.__reverse = root.players.indexOf(targetPlayer) < root.players.indexOf(this.activePlayer);
 		} else {
 			// always animate forward if going to null
 			this.__reverse = false;

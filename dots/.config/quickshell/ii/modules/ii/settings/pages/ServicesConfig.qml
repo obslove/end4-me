@@ -59,6 +59,69 @@ ContentPage {
         }
 
         ContentSection {
+            icon: "album"
+            shape: MaterialShape.Shape.Puffy
+            title: Translation.tr("Media")
+
+            ContentSubsection {
+                title: Translation.tr("Primary player")
+                tooltip: Translation.tr("Choose which active MPRIS player feeds media widgets.")
+
+                StyledComboBox {
+                    id: primaryPlayerSelector
+                    buttonIcon: "music_note"
+                    textRole: "displayName"
+                    enabled: MprisController.players.length > 0
+                    model: [
+                        {
+                            displayName: Translation.tr("Automatic"),
+                            value: "",
+                            icon: "auto_awesome"
+                        },
+                        ...MprisController.players.map(player => {
+                            return {
+                                displayName: MprisController.playerName(player),
+                                value: MprisController.playerId(player),
+                                icon: player.isPlaying ? "pause_circle" : "music_note"
+                            };
+                        })
+                    ]
+                    currentIndex: {
+                        const preferred = Config.options.media.preferredPlayer ?? "";
+                        const index = model.findIndex(item => {
+                            if (item.value === "") {
+                                return preferred === "";
+                            }
+
+                            const player = MprisController.players.find(candidate => MprisController.playerMatchesId(candidate, item.value));
+                            return MprisController.playerMatchesId(player, preferred);
+                        });
+                        return index >= 0 ? index : 0;
+                    }
+                    onActivated: index => {
+                        Config.options.media.preferredPlayer = model[index]?.value ?? "";
+                    }
+                }
+
+                NoticeBox {
+                    visible: MprisController.players.length === 0
+                    Layout.fillWidth: true
+                    materialIcon: "music_off"
+                    text: Translation.tr("No active player")
+                }
+            }
+
+            ConfigSwitch {
+                buttonIcon: "filter_list"
+                text: Translation.tr("Filter duplicate players")
+                checked: Config.options.media.filterDuplicatePlayers
+                onCheckedChanged: {
+                    Config.options.media.filterDuplicatePlayers = checked;
+                }
+            }
+        }
+
+        ContentSection {
             icon: "lyrics"
             shape: MaterialShape.Shape.Cookie6Sided
             title: Translation.tr("Lyrics")

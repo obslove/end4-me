@@ -16,6 +16,7 @@ import qs.modules.ii.sidebarRight.bluetoothDevices
 import qs.modules.ii.sidebarRight.nightLight
 import qs.modules.ii.sidebarRight.volumeMixer
 import qs.modules.ii.sidebarRight.wifiNetworks
+import qs.modules.ii.sidebarRight.iconPicker
 
 Item {
     id: root
@@ -28,6 +29,7 @@ Item {
     property bool showNightLightDialog: false
     property bool showWifiDialog: false
     property bool editMode: false
+    property bool showIconPickerDialog: false
 
     Connections {
         target: GlobalStates
@@ -56,7 +58,7 @@ Item {
         color: Appearance.colors.colLayer0
         border.width: 1
         border.color: Appearance.colors.colLayer0Border
-        radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
+        radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 5
 
         ColumnLayout {
             anchors.fill: parent
@@ -67,8 +69,20 @@ Item {
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 // Layout.margins: 10
-                Layout.topMargin: 5
+                Layout.topMargin: 0
                 Layout.bottomMargin: 0
+            }
+
+            LoaderedQuickPanelImplementation {
+                styleName: "classic"
+                sourceComponent: ClassicQuickPanel {}
+            }
+
+            LoaderedQuickPanelImplementation {
+                styleName: "android"
+                sourceComponent: AndroidQuickPanel {
+                    editMode: root.editMode
+                }
             }
 
             Loader {
@@ -84,18 +98,6 @@ Item {
                 sourceComponent: QuickSliders {}
             }
 
-            LoaderedQuickPanelImplementation {
-                styleName: "classic"
-                sourceComponent: ClassicQuickPanel {}
-            }
-
-            LoaderedQuickPanelImplementation {
-                styleName: "android"
-                sourceComponent: AndroidQuickPanel {
-                    editMode: root.editMode
-                }
-            }
-
             CenterWidgetGroup {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillHeight: true
@@ -103,10 +105,24 @@ Item {
             }
 
             BottomWidgetGroup {
+                id: bottomWidgetGroup
                 Layout.alignment: Qt.AlignHCenter
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 Layout.preferredHeight: implicitHeight
+
+                QuickToggleButton {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 4
+                    toggled: false
+                    visible: bottomWidgetGroup.collapsed 
+                    buttonIcon: "mode_off_on"
+                    onClicked: GlobalStates.sessionOpen = true
+                    StyledToolTip {
+                        text: Translation.tr("Session")
+                    }
+                }
             }
         }
     }
@@ -151,6 +167,11 @@ Item {
             Network.enableWifi();
             Network.rescanWifi();
         }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showIconPickerDialog"
+        dialog: IconPickerDialog {}
     }
 
     component ToggleDialog: Loader {
@@ -218,7 +239,7 @@ Item {
                 left: parent.left
             }
             color: Appearance.colors.colLayer1
-            radius: height / 2
+            radius: Appearance.rounding.normal
             implicitWidth: uptimeRow.implicitWidth + 24
             implicitHeight: uptimeRow.implicitHeight + 8
             
@@ -226,20 +247,30 @@ Item {
                 id: uptimeRow
                 anchors.centerIn: parent
                 spacing: 8
-                CustomIcon {
-                    id: distroIcon
+                Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 25
                     height: 25
-                    source: SystemInfo.distroIcon
-                    colorize: true
-                    color: Appearance.colors.colOnLayer0
+
+                    CustomIcon {
+                        id: distroIcon
+                        anchors.fill: parent
+                        source: Config.options.custom.distroIcon || SystemInfo.distroIcon
+                        colorize: Config.options.custom.colorizeIcon
+                        color: Appearance.colors.colOnLayer0
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.showIconPickerDialog = true
+                    }
                 }
                 StyledText {
                     anchors.verticalCenter: parent.verticalCenter
                     font.pixelSize: Appearance.font.pixelSize.normal
                     color: Appearance.colors.colOnLayer0
-                    text: Translation.tr("Up %1").arg(DateTime.uptime)
+                    text: Translation.tr("Up • %1").arg(DateTime.uptime)
                     textFormat: Text.MarkdownText
                 }
             }
@@ -276,24 +307,14 @@ Item {
                 }
             }
             QuickToggleButton {
-                toggled: false
+                toggled: GlobalStates.settingsOpen
                 buttonIcon: "settings"
                 onClicked: {
                     GlobalStates.sidebarRightOpen = false;
-                    Quickshell.execDetached(["qs", "-p", root.settingsQmlPath]);
+                    GlobalStates.settingsOpen = !GlobalStates.settingsOpen
                 }
                 StyledToolTip {
                     text: Translation.tr("Settings")
-                }
-            }
-            QuickToggleButton {
-                toggled: false
-                buttonIcon: "power_settings_new"
-                onClicked: {
-                    GlobalStates.sessionOpen = true;
-                }
-                StyledToolTip {
-                    text: Translation.tr("Session")
                 }
             }
         }

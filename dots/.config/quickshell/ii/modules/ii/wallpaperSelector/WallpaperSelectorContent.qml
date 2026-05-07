@@ -22,13 +22,6 @@ MouseArea {
         Wallpapers.generateThumbnail(thumbnailSizeName);
     }
 
-    Connections {
-        target: Wallpapers
-        function onDirectoryChanged() {
-            root.updateThumbnails();
-        }
-    }
-
     function handleFilePasting(event) {
         const currentClipboardEntry = Cliphist.entries[0];
         if (/^\d+\tfile:\/\/\S+/.test(currentClipboardEntry)) {
@@ -191,7 +184,7 @@ MouseArea {
                             },
                             {
                                 icon: "",
-                                name: "---",
+                                name: "───────",
                                 path: "INTENTIONALLY_INVALID_DIR"
                             },
                             {
@@ -199,13 +192,18 @@ MouseArea {
                                 name: "Wallpapers",
                                 path: `${Directories.pictures}/Wallpapers`
                             },
-                            ...(Config.options.policies.weeb === 1 ? [
-                                    {
-                                        icon: "favorite",
-                                        name: "Homework",
-                                        path: `${Directories.pictures}/homework`
-                                    }
-                                ] : []),]
+                            {
+                                icon: "imagesmode",
+                                name: "Homework",
+                                path: `${Directories.pictures}/homework`
+                            },
+                            {
+                                icon: "casino",
+                                name: "Random",
+                                path: `${Directories.pictures}/Random`
+                            },
+                        ]
+
                         delegate: RippleButton {
                             id: quickDirButton
                             required property var modelData
@@ -299,10 +297,6 @@ MouseArea {
                         bottomMargin: extraOptions.implicitHeight
                         ScrollBar.vertical: StyledScrollBar {}
 
-                        Component.onCompleted: {
-                            root.updateThumbnails();
-                        }
-
                         function moveSelection(delta) {
                             currentIndex = Math.max(0, Math.min(grid.model.count - 1, currentIndex + delta));
                             positionViewAtIndex(currentIndex, GridView.Contain);
@@ -387,6 +381,15 @@ MouseArea {
                                 text: root.useDarkMode ? "dark_mode" : "light_mode"
                                 StyledToolTip {
                                     text: Translation.tr("Click to toggle light/dark mode\n(applied when wallpaper is chosen)")
+                                }
+                            }
+
+                            IconToolbarButton {
+                                implicitWidth: height
+                                onClicked: root.updateThumbnails()  
+                                text: "reset_image"
+                                StyledToolTip {
+                                    text: Translation.tr("Update Thumbnails")
                                 }
                             }
 

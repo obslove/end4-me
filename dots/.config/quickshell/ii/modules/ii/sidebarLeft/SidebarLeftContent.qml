@@ -1,11 +1,15 @@
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.ii.mediaControls
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Qt.labs.synchronizer
+import Quickshell.Io
+import Quickshell.Services.Mpris
+
 
 Item {
     id: root
@@ -16,9 +20,13 @@ Item {
     property bool translatorEnabled: Config.options.sidebar.translator.enable
     property bool animeEnabled: Config.options.policies.weeb !== 0
     property bool animeCloset: Config.options.policies.weeb === 2
+    property bool wallpapersEnabled: Config.options.sidebar.wallpapers.enable
+    property bool mediaEnabled: Config.options.sidebar.media.enable
     property var tabButtonList: [
         ...(root.aiChatEnabled ? [{"icon": "neurology", "name": Translation.tr("Intelligence")}] : []),
         ...(root.translatorEnabled ? [{"icon": "translate", "name": Translation.tr("Translator")}] : []),
+        ...(root.mediaEnabled ? [{"icon": "music_note", "name": Translation.tr("Media")}] : []),
+        ...(root.wallpapersEnabled ? [{"icon": "panorama", "name": Translation.tr("Wallpapers")}] : []),
         ...((root.animeEnabled && !root.animeCloset) ? [{"icon": "bookmark_heart", "name": Translation.tr("Anime")}] : [])
     ]
     property int tabCount: swipeView.count
@@ -45,18 +53,15 @@ Item {
             fill: parent
             margins: sidebarPadding
         }
-        spacing: sidebarPadding
+        spacing: verticalTabBar.expanded ? -2 : 0
 
-        Toolbar {
+        VerticalTabBar {
+            id: verticalTabBar
             visible: tabButtonList.length > 0
-            Layout.alignment: Qt.AlignHCenter
-            enableShadow: false
-            ToolbarTabBar {
-                id: tabBar
-                Layout.alignment: Qt.AlignHCenter
-                tabButtonList: root.tabButtonList
-                currentIndex: swipeView.currentIndex
-            }
+            Layout.fillWidth: true 
+            tabButtonList: root.tabButtonList
+            currentIndex: swipeView.currentIndex
+            onCurrentIndexChanged: swipeView.currentIndex = currentIndex
         }
 
         Rectangle {
@@ -64,7 +69,10 @@ Item {
             Layout.fillHeight: true
             implicitWidth: swipeView.implicitWidth
             implicitHeight: swipeView.implicitHeight
-            radius: Appearance.rounding.normal
+            topLeftRadius: 0
+            bottomLeftRadius: Appearance.rounding.normal
+            topRightRadius: 0
+            bottomRightRadius: Appearance.rounding.normal
             color: Appearance.colors.colLayer1
 
             SwipeView { // Content pages
@@ -86,10 +94,17 @@ Item {
                 contentChildren: [
                     ...(root.aiChatEnabled ? [aiChat.createObject()] : []),
                     ...(root.translatorEnabled ? [translator.createObject()] : []),
+                    ...(root.mediaEnabled ? [media.createObject()] : []),
                     ...((root.tabButtonList.length === 0 || (!root.aiChatEnabled && !root.translatorEnabled && root.animeCloset)) ? [placeholder.createObject()] : []),
+                    ...(root.wallpapersEnabled ? [wallpaperBrowser.createObject()] : []),
                     ...(root.animeEnabled ? [anime.createObject()] : []),
                 ]
             }
+        }
+
+        Component {
+            id: media
+            SidebarPlayerControl {}
         }
 
         Component {
@@ -99,6 +114,11 @@ Item {
         Component {
             id: translator
             Translator {}
+        }
+
+        Component {  
+            id: wallpaperBrowser  
+            WallpaperBrowserUI {}  
         }
         Component {
             id: anime

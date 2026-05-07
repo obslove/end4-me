@@ -93,11 +93,24 @@ Scope {
 
             Loader {
                 id: overviewLoader
-                anchors.horizontalCenter: parent.horizontalCenter
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
-                sourceComponent: OverviewWidget {
-                    screen: panelWindow.screen
-                    visible: (panelWindow.searchingText == "")
+                sourceComponent: (Config?.options.overview.style ?? "default") === "niri" ? niriComponent : defaultComponent
+
+                Component {
+                    id: defaultComponent
+                    OverviewWidget {
+                        screen: panelWindow.screen
+                        visible: (panelWindow.searchingText == "")
+                    }
+                }
+
+                Component {
+                    id: niriComponent
+                    NiriOverview {
+                        screen: panelWindow.screen
+                        panelWindow: panelWindow
+                        visible: (panelWindow.searchingText == "")
+                    }
                 }
             }
         }
@@ -120,6 +133,16 @@ Scope {
         }
         overviewScope.dontAutoCancelSearch = true;
         panelWindow.setSearchingText(Config.options.search.prefix.emojis);
+        GlobalStates.overviewOpen = true;
+    }
+
+    function toggleSymbols() {
+        if (GlobalStates.overviewOpen && overviewScope.dontAutoCancelSearch) {
+            GlobalStates.overviewOpen = false;
+            return;
+        }
+        overviewScope.dontAutoCancelSearch = true;
+        panelWindow.setSearchingText(Config.options.search.prefix.symbols);
         GlobalStates.overviewOpen = true;
     }
 
@@ -209,6 +232,15 @@ Scope {
 
         onPressed: {
             overviewScope.toggleEmojis();
+        }
+    }
+
+    GlobalShortcut {
+        name: "overviewSymbolsToggle"
+        description: "Toggle material symbols search on overview widget"
+
+        onPressed: {
+            overviewScope.toggleSymbols();
         }
     }
 }

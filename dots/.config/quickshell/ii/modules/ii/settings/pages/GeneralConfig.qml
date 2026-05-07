@@ -94,7 +94,16 @@ ContentPage {
             shape: MaterialShape.Shape.SemiCircle
             title: Translation.tr("Battery")
 
+            NoticeBox {
+                visible: !Battery.available
+                Layout.fillWidth: true
+                materialIcon: "battery_unknown"
+                text: Translation.tr("Battery not detected")
+            }
+
             ConfigRow {
+                visible: Battery.available
+                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: true
                 ConfigSpinBox {
                     icon: "warning"
@@ -120,6 +129,8 @@ ContentPage {
                 }
             }
             ConfigRow {
+                visible: Battery.available
+                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: false
                 Layout.fillWidth: false
                 ConfigSwitch {
@@ -143,6 +154,8 @@ ContentPage {
                 }
             }
             ConfigRow {
+                visible: Battery.available
+                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: true
                 ConfigSpinBox {
                     icon: "charger"
@@ -493,6 +506,7 @@ ContentPage {
             ConfigRow {
                 uniform: true
                 ConfigSwitch {
+                    visible: Battery.available
                     buttonIcon: "battery_android_full"
                     text: Translation.tr("Battery")
                     checked: Config.options.sounds.battery

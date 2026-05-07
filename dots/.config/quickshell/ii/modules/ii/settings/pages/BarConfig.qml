@@ -51,13 +51,17 @@ ContentPage {
         { id: "updatesCount",      name: Translation.tr("Updates"),              icon: "deployed_code_update" }
     ]
 
+    function isWidgetAvailable(widget) {
+        return widget.id !== "batteryIndicator" || Battery.available
+    }
+
     function availableFor() {
         let used = [
             ...Config.options.bar.layouts.leftLayout,
             ...Config.options.bar.layouts.middleLayout,
             ...Config.options.bar.layouts.rightLayout
         ]
-        return allWidgets.filter(w => !used.includes(w.id))
+        return allWidgets.filter(w => isWidgetAvailable(w) && !used.includes(w.id))
     }
 
     function getWidgetName(id) {

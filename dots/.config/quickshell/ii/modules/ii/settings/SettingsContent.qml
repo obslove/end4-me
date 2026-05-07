@@ -28,12 +28,16 @@ Item {
                 root.currentPage = idx;
                 
                 if (searchTerm !== "") {
-                    Qt.callLater(() => {
-                        let loader = pagesRepeater.itemAt(idx);
-                        if (loader && loader.item && typeof loader.item.goTo === "function") {
-                            loader.item.goTo(searchTerm);
-                        }
-                    });
+                    let loader = pagesRepeater.itemAt(idx);
+                    if (loader && loader.item && typeof loader.item.goTo === "function") {
+                        loader.item.goTo(searchTerm);
+                    } else if (loader) {
+                        loader.onLoaded.connect(function() {
+                            if (loader.item && typeof loader.item.goTo === "function") {
+                                loader.item.goTo(searchTerm);
+                            }
+                        });
+                    }
                 }
             }
             GlobalStates.settingsPage = "";
@@ -53,7 +57,7 @@ Item {
         { name: Translation.tr("Quick"),      icon: "instant_mix",    component: Qt.resolvedUrl("pages/QuickConfig.qml") },
         { name: Translation.tr("General"),    icon: "browse",         component: Qt.resolvedUrl("pages/GeneralConfig.qml") },
         { name: Translation.tr("Bar"),        icon: "toast",          iconRotation: 180, component: Qt.resolvedUrl("pages/BarConfig.qml") },
-        { name: Translation.tr("Background"), icon: "texture",     component: Qt.resolvedUrl("pages/BackgroundConfig.qml") },
+        { name: Translation.tr("Desktop"),    icon: "texture",        component: Qt.resolvedUrl("pages/BackgroundConfig.qml") },
         { name: Translation.tr("Interface"),  icon: "bottom_app_bar", component: Qt.resolvedUrl("pages/InterfaceConfig.qml") },
         { name: Translation.tr("Services"),   icon: "settings",       component: Qt.resolvedUrl("pages/ServicesConfig.qml") },
         { name: Translation.tr("Hyprland"),   icon: "select_window_2",   component: Qt.resolvedUrl("pages/HyprlandConfig.qml") },
@@ -63,6 +67,12 @@ Item {
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme()
         Config.readWriteDelay = 0
+        Qt.callLater(() => {
+            for (let i = 0; i < root.pages.length; i++) {
+                let loader = pagesRepeater.itemAt(i)
+                if (loader) loader.active = true
+            }
+        })
     }
 
     ColumnLayout {
@@ -158,7 +168,6 @@ Item {
                             }
                         }
                     }
-
                 }
             }
 
@@ -166,7 +175,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 color: Appearance.m3colors.m3surfaceContainerLow
-                radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut 
+                radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut
 
                 Item {
                     anchors.fill: parent
@@ -174,29 +183,34 @@ Item {
                         id: pagesRepeater
                         model: root.pages
                         Loader {
-                            id: pageLoader 
+                            id: pageLoader
                             required property var modelData
                             required property var index
                             source: modelData.component
-                            active: Config.ready
-                            anchors.fill: parent
 
-                            onLoaded: {
-                                if (root.currentPage === index) {
-                                    GlobalStates.currentPageInstance = item;
-                                }
-                            }
-                            onIsActiveChanged: {
-                                if (isActive && item) {
-                                    GlobalStates.currentPageInstance = item;
-                                }
-                            }
+                            active: Config.ready && (root.currentPage === index || item !== null)
+
+                            anchors.fill: parent
 
                             property bool isActive: root.currentPage === index
                             opacity: isActive ? 1 : 0
                             enabled: isActive
                             visible: isActive
                             anchors.topMargin: isActive ? 0 : 12
+
+                            onLoaded: {
+                                if (root.currentPage === index) {
+                                    GlobalStates.currentPageInstance = item;
+                                }
+                            }
+
+                            onIsActiveChanged: {
+                                if (isActive && item) {
+                                    GlobalStates.currentPageInstance = item;
+                                } else if (!isActive && GlobalStates.currentPageInstance === item) {
+                                    GlobalStates.currentPageInstance = null;
+                                }
+                            }
 
                             Behavior on opacity {
                                 NumberAnimation { duration: 200; easing.type: Easing.OutCubic }

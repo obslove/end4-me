@@ -38,7 +38,7 @@ ContentPage {
         Layout.fillWidth: true   
         Layout.fillHeight: true
         spacing: 20
-
+    
         ContentSection { // I see that for many the overview is important, I put it first why not
             icon: "overview_key"
             shape: MaterialShape.Shape.Gem
@@ -55,27 +55,9 @@ ContentPage {
             ConfigSwitch {
                 buttonIcon: "center_focus_strong"
                 text: Translation.tr("Center icons")
-                visible: Config.options.overview.windowIcons
-                Layout.fillWidth: visible
                 checked: Config.options.overview.centerIcons
                 onCheckedChanged: {
                     Config.options.overview.centerIcons = checked;
-                }
-            }
-            ConfigSwitch {
-                buttonIcon: "preview"
-                text: Translation.tr("Window previews")
-                checked: Config.options.overview.windowPreviews
-                onCheckedChanged: {
-                    Config.options.overview.windowPreviews = checked;
-                }
-            }
-            ConfigSwitch {
-                buttonIcon: "image"
-                text: Translation.tr("Show icons")
-                checked: Config.options.overview.windowIcons
-                onCheckedChanged: {
-                    Config.options.overview.windowIcons = checked;
                 }
             }
             ContentSubsection {
@@ -202,6 +184,35 @@ ContentPage {
                 }
             }
 
+            ConfigSwitch {
+                buttonIcon: "music_note"
+                text: Translation.tr("Media Player")
+                checked: Config.options.dock.showMedia
+                onCheckedChanged: {
+                    Config.options.dock.showMedia = checked;
+                }
+            }
+
+            ConfigRow {
+                uniform: true
+                ConfigSwitch {
+                    buttonIcon: "keep"
+                    text: Translation.tr("Show Pin Button")
+                    checked: Config.options.dock.showPinButton
+                    onCheckedChanged: {
+                        Config.options.dock.showPinButton = checked;
+                    }
+                }
+                ConfigSwitch {
+                    buttonIcon: "apps"
+                    text: Translation.tr("Show Apps Button")
+                    checked: Config.options.dock.showAppsButton
+                    onCheckedChanged: {
+                        Config.options.dock.showAppsButton = checked;
+                    }
+                }
+            }
+
             ConfigRow {
                 uniform: true
                 ConfigSwitch {
@@ -222,35 +233,11 @@ ContentPage {
                 }
             }
             ConfigSwitch {
-                buttonIcon: "music_note"
-                text: Translation.tr("Media Player")
-                checked: Config.options.dock.showMedia
-                onCheckedChanged: {
-                    Config.options.dock.showMedia = checked;
-                }
-            }
-            ConfigSwitch {
                 buttonIcon: "colors"
                 text: Translation.tr("Tint app icons")
                 checked: Config.options.dock.monochromeIcons
                 onCheckedChanged: {
                     Config.options.dock.monochromeIcons = checked;
-                }
-            }
-            ConfigSwitch {
-                buttonIcon: "preview"
-                text: Translation.tr("Window previews")
-                checked: Config.options.dock.windowPreviews
-                onCheckedChanged: {
-                    Config.options.dock.windowPreviews = checked;
-                }
-            }
-            ConfigSwitch {
-                buttonIcon: "image"
-                text: Translation.tr("Show icons")
-                checked: Config.options.dock.windowPreviewIcons
-                onCheckedChanged: {
-                    Config.options.dock.windowPreviewIcons = checked;
                 }
             }
         }
@@ -595,24 +582,19 @@ ContentPage {
                     Config.options.wallpaperSelector.useSystemFileDialog = checked;
                 }
             }
-        }
-
-        ContentSection {
-            icon: "border_outer"
-            title: Translation.tr("Shell")
-            shape: MaterialShape.Shape.Cookie4Sided
-
+            
             ConfigSpinBox {
-                icon: "border_outer"
-                text: Translation.tr("Border width")
-                value: Config.options.appearance.border.width
+                icon: "timer"
+                text: Translation.tr("Wallpaper change interval (min)")
+                value: Config.options.wallpaperSelector.changeInterval / 60000
                 from: 0
-                to: 12
-                stepSize: 1
+                to: 1440
+                stepSize: 5
                 onValueChanged: {
-                    Config.options.appearance.border.width = value;
+                    Config.options.wallpaperSelector.changeInterval = value * 60000;
                 }
             }
+
         }
 
         ContentSection {

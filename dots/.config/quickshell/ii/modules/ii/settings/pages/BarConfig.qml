@@ -51,17 +51,13 @@ ContentPage {
         { id: "updatesCount",      name: Translation.tr("Updates"),              icon: "deployed_code_update" }
     ]
 
-    function isWidgetAvailable(widget) {
-        return widget.id !== "batteryIndicator" || Battery.available
-    }
-
     function availableFor() {
         let used = [
             ...Config.options.bar.layouts.leftLayout,
             ...Config.options.bar.layouts.middleLayout,
             ...Config.options.bar.layouts.rightLayout
         ]
-        return allWidgets.filter(w => isWidgetAvailable(w) && !used.includes(w.id))
+        return allWidgets.filter(w => !used.includes(w.id))
     }
 
     function getWidgetName(id) {
@@ -160,10 +156,10 @@ ContentPage {
                             Config.options.bar.vertical = (newValue & 2) !== 0;
                         }
                         options: [
-                            { displayName: Translation.tr("Top"),    icon: "arrow_upward",  value: 0 },
-                            { displayName: Translation.tr("Left"),   icon: "arrow_back",    value: 2 },
+                            { displayName: Translation.tr("Top"),    icon: "arrow_upward",   value: 0 },
+                            { displayName: Translation.tr("Left"),   icon: "arrow_back",     value: 2 },
                             { displayName: Translation.tr("Bottom"), icon: "arrow_downward", value: 1 },
-                            { displayName: Translation.tr("Right"),  icon: "arrow_forward", value: 3 }
+                            { displayName: Translation.tr("Right"),  icon: "arrow_forward",  value: 3 }
                         ]
                     }
                 }
@@ -181,14 +177,15 @@ ContentPage {
             }
             ConfigRow {
                 ContentSubsection {
-                    title: Translation.tr("Corner style"); Layout.fillWidth: true
+                    title: Translation.tr("Bar style"); Layout.fillWidth: true
                     ConfigSelectionArray {
                         currentValue: Config.options.bar.cornerStyle
                         onSelected: newValue => { Config.options.bar.cornerStyle = newValue; }
                         options: [
-                            { displayName: Translation.tr("Hug"),     icon: "line_curve",  value: 0 },
-                            { displayName: Translation.tr("Float"),   icon: "view_day", value: 1 },
-                            { displayName: Translation.tr("Islands"), icon: "crop_3_2",    value: 2 }
+                            { displayName: Translation.tr("Hug"),     icon: "line_curve", value: 0 },
+                            { displayName: Translation.tr("Float"),   icon: "view_day",   value: 1 },
+                            { displayName: Translation.tr("Islands"), icon: "crop_3_2",   value: 2 },
+                            { displayName: Translation.tr("M3"), icon: "interests",   value: 3 }
                         ]
                     }
                 }
@@ -198,38 +195,10 @@ ContentPage {
                         currentValue: Config.options.bar.borderless
                         onSelected: newValue => { Config.options.bar.borderless = newValue; }
                         options: [
-                            { displayName: Translation.tr("Pills"),          icon: "pill", value: false },
-                            { displayName: Translation.tr("Separated"), icon: "split_scene",   value: true }
+                            { displayName: Translation.tr(""),          icon: "block",          value: "transparent" },
+                            { displayName: Translation.tr("Pills"),     icon: "pill",           value: "pills" },
+                            { displayName: Translation.tr("Separated"), icon: "view_column_2",  value: "separated" }
                         ]
-                    }
-                }
-            }
-
-            ContentSubsection {
-                title: Translation.tr("Size")
-                ConfigRow {
-                    uniform: true
-                    ConfigSpinBox {
-                        icon: "height"
-                        text: Translation.tr("Height")
-                        value: Config.options.bar.sizes.height
-                        from: 30
-                        to: 60
-                        stepSize: 1
-                        onValueChanged: {
-                            Config.options.bar.sizes.height = value;
-                        }
-                    }
-                    ConfigSpinBox {
-                        icon: "width"
-                        text: Translation.tr("Vertical width")
-                        value: Config.options.bar.sizes.width
-                        from: 30
-                        to: 60
-                        stepSize: 1
-                        onValueChanged: {
-                            Config.options.bar.sizes.width = value;
-                        }
                     }
                 }
             }
@@ -314,7 +283,7 @@ ContentPage {
                     onCheckedChanged: { Config.options.bar.utilButtons.showScreenRecord = checked; }
                 }
                 ConfigSwitch {
-                    buttonIcon: "imagesmode"; text: Translation.tr("Wallpaper toggle")
+                    buttonIcon: "imagesmode"; text: Translation.tr("Wallpapers Toggle")
                     checked: Config.options.bar.utilButtons.showWallpaperToggle
                     onCheckedChanged: { Config.options.bar.utilButtons.showWallpaperToggle = checked; }
                 }
@@ -340,20 +309,20 @@ ContentPage {
                 from: 1; to: 30
                 onValueChanged: { Config.options.bar.workspaces.shown = value; }
             }
+        }
 
-            ContentSubsection {
-                title: Translation.tr("Number style")
-                ConfigSelectionArray {
-                    currentValue: JSON.stringify(Config.options.bar.workspaces.numberMap)
-                    onSelected: newValue => {
-                        Config.options.bar.workspaces.numberMap = JSON.parse(newValue)
-                    }
-                    options: [
-                        { displayName: Translation.tr("Normal"),    icon: "timer_10",        value: '[]' },
-                        { displayName: Translation.tr("Han chars"), icon: "glyphs",      value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]' },
-                        { displayName: Translation.tr("Roman"),     icon: "account_balance", value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]' }
-                    ]
+        ContentSubsection {
+            title: Translation.tr("Number style")
+            ConfigSelectionArray {
+                currentValue: JSON.stringify(Config.options.bar.workspaces.numberMap)
+                onSelected: newValue => {
+                    Config.options.bar.workspaces.numberMap = JSON.parse(newValue)
                 }
+                options: [
+                    { displayName: Translation.tr("Normal"),    icon: "timer_10",        value: '[]' },
+                    { displayName: Translation.tr("Han chars"), icon: "glyphs",          value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]' },
+                    { displayName: Translation.tr("Roman"),     icon: "account_balance", value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]' }
+                ]
             }
         }
 
@@ -369,7 +338,7 @@ ContentPage {
                     onCheckedChanged: { Config.options.bar.resources.alwaysShowCpu = checked; }
                 }
                 ConfigSwitch {
-                    buttonIcon: "thermostat"; text: Translation.tr("CPU temperature")
+                    buttonIcon: "thermostat"; text: Translation.tr("Cpu Temperature")
                     checked: Config.options.bar.resources.alwaysShowCpuTemp
                     onCheckedChanged: { Config.options.bar.resources.alwaysShowCpuTemp = checked; }
                 }
@@ -401,8 +370,8 @@ ContentPage {
                     currentValue: Config.options.bar.resources.style
                     onSelected: newValue => { Config.options.bar.resources.style = newValue; }
                     options: [
-                        { displayName: Translation.tr("Filled"),          icon: "incomplete_circle", value: "filled" },
-                        { displayName: Translation.tr("Outline"), icon: "circles",   value: "outline" }
+                        { displayName: Translation.tr("Filled"),    icon: "incomplete_circle",  value: "filled" },
+                        { displayName: Translation.tr("Outline"),   icon: "circles",            value: "outline" }
                     ]
                 }
             }

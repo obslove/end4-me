@@ -78,7 +78,7 @@ Scope {
             width: Math.min(parent.width - 80, 1000)
             height: Math.min(parent.height - 80, 660)
             color: Appearance.colors.colLayer0
-            border.width: Appearance.sizes.borderWidth
+            border.width: 1
             border.color: Appearance.colors.colLayer0Border
             radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 5
             z: 1

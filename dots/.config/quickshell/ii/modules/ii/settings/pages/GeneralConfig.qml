@@ -62,8 +62,7 @@ ContentPage {
                 }
             }
             ConfigRow {
-                visible: Config.options.audio.protection.enable
-                Layout.preferredHeight: visible ? implicitHeight : 0
+                enabled: Config.options.audio.protection.enable
                 ConfigSpinBox {
                     icon: "arrow_warm_up"
                     text: Translation.tr("Max allowed increase")
@@ -94,16 +93,7 @@ ContentPage {
             shape: MaterialShape.Shape.SemiCircle
             title: Translation.tr("Battery")
 
-            NoticeBox {
-                visible: !Battery.available
-                Layout.fillWidth: true
-                materialIcon: "battery_unknown"
-                text: Translation.tr("Battery not detected")
-            }
-
             ConfigRow {
-                visible: Battery.available
-                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: true
                 ConfigSpinBox {
                     icon: "warning"
@@ -129,8 +119,6 @@ ContentPage {
                 }
             }
             ConfigRow {
-                visible: Battery.available
-                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: false
                 Layout.fillWidth: false
                 ConfigSwitch {
@@ -154,8 +142,6 @@ ContentPage {
                 }
             }
             ConfigRow {
-                visible: Battery.available
-                Layout.preferredHeight: visible ? implicitHeight : 0
                 uniform: true
                 ConfigSpinBox {
                     icon: "charger"
@@ -428,7 +414,7 @@ ContentPage {
                     }
                     ConfigSpinBox {
                         icon: "arrow_cool_down"
-                        text: Translation.tr("Vertical offset")
+                        text: Translation.tr("with vertical offset")
                         value: Config.options.sidebar.cornerOpen.clicklessCornerVerticalOffset
                         from: 0
                         to: 20
@@ -506,7 +492,6 @@ ContentPage {
             ConfigRow {
                 uniform: true
                 ConfigSwitch {
-                    visible: Battery.available
                     buttonIcon: "battery_android_full"
                     text: Translation.tr("Battery")
                     checked: Config.options.sounds.battery

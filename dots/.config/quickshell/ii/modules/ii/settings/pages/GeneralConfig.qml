@@ -62,7 +62,8 @@ ContentPage {
                 }
             }
             ConfigRow {
-                enabled: Config.options.audio.protection.enable
+                visible: Config.options.audio.protection.enable
+                Layout.preferredHeight: visible ? implicitHeight : 0
                 ConfigSpinBox {
                     icon: "arrow_warm_up"
                     text: Translation.tr("Max allowed increase")

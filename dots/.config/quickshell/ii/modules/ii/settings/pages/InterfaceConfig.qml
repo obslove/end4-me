@@ -38,7 +38,7 @@ ContentPage {
         Layout.fillWidth: true   
         Layout.fillHeight: true
         spacing: 20
-    
+
         ContentSection { // I see that for many the overview is important, I put it first why not
             icon: "overview_key"
             shape: MaterialShape.Shape.Gem
@@ -551,6 +551,24 @@ ContentPage {
                 checked: Config.options.wallpaperSelector.useSystemFileDialog
                 onCheckedChanged: {
                     Config.options.wallpaperSelector.useSystemFileDialog = checked;
+                }
+            }
+        }
+
+        ContentSection {
+            icon: "border_outer"
+            title: Translation.tr("Shell")
+            shape: MaterialShape.Shape.Cookie4Sided
+
+            ConfigSpinBox {
+                icon: "border_outer"
+                text: Translation.tr("Border width")
+                value: Config.options.appearance.border.width
+                from: 0
+                to: 12
+                stepSize: 1
+                onValueChanged: {
+                    Config.options.appearance.border.width = value;
                 }
             }
         }

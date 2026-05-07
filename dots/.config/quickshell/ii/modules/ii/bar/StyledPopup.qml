@@ -112,7 +112,7 @@ LazyLoader {
 
             color: Appearance.colors.colLayer1Base
             radius: Appearance.rounding.normal
-            border.width: 1
+            border.width: Appearance.sizes.borderWidth
             border.color: Appearance.colors.colLayer0Border
 
             // Reparent content here once the window is ready

@@ -107,6 +107,9 @@ Singleton {
             property JsonObject appearance: JsonObject {
                 property bool extraBackgroundTint: true
                 property int fakeScreenRounding: 2 // 0: None | 1: Always | 2: When not fullscreen
+                property JsonObject border: JsonObject {
+                    property int width: 1
+                }
                 property JsonObject fonts: JsonObject {
                     property string main: "Google Sans Flex"
                     property string numbers: "Google Sans Flex"
@@ -259,6 +262,10 @@ Singleton {
                 property bool showBackground: true
                 property bool verbose: true
                 property bool vertical: false
+                property JsonObject sizes: JsonObject {
+                    property int height: 40
+                    property int width: 46
+                }
                 property JsonObject resources: JsonObject {
                     property string style: "filled"
                     property bool alwaysShowSwap: false

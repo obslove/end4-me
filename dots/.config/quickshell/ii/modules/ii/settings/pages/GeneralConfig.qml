@@ -428,7 +428,7 @@ ContentPage {
                     }
                     ConfigSpinBox {
                         icon: "arrow_cool_down"
-                        text: Translation.tr("con desplazamiento vertical")
+                        text: Translation.tr("Vertical offset")
                         value: Config.options.sidebar.cornerOpen.clicklessCornerVerticalOffset
                         from: 0
                         to: 20

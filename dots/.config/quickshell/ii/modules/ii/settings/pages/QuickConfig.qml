@@ -2,8 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
-import Quickshell.Io
-import Qt.labs.folderlistmodel
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -37,18 +35,6 @@ ContentPage {
         if (target) {
             let pos = target.mapToItem(mainLayout, 0, 0)
             page.contentY = Math.max(0, pos.y - 0)
-        }
-    }
-
-    Process {
-        id: randomWallProc
-        property string status: ""
-        property string scriptPath: `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`
-        command: ["bash", "-c", FileUtils.trimFileProtocol(randomWallProc.scriptPath)]
-        stdout: SplitParser {
-            onRead: data => {
-                randomWallProc.status = data.trim();
-            }
         }
     }
 
@@ -137,30 +123,6 @@ ContentPage {
                         SmallLightDarkPreferenceButton {
                             Layout.fillHeight: true
                             dark: true
-                        }
-                    }
-                    RippleButtonWithIcon {
-                        enabled: !randomWallProc.running
-                        visible: Config.options.policies.weeb === 1
-                        Layout.fillWidth: true
-                        buttonRadius: Appearance.rounding.small
-                        materialIcon: "ifl"
-                        mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random • Konachan")
-                        onClicked: {
-                            randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_konachan_wall.sh`;
-                            randomWallProc.running = true;
-                        }
-                    }
-                    RippleButtonWithIcon {
-                        enabled: !randomWallProc.running
-                        visible: Config.options.policies.weeb === 1
-                        Layout.fillWidth: true
-                        buttonRadius: Appearance.rounding.small
-                        materialIcon: "ifl"
-                        mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random • osu! seasonal")
-                        onClicked: {
-                            randomWallProc.scriptPath = `${Directories.scriptPath}/colors/random/random_osu_wall.sh`;
-                            randomWallProc.running = true;
                         }
                     }
                     RowLayout {

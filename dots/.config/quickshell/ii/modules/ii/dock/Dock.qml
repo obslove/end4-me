@@ -90,7 +90,7 @@ Scope { // Scope
                             anchors.topMargin: Appearance.sizes.elevationMargin
                             anchors.bottomMargin: Appearance.sizes.hyprlandGapsOut
                             color: Config.options.dock.showBackground ? Appearance.colors.colLayer0 : "transparent"
-                            border.width: Config.options.dock.showBackground ? 1 : 0
+                            border.width: Config.options.dock.showBackground ? Appearance.sizes.borderWidth : 0
                             border.color: Appearance.colors.colLayer0Border
                             radius: Appearance.rounding.large + 3
                         }

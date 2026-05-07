@@ -204,6 +204,35 @@ ContentPage {
                     }
                 }
             }
+
+            ContentSubsection {
+                title: Translation.tr("Size")
+                ConfigRow {
+                    uniform: true
+                    ConfigSpinBox {
+                        icon: "height"
+                        text: Translation.tr("Height")
+                        value: Config.options.bar.sizes.height
+                        from: 30
+                        to: 60
+                        stepSize: 1
+                        onValueChanged: {
+                            Config.options.bar.sizes.height = value;
+                        }
+                    }
+                    ConfigSpinBox {
+                        icon: "width"
+                        text: Translation.tr("Vertical width")
+                        value: Config.options.bar.sizes.width
+                        from: 30
+                        to: 60
+                        stepSize: 1
+                        onValueChanged: {
+                            Config.options.bar.sizes.width = value;
+                        }
+                    }
+                }
+            }
         }
 
         ContentSection {
@@ -285,7 +314,7 @@ ContentPage {
                     onCheckedChanged: { Config.options.bar.utilButtons.showScreenRecord = checked; }
                 }
                 ConfigSwitch {
-                    buttonIcon: "imagesmode"; text: Translation.tr("Wallpapers Toggle")
+                    buttonIcon: "imagesmode"; text: Translation.tr("Wallpaper toggle")
                     checked: Config.options.bar.utilButtons.showWallpaperToggle
                     onCheckedChanged: { Config.options.bar.utilButtons.showWallpaperToggle = checked; }
                 }
@@ -311,20 +340,20 @@ ContentPage {
                 from: 1; to: 30
                 onValueChanged: { Config.options.bar.workspaces.shown = value; }
             }
-        }
 
-        ContentSubsection {
-            title: Translation.tr("Number style")
-            ConfigSelectionArray {
-                currentValue: JSON.stringify(Config.options.bar.workspaces.numberMap)
-                onSelected: newValue => {
-                    Config.options.bar.workspaces.numberMap = JSON.parse(newValue)
+            ContentSubsection {
+                title: Translation.tr("Number style")
+                ConfigSelectionArray {
+                    currentValue: JSON.stringify(Config.options.bar.workspaces.numberMap)
+                    onSelected: newValue => {
+                        Config.options.bar.workspaces.numberMap = JSON.parse(newValue)
+                    }
+                    options: [
+                        { displayName: Translation.tr("Normal"),    icon: "timer_10",        value: '[]' },
+                        { displayName: Translation.tr("Han chars"), icon: "glyphs",      value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]' },
+                        { displayName: Translation.tr("Roman"),     icon: "account_balance", value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]' }
+                    ]
                 }
-                options: [
-                    { displayName: Translation.tr("Normal"),    icon: "timer_10",        value: '[]' },
-                    { displayName: Translation.tr("Han chars"), icon: "glyphs",      value: '["一","二","三","四","五","六","七","八","九","十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十"]' },
-                    { displayName: Translation.tr("Roman"),     icon: "account_balance", value: '["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX"]' }
-                ]
             }
         }
 
@@ -340,7 +369,7 @@ ContentPage {
                     onCheckedChanged: { Config.options.bar.resources.alwaysShowCpu = checked; }
                 }
                 ConfigSwitch {
-                    buttonIcon: "thermostat"; text: Translation.tr("Cpu Temperature")
+                    buttonIcon: "thermostat"; text: Translation.tr("CPU temperature")
                     checked: Config.options.bar.resources.alwaysShowCpuTemp
                     onCheckedChanged: { Config.options.bar.resources.alwaysShowCpuTemp = checked; }
                 }

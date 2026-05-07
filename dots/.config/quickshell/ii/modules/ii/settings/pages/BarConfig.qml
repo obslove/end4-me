@@ -202,6 +202,35 @@ ContentPage {
                     }
                 }
             }
+
+            ContentSubsection {
+                title: Translation.tr("Size")
+                ConfigRow {
+                    uniform: true
+                    ConfigSpinBox {
+                        icon: "height"
+                        text: Translation.tr("Height")
+                        value: Config.options.bar.sizes.height
+                        from: 30
+                        to: 60
+                        stepSize: 1
+                        onValueChanged: {
+                            Config.options.bar.sizes.height = value;
+                        }
+                    }
+                    ConfigSpinBox {
+                        icon: "width"
+                        text: Translation.tr("Vertical width")
+                        value: Config.options.bar.sizes.width
+                        from: 30
+                        to: 60
+                        stepSize: 1
+                        onValueChanged: {
+                            Config.options.bar.sizes.width = value;
+                        }
+                    }
+                }
+            }
         }
 
         ContentSection {

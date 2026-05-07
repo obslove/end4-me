@@ -263,6 +263,10 @@ Singleton {
                 property bool showBackground: true
                 property bool verbose: true
                 property bool vertical: false
+                property JsonObject sizes: JsonObject {
+                    property int height: 40
+                    property int width: 46
+                }
                 property JsonObject resources: JsonObject {
                     property string style: "filled"
                     property bool alwaysShowSwap: false

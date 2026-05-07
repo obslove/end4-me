@@ -134,6 +134,18 @@ Variants {
             }
         }
 
+        Timer {
+            id: wallpaperChangeTimer
+            interval: Config.options.wallpaperSelector.changeInterval
+            running: Config.options.wallpaperSelector.changeInterval > 0
+            repeat: true
+            onTriggered: {
+                if (Wallpapers.folderModel.count > 0) {
+                    Wallpapers.randomFromCurrentFolder()
+                }
+            }
+        }
+
         Item {
             anchors.fill: parent
 
@@ -204,7 +216,7 @@ Variants {
                 sourceComponent: GaussianBlur {
                     source: bgRoot.wallpaperAnimation === "" ? wallpaper : transitionEffect
                     radius: GlobalStates.screenLocked ? Config.options.lock.blur.radius : 0
-                    samples: radius * 2 + 1
+                    samples: 23 // why? radius * 2 + 1 
                     Rectangle {
                         opacity: GlobalStates.screenLocked ? 1 : 0
                         anchors.fill: parent
@@ -261,9 +273,9 @@ Variants {
                     sourceComponent: MediaWidget {
                         screenWidth: bgRoot.screen.width
                         screenHeight: bgRoot.screen.height
-                        scaledScreenWidth: bgRoot.screen.width / bgRoot.effectiveWallpaperScale
-                        scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
-                        wallpaperScale: bgRoot.effectiveWallpaperScale
+                        scaledScreenWidth: bgRoot.screen.width
+                        scaledScreenHeight: bgRoot.screen.height
+                        wallpaperScale: 1
                     }
                     onLoaded: {
                         if (item && item.requestReset) {

@@ -426,6 +426,16 @@ ContentPage {
             }
         }
 
+        // ── Autostart Apps ───────────────────────────────────────────────────────────
+        ContentSection {
+            icon: "app_registration"
+            shape: MaterialShape.Shape.Sunny
+            title: Translation.tr("Autostart Apps")
+            Layout.fillWidth: true
+
+            AutostartApps {}
+        }
+        
         // ── Animations ───────────────────────────────────────────────────────────
         ContentSection {
             icon: "animation"

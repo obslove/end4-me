@@ -2,16 +2,18 @@ pragma ComponentBehavior: Bound
 
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.utils
+import qs.modules.common.functions
 import qs.services
 import QtQuick
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import Quickshell
+import Quickshell.Io
+import Quickshell.Services.Mpris
 
 Item {
     id: root
 
-    property var player: null
+    required property MprisPlayer player
     property color textColor: "white"
     property color activeColor: "white"
     property color dimColor: Qt.rgba(1, 1, 1, 0.35)
@@ -19,43 +21,14 @@ Item {
     property color indicatorColor: Appearance.colors.colPrimaryContainer
     property color indicatorShapeColor: Appearance.colors.colOnPrimaryContainer
 
-    readonly property var lyricsLines: lyricsBackend.lines
+    property var lyricsLines: []
     property int activeIndex: -1
+    property string status: "loading"
     property int textAlignment: Text.AlignLeft
-    readonly property bool serviceEnabled: Config.options.lyricsService.enable && Config.options.lyricsService.enableLrclib
-    readonly property string style: Config.options.lyricsService.style === "static" ? "static" : "scroller"
-    readonly property bool useGradientMask: Config.options.lyricsService.useGradientMask
-    readonly property int lyricFontSize: Config.options.lyricsService.fontSize
-    readonly property string status: {
-        if (!root.serviceEnabled) return "disabled"
-        if (lyricsBackend.loading) return "loading"
-        if (lyricsBackend.error === "No track info") return "no_info"
-        if (lyricsBackend.error === "Instrumental") return "instrumental"
-        if (lyricsBackend.error) return "not_found"
-        if (root.lyricsLines.length > 0) return "ok"
-        return "loading"
-    }
-    readonly property string statusText: {
-        if (root.status === "disabled") return Translation.tr("Lyrics disabled")
-        if (root.status === "loading") return Translation.tr("Fetching lyrics...")
-        if (root.status === "not_found") return Translation.tr("No synced lyrics")
-        if (root.status === "no_info") return Translation.tr("No track info")
-        if (root.status === "instrumental") return Translation.tr("Instrumental")
-        return ""
-    }
 
     readonly property int before: 3
     readonly property int after:  3
     readonly property int total:  7
-    readonly property int halfVisibleLines: 2
-    readonly property int visibleLineCount: halfVisibleLines * 2 + 1
-    readonly property int rowHeight: Math.round(Math.max(46, lyricFontSize * 2.8))
-    readonly property real animProgress: rowHeight > 0 ? Math.min(1, Math.abs(scrollOffset) / rowHeight) : 0
-    readonly property string currentLineText: activeIndex >= 0 ? (lyricsLines[activeIndex]?.text ?? "") : ""
-
-    property int lastIndex: -1
-    property bool isMovingForward: true
-    property real scrollOffset: 0
 
     function buildSlots(idx) {
         let result = []
@@ -72,96 +45,87 @@ Item {
 
     property var slots: ["", "", "", "", "", "", ""]
 
-    function opacityForOffset(offset) {
-        const dist = Math.abs(offset)
-        if (dist === 0) return 1.0
-        if (dist === 1) return 0.48
-        if (dist === 2) return 0.16
-        return 0.0
-    }
-
-    function updateActiveIndex(idx) {
-        if (idx === root.activeIndex) {
-            return
-        }
-        root.isMovingForward = idx > root.lastIndex
-        root.lastIndex = idx
-        root.activeIndex = idx
-        root.slots = root.buildSlots(idx)
-        scrollAnimation.stop()
-        root.scrollOffset = root.isMovingForward ? -root.rowHeight : root.rowHeight
-        scrollAnimation.start()
-    }
-
-    function activeIndexForPosition(positionSeconds) {
-        if (!root.lyricsLines || root.lyricsLines.length === 0) {
-            return -1
-        }
-
-        const position = isNaN(positionSeconds) || positionSeconds < 0 ? 0 : positionSeconds
-        let lo = 0
-        let hi = root.lyricsLines.length - 1
-        let idx = -1
-
-        while (lo <= hi) {
-            const mid = (lo + hi) >> 1
-            if (root.lyricsLines[mid].time <= position) {
-                idx = mid
-                lo = mid + 1
-            } else {
-                hi = mid - 1
-            }
-        }
-
-        return idx
-    }
-
-    NumberAnimation {
-        id: scrollAnimation
-        target: root
-        property: "scrollOffset"
-        to: 0
-        duration: 400
-        easing.type: Easing.OutQuart
-    }
-
     Timer {
         id: syncTimer
         interval: 300
         repeat: true
         running: root.status === "ok" && root.lyricsLines.length > 0
         onTriggered: {
-            root.updateActiveIndex(root.activeIndexForPosition(root.player?.position ?? 0))
+            const pos = root.player?.position ?? 0
+            let idx = -1
+            for (let i = 0; i < root.lyricsLines.length; i++) {
+                if (root.lyricsLines[i].time <= pos) {
+                    idx = i
+                } else {
+                    break
+                }
+            }
+            if (idx !== root.activeIndex) {
+                root.activeIndex = idx
+                root.slots = root.buildSlots(idx)
+            }
         }
     }
 
-    function resetLyricsView() {
+    Process {
+        id: lyricsProc
+        running: false
+
+        stdout: SplitParser {
+            onRead: data => {
+                const trimmed = data.trim()
+                if (trimmed === "not_found") { root.status = "not_found"; return }
+                if (trimmed === "no_info") { root.status = "no_info"; return }
+
+                const parts = trimmed.split("§")
+                if (parts.length < 3) return
+                const last = parts[parts.length - 1].trim()
+                if (last !== "ok") return
+
+                let lines = []
+                for (let i = 0; i < parts.length - 1; i += 2) {
+                    const t = parseFloat(parts[i])
+                    const txt = parts[i + 1] || ""
+                    if (!isNaN(t)) { lines.push({ time: t, text: txt }) }
+                }
+
+                if (lines.length === 0) { root.status = "not_found"; return }
+
+                root.lyricsLines = lines
+                root.activeIndex = -1
+                root.slots = root.buildSlots(-1)
+                root.status = "ok"
+            }
+        }
+    }
+
+    function restartLyrics() {
+        lyricsProc.running = false
+        root.lyricsLines = []
         root.activeIndex = -1
-        root.lastIndex = -1
-        root.scrollOffset = 0
         root.slots = ["", "", "", "", "", "", ""]
+        root.status = "loading"
+
+        const title    = root.player?.trackTitle  ?? ""
+        const artist   = root.player?.trackArtist ?? ""
+        const duration = root.player?.length       ?? 0
+
+        if (!title || !artist) { root.status = "no_info"; return }
+
+        lyricsProc.command = [
+            "python3",
+            `${Directories.scriptPath}/lyrics/lyrics.py`,
+            title, artist, String(Math.floor(duration))
+        ]
+        lyricsProc.running = true
     }
 
-    LrclibLyrics {
-        id: lyricsBackend
-        active: root.serviceEnabled
-        title: root.player?.trackTitle ?? ""
-        artist: root.player?.trackArtist ?? ""
-        duration: root.player?.length ?? 0
+    Connections {
+        target: root.player
+        function onTrackTitleChanged() { root.restartLyrics() }
     }
 
-    onLyricsLinesChanged: {
-        root.resetLyricsView()
-        if (root.status === "ok") {
-            Qt.callLater(() => root.updateActiveIndex(-1))
-        }
-    }
-
-    onStatusChanged: {
-        if (root.status !== "ok") {
-            root.resetLyricsView()
-        }
-    }
+    Component.onCompleted: root.restartLyrics()
 
     ColumnLayout {
         anchors.fill: parent
@@ -178,99 +142,45 @@ Item {
 
                 MaterialLoadingIndicator {
                     Layout.alignment: Qt.AlignHCenter
-                    visible: root.status === "loading"
                     loading: root.status === "loading"
                     colBg: root.indicatorColor
                     colShape: root.indicatorShapeColor
                     implicitSize: 48 
                 }
-
-                StyledText {
-                    visible: root.status !== "loading"
-                    Layout.alignment: Qt.AlignHCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    color: root.dimColor
-                    text: root.statusText
-                    font.pixelSize: Appearance.font.pixelSize.small
-                }
             }
         }
 
-        StyledText {
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            visible: root.status === "ok" && root.style === "static"
-            horizontalAlignment: root.textAlignment
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-            text: root.currentLineText || "♪"
-            color: root.activeColor
-            font.pixelSize: root.lyricFontSize
-            font.weight: Font.DemiBold
-            animateChange: true
-            animationDistanceX: 0
-            animationDistanceY: 8
-        }
+            visible: root.status === "ok"
+            spacing: 6
 
-        Item {
-            id: scrollerView
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            visible: root.status === "ok" && root.style === "scroller"
-            clip: true
-            layer.enabled: root.useGradientMask
-            layer.effect: OpacityMask {
-                maskSource: Rectangle {
-                    width: scrollerView.width
-                    height: scrollerView.height
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: "transparent" }
-                        GradientStop { position: 0.18; color: "black" }
-                        GradientStop { position: 0.88; color: "black" }
-                        GradientStop { position: 1.0; color: "transparent" }
+            Repeater {
+                model: 7
+                delegate: StyledText {
+                    id: lyricSlot
+                    required property int index
+                    Layout.fillWidth: true
+                    horizontalAlignment: root.textAlignment
+                    wrapMode: Text.WordWrap
+                    text: root.slots[index] ?? ""
+                    readonly property int dist: Math.abs(index - root.before)
+                    font.pixelSize: {
+                        if (dist === 0) return Appearance.font.pixelSize.normal
+                        if (dist === 1) return Appearance.font.pixelSize.small
+                        return Appearance.font.pixelSize.smaller
                     }
-                }
-            }
-
-            Column {
-                width: parent.width
-                spacing: 0
-                y: Math.round((parent.height - root.rowHeight) / 2 - (root.halfVisibleLines * root.rowHeight) - root.scrollOffset)
-
-                Repeater {
-                    model: root.visibleLineCount
-                    delegate: StyledText {
-                        required property int index
-                        readonly property int lineOffset: index - root.halfVisibleLines
-                        readonly property int actualIndex: root.activeIndex + lineOffset
-                        readonly property int oldLineOffset: root.isMovingForward ? lineOffset + 1 : lineOffset - 1
-                        readonly property real targetHighlight: Math.abs(lineOffset) === 0 ? 1.0 : 0.0
-                        readonly property real startHighlight: Math.abs(oldLineOffset) === 0 ? 1.0 : 0.0
-                        readonly property real highlightFactor: startHighlight + (targetHighlight - startHighlight) * (1.0 - root.animProgress)
-                        readonly property real targetOpacity: root.opacityForOffset(lineOffset)
-                        readonly property real startOpacity: root.opacityForOffset(oldLineOffset)
-
-                        width: parent.width
-                        height: root.rowHeight
-                        horizontalAlignment: root.textAlignment
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.WordWrap
-                        maximumLineCount: Math.abs(lineOffset) === 0 ? 2 : 1
-                        elide: Math.abs(lineOffset) === 0 ? Text.ElideNone : Text.ElideRight
-                        text: {
-                            if (actualIndex >= 0 && actualIndex < root.lyricsLines.length) {
-                                return root.lyricsLines[actualIndex].text || (lineOffset === 0 ? "♪" : "");
-                            }
-                            return lineOffset === 0 ? "♪" : "";
-                        }
-                        color: highlightFactor > 0.5 ? root.activeColor : root.dimColor
-                        font.pixelSize: Math.round(root.lyricFontSize * (highlightFactor > 0.5 ? 1.12 : 0.92))
-                        font.weight: highlightFactor > 0.5 ? Font.Bold : Font.Medium
-                        opacity: startOpacity + (targetOpacity - startOpacity) * (1.0 - root.animProgress)
+                    opacity: {
+                        if (dist === 0) return 1.0
+                        if (dist === 1) return 0.6
+                        if (dist === 2) return 0.35
+                        return 0.15
                     }
+                    color: dist === 0 ? root.activeColor : root.textColor
+                    Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
                 }
             }
         }
-
     }
 }

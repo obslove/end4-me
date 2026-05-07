@@ -78,7 +78,7 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
 
-            property string panelFamily: "ii"
+            property string panelFamily: "ii" // "ii", "waffle"
 
             property JsonObject policies: JsonObject {
                 property int ai: 1 // 0: No | 1: Yes | 2: Local
@@ -107,9 +107,6 @@ Singleton {
             property JsonObject appearance: JsonObject {
                 property bool extraBackgroundTint: true
                 property int fakeScreenRounding: 2 // 0: None | 1: Always | 2: When not fullscreen
-                property JsonObject border: JsonObject {
-                    property int width: 1
-                }
                 property JsonObject fonts: JsonObject {
                     property string main: "Google Sans Flex"
                     property string numbers: "Google Sans Flex"
@@ -155,6 +152,10 @@ Singleton {
             property JsonObject hyprland: JsonObject { // in case you want to add other things here later
                 property JsonObject animations: JsonObject {
                     property string animation: "normal"
+                }
+                property JsonObject autostartApps: JsonObject {
+                    property bool enable: false
+                    property list<var> apps: []
                 }
             }
 
@@ -257,15 +258,11 @@ Singleton {
                 property bool bottom: false // Instead of top
                 property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
                 property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
-                property bool borderless: false // true for no grouping of items
+                property string borderless: "pills"
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
                 property bool showBackground: true
                 property bool verbose: true
                 property bool vertical: false
-                property JsonObject sizes: JsonObject {
-                    property int height: 40
-                    property int width: 46
-                }
                 property JsonObject resources: JsonObject {
                     property string style: "filled"
                     property bool alwaysShowSwap: false
@@ -348,14 +345,14 @@ Singleton {
             property JsonObject dock: JsonObject {
                 property bool enable: false
                 property bool showBackground: true
+                property bool showPinButton: true
+                property bool showAppsButton: true
                 property bool showMedia: true
                 property bool monochromeIcons: true
                 property real height: 60
                 property real hoverRegionHeight: 2
                 property bool pinnedOnStartup: false
                 property bool hoverToReveal: true // When false, only reveals on empty workspace
-                property bool windowPreviews: true
-                property bool windowPreviewIcons: true
                 property list<string> pinnedApps: [ // IDs of pinned entries
                     "org.kde.dolphin", "kitty",]
                 property list<string> ignoredAppRegexes: []
@@ -418,17 +415,6 @@ Singleton {
             property JsonObject media: JsonObject {
                 // Attempt to remove dupes (the aggregator playerctl one and browsers' native ones when there's plasma browser integration)
                 property bool filterDuplicatePlayers: true
-                property string preferredPlayer: ""
-                property bool popupAllPlayers: true
-                property list<string> popupPlayers: []
-            }
-
-            property JsonObject lyricsService: JsonObject {
-                property bool enable: true
-                property bool enableLrclib: true
-                property string style: "scroller" // Options: "scroller", "static"
-                property bool useGradientMask: true
-                property int fontSize: 18
             }
 
             property JsonObject networking: JsonObject {
@@ -467,8 +453,6 @@ Singleton {
                 property bool orderRightLeft: false
                 property bool orderBottomUp: false
                 property bool centerIcons: true
-                property bool windowPreviews: true
-                property bool windowIcons: true
             }
 
             property JsonObject regionSelector: JsonObject {
@@ -637,6 +621,7 @@ Singleton {
             
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
+                property int changeInterval: 0 
             }
 
             property JsonObject wallpapers: JsonObject {

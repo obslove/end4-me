@@ -2,6 +2,7 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
@@ -80,6 +81,7 @@ Scope { // Scope
 
                         StyledRectangularShadow {
                             target: dockVisualBackground
+                            visible: false
                         }
                         Rectangle { // The real rectangle that is visible
                             id: dockVisualBackground
@@ -87,10 +89,10 @@ Scope { // Scope
                             anchors.fill: parent
                             anchors.topMargin: Appearance.sizes.elevationMargin
                             anchors.bottomMargin: Appearance.sizes.hyprlandGapsOut
-                            color: Appearance.colors.colLayer0
-                            border.width: 1
+                            color: Config.options.dock.showBackground ? Appearance.colors.colLayer0 : "transparent"
+                            border.width: Config.options.dock.showBackground ? 1 : 0
                             border.color: Appearance.colors.colLayer0Border
-                            radius: Appearance.rounding.large
+                            radius: Appearance.rounding.large + 3
                         }
 
                         RowLayout {
@@ -103,6 +105,8 @@ Scope { // Scope
 
                             VerticalButtonGroup {
                                 Layout.topMargin: Appearance.sizes.hyprlandGapsOut // why does this work
+                                Layout.leftMargin: root.pinned ? Appearance.sizes.hyprlandGapsOut + 4 : Appearance.sizes.hyprlandGapsOut
+                                Layout.rightMargin: root.pinned ? Appearance.sizes.hyprlandGapsOut + 4 : Appearance.sizes.hyprlandGapsOut
                                 GroupButton {
                                     // Pin button
                                     baseWidth: 35

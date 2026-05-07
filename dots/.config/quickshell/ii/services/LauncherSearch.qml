@@ -8,6 +8,7 @@ import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import ".."
 
 Singleton {
     id: root
@@ -15,12 +16,59 @@ Singleton {
     property string query: ""
 
     function ensurePrefix(prefix) {
-        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
+        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.symbols, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
             root.query = prefix + root.query.slice(1);
         } else {
             root.query = prefix + root.query;
         }
     }
+    
+    Process {
+        id: keywordHarvester
+        property var pendingPages: []
+        property string currentPageName: ""
+        
+        function startHarvesting() {
+            root.settingsKeywordsCache = {}; 
+            pendingPages = root.settingsIndex.slice();
+            next();
+        }
+
+        function next() {
+            if (pendingPages.length === 0) {
+                return;
+            }
+            
+            let currentPage = pendingPages.shift();
+            let fullPath = FileUtils.trimFileProtocol(
+                Quickshell.shellPath("modules/ii/settings/pages/" + currentPage.path)
+            )
+
+            let rawCommand = "grep -oP \"title:\\s*Translation.tr\\(['\\\"].*?['\\\"]\\)\" " + fullPath + " | sed -E \"s/title:\\s*Translation.tr\\(['\\\"](.*)['\\\"]\\)/\\1/g\" | tr '\\n' ' '";
+            
+            command = ["bash", "-c", rawCommand];
+            
+            keywordHarvester.currentPageName = currentPage.page;
+            running = true;
+        }
+
+        onExited: (exitCode, exitStatus) => {
+            keywordHarvester.next();
+        }
+
+        stdout: SplitParser {
+            onRead: data => {
+                let cache = root.settingsKeywordsCache;
+                cache[keywordHarvester.currentPageName] = (cache[keywordHarvester.currentPageName] || "") + " " + data;
+                root.settingsKeywordsCache = cache;
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        keywordHarvester.startHarvesting();
+    }
+
 
     // https://specifications.freedesktop.org/menu/latest/category-registry.html
     property list<string> mainRegisteredCategories: ["AudioVideo", "Development", "Education", "Game", "Graphics", "Network", "Office", "Science", "Settings", "System", "Utility"]
@@ -32,6 +80,19 @@ Singleton {
         }
         return acc;
     }, []).sort()
+
+    property var settingsKeywordsCache: ({})
+
+    property var settingsIndex: [
+        { page: "General",   path: "GeneralConfig.qml" },
+        { page: "Bar",       path: "BarConfig.qml" },
+        { page: "Desktop",   path: "BackgroundConfig.qml" },
+        { page: "Interface", path: "InterfaceConfig.qml" },
+        { page: "Services",  path: "ServicesConfig.qml" },
+        { page: "Hyprland",  path: "HyprlandConfig.qml" },
+        { page: "About",     path: "About.qml" },
+        { page: "Quick",     path: "QuickConfig.qml" },
+    ]
 
     // Load user action scripts from ~/.config/illogical-impulse/actions/
     // Uses FolderListModel to auto-reload when scripts are added/removed
@@ -208,7 +269,7 @@ Singleton {
                 });
             }).filter(Boolean);
         } else if (root.query.startsWith(Config.options.search.prefix.emojis)) {
-            // Clipboard
+            // Emojis
             const searchString = StringUtils.cleanPrefix(root.query, Config.options.search.prefix.emojis);
             return Emojis.fuzzyQuery(searchString).map(entry => {
                 const emoji = entry.match(/^\s*(\S+)/)?.[1] || "";
@@ -221,6 +282,26 @@ Singleton {
                     type: Translation.tr("Emoji"),
                     execute: () => {
                         Quickshell.clipboardText = entry.match(/^\s*(\S+)/)?.[1];
+                    }
+                });
+            }).filter(Boolean);
+        } else if (root.query.startsWith(Config.options.search.prefix.symbols)) {
+            // Material Symbols
+            const searchString = StringUtils.cleanPrefix(root.query, Config.options.search.prefix.symbols);
+            return MaterialSymbolsSearch.fuzzyQuery(searchString).map(entry => {
+                const tabIdx = entry.indexOf("\t");
+                const symName = tabIdx >= 0 ? entry.slice(0, tabIdx) : entry;
+                const symTags = tabIdx >= 0 ? entry.slice(tabIdx + 1) : "";
+                return resultComp.createObject(null, {
+                    rawValue: entry,
+                    name: symName,
+                    iconName: symName,
+                    iconType: LauncherSearchResult.IconType.Material,
+                    verb: Translation.tr("Copy"),
+                    type: Translation.tr("Symbol"),
+                    comment: symTags,
+                    execute: () => {
+                        Quickshell.clipboardText = symName;
                     }
                 });
             }).filter(Boolean);
@@ -275,6 +356,31 @@ Singleton {
                 })
             });
         });
+        ////////////////// Settings search //////////////////
+        const settingsQuery = root.query.toLowerCase().trim();
+
+        const settingsResults = root.settingsIndex.reduce((acc, page) => {
+            const dynamicKeywords = (root.settingsKeywordsCache[page.page] || "").toLowerCase();
+            const query = root.query.toLowerCase().trim();
+            if (query === "") return acc;
+
+            if (page.page.toLowerCase().includes(query) || dynamicKeywords.includes(query)) {
+                acc.push(resultComp.createObject(null, {
+                    name: page.page,
+                    comment: dynamicKeywords.includes(query) ? "Section: " + query : "Settings for " + page.page,
+                    verb: Translation.tr("Go"),
+                    type: Translation.tr("Settings"),
+                    iconName: "settings",
+                    iconType: LauncherSearchResult.IconType.Material,
+                    execute: () => {
+                        GlobalStates.settingsOpen = true;
+                        GlobalStates.settingsPage = page.page + ":" + query;
+                        root.query = "";
+                    }
+                }));
+            }
+            return acc;
+        }, []);
         const commandResultObject = resultComp.createObject(null, {
             name: StringUtils.cleanPrefix(root.query, Config.options.search.prefix.shellCommand).replace("file://", ""),
             verb: Translation.tr("Run"),
@@ -339,7 +445,8 @@ Singleton {
 
         //////////////// Apps //////////////////
         result = result.concat(appResultObjects);
-
+        ////////////// Settings ////////////////
+        result = result.concat(settingsResults);
         ////////// Launcher actions ////////////
         result = result.concat(launcherActionObjects);
 
@@ -352,7 +459,7 @@ Singleton {
             if (!startsWithWebSearchPrefix)
                 result.push(webSearchResultObject);
         }
-
+        
         return result;
     }
 

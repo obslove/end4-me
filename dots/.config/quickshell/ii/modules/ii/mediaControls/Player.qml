@@ -102,12 +102,10 @@ Item {
             }
         }
 
-        Image {
+        StyledImage {
             id: blurredArt
             anchors.fill: parent
             source: root.displayedArtFilePath
-            sourceSize.width: background.width
-            sourceSize.height: background.height
             fillMode: Image.PreserveAspectCrop
             cache: false
             antialiasing: true

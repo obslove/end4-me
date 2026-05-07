@@ -70,8 +70,6 @@ Item {
                 antialiasing: true
                 width: size
                 height: size
-                sourceSize.width: size
-                sourceSize.height: size
             }
         }
 

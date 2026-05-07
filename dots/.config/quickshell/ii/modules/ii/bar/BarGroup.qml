@@ -6,7 +6,7 @@ Item {
     id: root
     property bool vertical: false
     property real padding: 5
-    
+
     property int currentIndex: 0
     property int totalCount: 0
 
@@ -14,13 +14,13 @@ Item {
     readonly property real midRadius: Config.options.bar.cornerStyle === 2 ? Appearance.rounding.unsharpenmore + 2 : Appearance.rounding.unsharpenmore
 
     property real startRadius: {
-        if (totalCount <= 1) return fullRadius; 
-        if (currentIndex === 0) return fullRadius; 
-        return midRadius; 
+        if (totalCount <= 1) return fullRadius;
+        if (currentIndex === 0) return fullRadius;
+        return midRadius;
     }
 
     property real endRadius: {
-        if (totalCount <= 1) return fullRadius; 
+        if (totalCount <= 1) return fullRadius;
         if (currentIndex === totalCount - 1) return fullRadius;
         return midRadius;
     }
@@ -39,7 +39,7 @@ Item {
             rightMargin: root.vertical ? 4 : 0
         }
         color: Config.options?.bar.borderless === "transparent" || Config.options.bar.cornerStyle === 3 ? "transparent" : Config.options.bar.cornerStyle === 2 ? Appearance.colors.colLayer0 : Appearance.colors.colLayer1
-        
+
         topLeftRadius: Config.options?.bar.borderless === "separated" ? fullRadius : startRadius
         bottomLeftRadius: Config.options?.bar.borderless === "separated" ? fullRadius : root.vertical ? endRadius : startRadius
         topRightRadius: Config.options?.bar.borderless === "separated" ? fullRadius : root.vertical ? startRadius : endRadius

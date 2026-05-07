@@ -34,7 +34,7 @@ NestableObject {
     }
 
     function applyMonitor(m) {
-        if (!m.name) return 
+        if (!m.name) return
         const base = `${m.name},${m.currentMode},${m.x}x${m.y},${m.scale}`
         applyProc.command = ["hyprctl", "keyword", "monitor",
             m.disabled ? `${m.name},disable`

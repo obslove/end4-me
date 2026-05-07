@@ -109,10 +109,10 @@ Item {
                 }
                 Component {
                     id: middleNoGroupDelegate
-                    Loader { 
+                    Loader {
                         Layout.fillHeight: false;
                         Layout.topMargin: Config.options.bar.bottom ? -5 : 3
-                        source: root.getWidgetUrl(modelData) 
+                        source: root.getWidgetUrl(modelData)
                     }
                 }
             }
@@ -147,10 +147,10 @@ Item {
                 }
                 Component {
                     id: rightNoGroupDelegate
-                    Loader { 
+                    Loader {
                         Layout.fillHeight: false;
                         Layout.topMargin: Config.options.bar.bottom ? -5 : 3
-                        source: root.getWidgetUrl(modelData) 
+                        source: root.getWidgetUrl(modelData)
                     }
                 }
             }

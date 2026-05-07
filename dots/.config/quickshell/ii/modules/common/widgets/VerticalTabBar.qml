@@ -17,7 +17,7 @@ Item {
     property real cardHeight: 30
     property bool expanded: false
 
-    implicitHeight: expanded 
+    implicitHeight: expanded
         ? tabButtonList.length * (cardHeight + 2)
         : cardHeight
 
@@ -43,7 +43,7 @@ Item {
             width: root.width
             height: 30
 
-            y: root.expanded 
+            y: root.expanded
                 ? visualPosition * (cardHeight + 2)
                 : isCurrent ? 0 : 0
 

@@ -18,7 +18,7 @@ ComboBox {
     property string searchText: ""
 
     property int visibleCount: {
-        if (!root.searchText || root.searchText.length === 0) 
+        if (!root.searchText || root.searchText.length === 0)
             return root.model?.length ?? 0
         return (root.model ?? []).filter(item => {
             const display = typeof item === "object" ? (item[root.textRole] ?? "") : String(item)

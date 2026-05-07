@@ -70,8 +70,8 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
 

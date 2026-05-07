@@ -34,11 +34,11 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
-            
+
         ContentSection {
             icon: "panorama"
             title: Translation.tr("Wallpaper")
@@ -675,7 +675,7 @@ ContentPage {
 
                 ContentSubsection {
                     title: Translation.tr("Background shape")
-                            
+
                     ConfigSelectionShapeArray {
                         currentValue: Config.options.background.widgets.media.backgroundShape
                         shapeColor: Appearance.colors.colPrimary

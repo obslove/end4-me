@@ -39,7 +39,7 @@ Item {
         running: root.player?.playbackState == MprisPlaybackState.Playing
         interval: Config.options.resources.updateInterval
         repeat: true
-        onTriggered: root.player?.positionChanged()  
+        onTriggered: root.player?.positionChanged()
     }
 
     onArtFilePathChanged: {
@@ -85,7 +85,7 @@ Item {
         WaveVisualizer {
             id: visualizerCanvas
             anchors.fill: parent
-            live: root.player?.isPlaying ?? false  
+            live: root.player?.isPlaying ?? false
             points: root.visualizerPoints
             maxVisualizerValue: root.maxVisualizerValue
             smoothing: root.visualizerSmoothing
@@ -191,7 +191,7 @@ Item {
                         id: artistText
                         anchors.verticalCenter: parent.verticalCenter
                         width: parent.width
-                        font.pixelSize: Appearance.font.pixelSize.large 
+                        font.pixelSize: Appearance.font.pixelSize.large
                         color: blendedColors.colSubtext
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -212,7 +212,7 @@ Item {
             // ── Lyrics ──
             Lyrics {
                 id: lyricsComp
-                player: root.player ?? null  
+                player: root.player ?? null
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 textAlignment: Text.AlignHCenter
@@ -251,7 +251,7 @@ Item {
                     Loader {
                         id: sliderLoader
                         anchors.fill: parent
-                        active: root.player?.canSeek ?? false  
+                        active: root.player?.canSeek ?? false
                         sourceComponent: StyledSlider {
                             configuration: StyledSlider.Configuration.Wavy
                             highlightColor: blendedColors.colPrimary
@@ -271,9 +271,9 @@ Item {
                             left: parent.left
                             right: parent.right
                         }
-                        active: !(root.player?.canSeek ?? false)  
+                        active: !(root.player?.canSeek ?? false)
                         sourceComponent: StyledProgressBar {
-                            wavy: root.player?.isPlaying ?? false  
+                            wavy: root.player?.isPlaying ?? false
                             highlightColor: blendedColors.colPrimary
                             trackColor: blendedColors.colSecondaryContainer
                             value: (root.player?.position ?? 0) / (root.player?.length ?? 1)
@@ -282,7 +282,7 @@ Item {
                 }
 
                 StyledText {
-                    font.pixelSize: Appearance.font.pixelSize.normal 
+                    font.pixelSize: Appearance.font.pixelSize.normal
                     color: blendedColors.colSubtext
                     font.letterSpacing: -0.4
                     font.features: { "tnum": 1 }
@@ -319,11 +319,11 @@ Item {
                     property real baseSize: Math.max(70, parent.parent.height * 0.1)
                     Layout.fillWidth: true
                     implicitHeight: baseSize
-                    buttonRadius: (root.player?.isPlaying ?? false) ? Appearance.rounding.verylarge : baseSize / 2  
+                    buttonRadius: (root.player?.isPlaying ?? false) ? Appearance.rounding.verylarge : baseSize / 2
                     colBackground: (root.player?.isPlaying ?? false) ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
                     colBackgroundHover: (root.player?.isPlaying ?? false) ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
                     colRipple: (root.player?.isPlaying ?? false) ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive
-                    downAction: () => root.player?.togglePlaying()  
+                    downAction: () => root.player?.togglePlaying()
                     contentItem: MaterialSymbol {
                         iconSize: 50
                         fill: 1
@@ -370,7 +370,7 @@ Item {
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
                     downAction: () => {
-                        if (root.player) root.player.volume = (root.player.volume > 0) ? 0 : 1.0  
+                        if (root.player) root.player.volume = (root.player.volume > 0) ? 0 : 1.0
                     }
                     contentItem: MaterialSymbol {
                         iconSize: 18
@@ -392,7 +392,7 @@ Item {
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
                     downAction: () => {
-                        if (root.player) root.player.volume = Math.max(0, (root.player.volume ?? 1) - 0.1)  
+                        if (root.player) root.player.volume = Math.max(0, (root.player.volume ?? 1) - 0.1)
                     }
                     contentItem: MaterialSymbol {
                         iconSize: 18
@@ -412,7 +412,7 @@ Item {
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
                     downAction: () => {
-                        if (root.player) root.player.volume = Math.min(1.5, (root.player.volume ?? 1) + 0.1)  
+                        if (root.player) root.player.volume = Math.min(1.5, (root.player.volume ?? 1) + 0.1)
                     }
                     contentItem: MaterialSymbol {
                         iconSize: 18

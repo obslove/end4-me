@@ -121,7 +121,7 @@ ContentSubsection {
                 property int targetIndex: -1
                 visible: false
                 width: 3
-                height: 32 
+                height: 32
                 radius: 2
                 color: Appearance.colors.colPrimary
 
@@ -184,7 +184,7 @@ ContentSubsection {
                         required property var modelData
                         leftmost: true; rightmost: true
                         buttonText: modelData.name
-                        buttonIcon: modelData.icon ?? ""  
+                        buttonIcon: modelData.icon ?? ""
                         onClicked: {
                             let list = root.layout.slice()
                             list.push(modelData.id)

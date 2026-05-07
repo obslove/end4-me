@@ -40,20 +40,20 @@ Window {
                 new MaterialShapes.PointNRound(new Offset.Offset(1, 0.67), // We specify the point...
                 new CornerRounding.CornerRounding(0.211, 2)),              // ...and the rounding. The 1st value is size of the rounding, 2nd is smoothing
                 // bottom-left
-                new MaterialShapes.PointNRound(new Offset.Offset(0, 0.67), 
-                new CornerRounding.CornerRounding(0.207, 2)), 
+                new MaterialShapes.PointNRound(new Offset.Offset(0, 0.67),
+                new CornerRounding.CornerRounding(0.207, 2)),
                 // top-left
-                new MaterialShapes.PointNRound(new Offset.Offset(0, 0), 
-                new CornerRounding.CornerRounding(0.207, 2)), 
+                new MaterialShapes.PointNRound(new Offset.Offset(0, 0),
+                new CornerRounding.CornerRounding(0.207, 2)),
                 // top-right
-                new MaterialShapes.PointNRound(new Offset.Offset(1, 0), 
+                new MaterialShapes.PointNRound(new Offset.Offset(1, 0),
                 new CornerRounding.CornerRounding(0.211, 2)),
             ], 1).normalized() // Make sure it's properly centered and scaled to perfectly fit [0, 1]
         }
 
         // Note 1:
         // The corner rounding is high just so it is obvious this is a squircle
-        // Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious. 
+        // Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious. Obvious squircles are atrocious.
 
         // Note 2:
         // Unfortunately the YouTube logo is not simply a squircle

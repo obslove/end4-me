@@ -63,7 +63,7 @@ MouseArea {
                 color: Appearance.colors.colPrimaryContainer
                 radius: Appearance.rounding.full
                 implicitHeight: 30
-                implicitWidth: pillRow.implicitWidth + 4 + 4 
+                implicitWidth: pillRow.implicitWidth + 4 + 4
 
                 RowLayout {
                     id: pillRow

@@ -120,8 +120,8 @@ ContentPage {
 
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
         // ── Displays ─────────────────────────────────────────────────────────────
@@ -435,7 +435,7 @@ ContentPage {
 
             AutostartApps {}
         }
-        
+
         // ── Animations ───────────────────────────────────────────────────────────
         ContentSection {
             icon: "animation"
@@ -454,7 +454,7 @@ ContentPage {
 
                 ConfigSelectionArray {
                     currentValue: Config.options.hyprland.animations.animation
-                    
+
                     onSelected: newValue => {
                         Config.options.hyprland.animations.animation = newValue;
 
@@ -463,13 +463,13 @@ ContentPage {
                             "normal": presetNormal,
                             "niri":   presetNiri
                         };
-                        
+
                         const content = presets[newValue] ?? "";
 
                         if (content !== "") {
                             saveAnimProc.command = [
-                                "bash", 
-                                "-c", 
+                                "bash",
+                                "-c",
                                 "echo '" + content + "' > ~/.config/hypr/hyprland/shellOverrides/animations.conf"
                             ];
                             saveAnimProc.running = true;
@@ -482,7 +482,7 @@ ContentPage {
                     ]
                 }
             }
-            
+
             NoticeBox {
                 Layout.fillWidth: true
                 Layout.topMargin: 15
@@ -512,7 +512,7 @@ ContentPage {
                     }
                 }
             }
-            
+
             Process {
                 id: saveAnimProc
                 onRunningChanged: if (!running) reloadAnimProc.running = true

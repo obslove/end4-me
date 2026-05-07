@@ -216,7 +216,7 @@ Variants {
                 sourceComponent: GaussianBlur {
                     source: bgRoot.wallpaperAnimation === "" ? wallpaper : transitionEffect
                     radius: GlobalStates.screenLocked ? Config.options.lock.blur.radius : 0
-                    samples: 23 // why? radius * 2 + 1 
+                    samples: 23 // why? radius * 2 + 1
                     Rectangle {
                         opacity: GlobalStates.screenLocked ? 1 : 0
                         anchors.fill: parent

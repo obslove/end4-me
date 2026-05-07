@@ -53,13 +53,13 @@ LazyLoader {
                 const base = root.QsWindow?.mapFromItem(
                     root.hoverTarget,
                     0, (root.hoverTarget.height - popupBackground.implicitHeight) / 2
-                ).y  
+                ).y
                 const margin = Appearance.sizes.elevationMargin
                 const maxTop = popupWindow.screen.height - popupBackground.implicitHeight - margin - 15
                 return Math.max(margin, Math.min(base, maxTop))
             }
-            right: Config.options.bar.vertical && Config.options.bar.bottom ? Appearance.sizes.verticalBarWidth : 0  
-            bottom: Config.options.bar.vertical ? 0 : Appearance.sizes.barHeight  
+            right: Config.options.bar.vertical && Config.options.bar.bottom ? Appearance.sizes.verticalBarWidth : 0
+            bottom: Config.options.bar.vertical ? 0 : Appearance.sizes.barHeight
         }
         WlrLayershell.namespace: "quickshell:popup"
         WlrLayershell.layer: WlrLayer.Overlay

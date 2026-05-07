@@ -35,8 +35,8 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
 
@@ -241,7 +241,7 @@ ContentPage {
                     Config.options.screenRecord.savePath = text;
                 }
             }
-            
+
             MaterialTextArea {
                 Layout.fillWidth: true
                 placeholderText: Translation.tr("Screenshot Path (leave empty to just copy)")
@@ -391,7 +391,7 @@ ContentPage {
                     }
                 }
             }
-            
+
             MaterialTextArea {
                 Layout.fillWidth: true
                 placeholderText: Translation.tr("City name")

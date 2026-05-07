@@ -35,7 +35,7 @@ ContentPage {
             page.contentY = Math.max(0, pos.y - 0)
         }
     }
-    
+
     Process {
         id: translationProc
         property string locale: ""
@@ -43,8 +43,8 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
 

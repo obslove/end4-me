@@ -22,14 +22,14 @@ Singleton {
             root.query = prefix + root.query;
         }
     }
-    
+
     Process {
         id: keywordHarvester
         property var pendingPages: []
         property string currentPageName: ""
-        
+
         function startHarvesting() {
-            root.settingsKeywordsCache = {}; 
+            root.settingsKeywordsCache = {};
             pendingPages = root.settingsIndex.slice();
             next();
         }
@@ -38,16 +38,16 @@ Singleton {
             if (pendingPages.length === 0) {
                 return;
             }
-            
+
             let currentPage = pendingPages.shift();
             let fullPath = FileUtils.trimFileProtocol(
                 Quickshell.shellPath("modules/ii/settings/pages/" + currentPage.path)
             )
 
             let rawCommand = "grep -oP \"title:\\s*Translation.tr\\(['\\\"].*?['\\\"]\\)\" " + fullPath + " | sed -E \"s/title:\\s*Translation.tr\\(['\\\"](.*)['\\\"]\\)/\\1/g\" | tr '\\n' ' '";
-            
+
             command = ["bash", "-c", rawCommand];
-            
+
             keywordHarvester.currentPageName = currentPage.page;
             running = true;
         }
@@ -461,7 +461,7 @@ Singleton {
             if (!startsWithWebSearchPrefix)
                 result.push(webSearchResultObject);
         }
-        
+
         return result;
     }
 

@@ -318,7 +318,7 @@ Item {
                         }
                     }
 
-                    // Empty Workspace 
+                    // Empty Workspace
                     Rectangle {
                         visible: rowItem.wsWindows.length === 0
                         anchors.centerIn: parent

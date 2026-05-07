@@ -6,11 +6,11 @@ import qs.modules.common.widgets // Para las sombras y estilos
 
 Item {
     id: root
-    
+
     // Propiedades que recibe desde BarConfig.qml
     property alias model: repeater.model
-    property var onItemSelected: (item) => {} 
-    
+    property var onItemSelected: (item) => {}
+
     // Control de visibilidad
     property bool visible: false
 
@@ -20,14 +20,14 @@ Item {
 
         component: PanelWindow {
             id: popupWindow
-            
+
             // Configuración de Wayland
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "quickshell:popup"
-            
+
             color: "transparent"
             mask: true
-            
+
             // Dimensiones basadas en el contenido
             implicitWidth: container.implicitWidth + 40
             implicitHeight: container.implicitHeight + 40
@@ -45,9 +45,9 @@ Item {
             Rectangle {
                 id: container
                 anchors.centerIn: parent
-                implicitWidth: 200 
+                implicitWidth: 200
                 implicitHeight: layout.implicitHeight + 16
-                
+
                 radius: Appearance.rounding.normal
                 color: Appearance.m3colors.m3surfaceContainer
                 border.width: 1
@@ -63,7 +63,7 @@ Item {
                         id: repeater
                         delegate: MouseArea {
                             Layout.fillWidth: true
-                            implicitHeight: 40 
+                            implicitHeight: 40
                             hoverEnabled: true
                             id: itemArea
 

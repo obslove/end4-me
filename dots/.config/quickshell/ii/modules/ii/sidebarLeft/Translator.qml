@@ -43,11 +43,11 @@ Item {
         let temp = root.targetLanguage;
         root.targetLanguage = root.sourceLanguage;
         root.sourceLanguage = temp;
-        
+
         // Save to config
         Config.options.language.translator.targetLanguage = root.targetLanguage;
         Config.options.language.translator.sourceLanguage = root.sourceLanguage;
-        
+
         translateTimer.restart(); // Restart translation after swap
     }
 
@@ -204,7 +204,7 @@ Item {
                     }
                 }
 
-            }    
+            }
         }
 
         LanguageSelectorButton { // Source language button

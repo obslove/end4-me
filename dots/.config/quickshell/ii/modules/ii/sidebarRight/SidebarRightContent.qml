@@ -115,7 +115,7 @@ Item {
                     anchors.top: parent.top
                     anchors.margins: 4
                     toggled: false
-                    visible: bottomWidgetGroup.collapsed 
+                    visible: bottomWidgetGroup.collapsed
                     buttonIcon: "mode_off_on"
                     onClicked: GlobalStates.sessionOpen = true
                     StyledToolTip {
@@ -242,7 +242,7 @@ Item {
             radius: Appearance.rounding.normal
             implicitWidth: uptimeRow.implicitWidth + 24
             implicitHeight: uptimeRow.implicitHeight + 8
-            
+
             Row {
                 id: uptimeRow
                 anchors.centerIn: parent

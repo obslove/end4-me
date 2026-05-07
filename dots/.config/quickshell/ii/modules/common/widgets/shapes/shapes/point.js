@@ -151,4 +151,3 @@ class Point {
         return new Point(-this.y, this.x);
     }
 }
-

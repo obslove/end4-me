@@ -284,7 +284,7 @@ Singleton {
                     property list<string> middleLayout: ["clockWidget"]
                     property list<string> rightLayout: ["systemIcons"]
                 }
-                
+
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
@@ -294,7 +294,7 @@ Singleton {
                     property bool showWallpaperToggle: false
                     property bool showDarkModeToggle: true
                     property bool showPerformanceProfileToggle: false
-                    property bool showScreenRecord: false       
+                    property bool showScreenRecord: false
                     property bool isRecording: false
                 }
 
@@ -544,7 +544,7 @@ Singleton {
                 property JsonObject wallpapers: JsonObject {
                     property bool enable: true
                 }
-                
+
                 property JsonObject ai: JsonObject {
                     property bool textFadeIn: false
                 }
@@ -631,10 +631,10 @@ Singleton {
                 property int adviseUpdateThreshold: 75 // packages
                 property int stronglyAdviseUpdateThreshold: 200 // packages
             }
-            
+
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
-                property int changeInterval: 0 
+                property int changeInterval: 0
             }
 
             property JsonObject wallpapers: JsonObject {
@@ -646,7 +646,7 @@ Singleton {
                     property string nsfw: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers/NSFW`)
                 }
             }
-            
+
             property JsonObject wallhaven: JsonObject {
                 property string apiKey: "" // opcional, solo para NSFW o más resultados
             }

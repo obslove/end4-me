@@ -22,7 +22,7 @@ GroupButton {
     rightRadius: (toggled || rightmost) ? (height / 2) : Appearance.rounding.unsharpenmore
 
     horizontalPadding: 12
-    verticalPadding: 8 
+    verticalPadding: 8
 
     colBackground: Appearance.colors.colSecondaryContainer
     colBackgroundHover: Appearance.colors.colSecondaryContainerHover

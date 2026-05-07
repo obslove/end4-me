@@ -1,75 +1,75 @@
-pragma Singleton  
-pragma ComponentBehavior: Bound  
-  
-import qs.modules.common  
-import qs.services  
-import Quickshell;  
-import QtQuick;  
-  
-/**  
- * A service for interacting with wallpaper APIs (Unsplash and Wallhaven).  
- */  
-Singleton {  
-    id: root  
-    property Component unsplashResponseDataComponent: WallpaperResponseData {}  
+pragma Singleton
+pragma ComponentBehavior: Bound
 
-    signal tagSuggestion(string query, var suggestions)  
-    signal responseFinished()  
+import qs.modules.common
+import qs.services
+import Quickshell;
+import QtQuick;
+
+/**
+ * A service for interacting with wallpaper APIs (Unsplash and Wallhaven).
+ */
+Singleton {
+    id: root
+    property Component unsplashResponseDataComponent: WallpaperResponseData {}
+
+    signal tagSuggestion(string query, var suggestions)
+    signal responseFinished()
 
     property string unsplashApiToken: KeyringStorage.keyringData?.apiKeys?.wallpapers_unsplash ?? ""
-    property string wallhavenApiToken: Config.options.wallhaven?.apiKey ?? ""  
-    property string failMessage: Translation.tr("That didn't work. Tips:\n- Check your search query\n- Try different keywords\n- Check your API key under settings")  
-    property var responses: []  
-    property int runningRequests: 0  
-    property var providerList: ["unsplash", "wallhaven"]  
+    property string wallhavenApiToken: Config.options.wallhaven?.apiKey ?? ""
+    property string failMessage: Translation.tr("That didn't work. Tips:\n- Check your search query\n- Try different keywords\n- Check your API key under settings")
+    property var responses: []
+    property int runningRequests: 0
+    property var providerList: ["unsplash", "wallhaven"]
     property var currentProvider: Config.options.wallpapers.service ?? "wallhaven"
     property string currentSortType: Config.options.wallpapers.sort ?? "favourites"
     property bool showAnimeResults: Config.options.wallpapers.showAnimeResults ?? false
     property string similarImageId: ""
     property var currentSearchTags: []
-    property var providers: {  
-        "system": { "name": Translation.tr("System") },  
-        "unsplash": {  
-            "name": "Unsplash",  
-            "url": "https://unsplash.com",  
-            "api": "https://api.unsplash.com/search/photos",            
-            "description": Translation.tr("High quality photos from Unsplash"),  
-            "mapFunc": (response) => {  
+    property var providers: {
+        "system": { "name": Translation.tr("System") },
+        "unsplash": {
+            "name": "Unsplash",
+            "url": "https://unsplash.com",
+            "api": "https://api.unsplash.com/search/photos",
+            "description": Translation.tr("High quality photos from Unsplash"),
+            "mapFunc": (response) => {
                 const items = Array.isArray(response.results) ? response.results : [];
                 return items.map(item => ({
-                    "id": item.id,  
-                    "width": item.width,  
-                    "height": item.height,  
-                    "aspect_ratio": item.width / item.height,  
-                    "tags": item.tags ? item.tags.map(tag => tag.title).join(" ") : (item.alt_description || item.description || "wallpaper"),  
-                    "rating": "s",  
-                    "is_nsfw": false,  
-                    "md5": item.id,  
-                    "preview_url": item.urls.small,  
-                    "sample_url": item.urls.full,  
+                    "id": item.id,
+                    "width": item.width,
+                    "height": item.height,
+                    "aspect_ratio": item.width / item.height,
+                    "tags": item.tags ? item.tags.map(tag => tag.title).join(" ") : (item.alt_description || item.description || "wallpaper"),
+                    "rating": "s",
+                    "is_nsfw": false,
+                    "md5": item.id,
+                    "preview_url": item.urls.small,
+                    "sample_url": item.urls.full,
                     "file_url": item.urls.full + "&w=1920&h=1080&fit=crop",
-                    "file_ext": "jpg",  
-                    "source": item.links.html,  
-                    "author": item.user.name,  
+                    "file_ext": "jpg",
+                    "source": item.links.html,
+                    "author": item.user.name,
                     "author_url": item.user.links.html,
                     "color": item.color || ""
                 }))
-            },  
-            "tagSearchTemplate": "https://api.unsplash.com/search/collections",  
-            "tagMapFunc": (response) => {  
+            },
+            "tagSearchTemplate": "https://api.unsplash.com/search/collections",
+            "tagMapFunc": (response) => {
                 return response.results.slice(0, 10).map(item => ({
-                    "name": item.title.toLowerCase().replace(/\s+/g, '-'),  
-                    "displayName": item.title,  
-                    "count": item.total_photos,  
-                    "description": item.description || ""  
+                    "name": item.title.toLowerCase().replace(/\s+/g, '-'),
+                    "displayName": item.title,
+                    "count": item.total_photos,
+                    "description": item.description || ""
                 }))
-            }  
-        },  
-        "wallhaven": {  
-            "name": "Wallhaven",  
-            "url": "https://wallhaven.cc",  
-            "api": "https://wallhaven.cc/api/v1/search",  
-            "description": Translation.tr("Wallpapers | Advanced search with ratios, resolutions, categories, sorting"),  
+            }
+        },
+        "wallhaven": {
+            "name": "Wallhaven",
+            "url": "https://wallhaven.cc",
+            "api": "https://wallhaven.cc/api/v1/search",
+            "description": Translation.tr("Wallpapers | Advanced search with ratios, resolutions, categories, sorting"),
             "mapFunc": (response) => {
                 const data = response?.data
                 if (!Array.isArray(data)) {
@@ -78,31 +78,31 @@ Singleton {
                 }
                 console.log("[Wallpapers] Wallhaven found " + data.length + " items")
                 return data.map(item => ({
-                    "id": item.id,  
-                    "width": item.dimension_x || 1920,  
-                    "height": item.dimension_y || 1080,  
-                    "aspect_ratio": (item.dimension_x || 1920) / (item.dimension_y || 1080),  
-                    "tags": item.tags && Array.isArray(item.tags) ? item.tags.map(tag => tag.name).join(" ") : "",  
-                    "rating": item.purity === 'sfw' ? 's' : item.purity === 'sketchy' ? 'q' : 'e',  
-                    "is_nsfw": item.purity !== 'sfw',  
-                    "md5": item.id,  
+                    "id": item.id,
+                    "width": item.dimension_x || 1920,
+                    "height": item.dimension_y || 1080,
+                    "aspect_ratio": (item.dimension_x || 1920) / (item.dimension_y || 1080),
+                    "tags": item.tags && Array.isArray(item.tags) ? item.tags.map(tag => tag.name).join(" ") : "",
+                    "rating": item.purity === 'sfw' ? 's' : item.purity === 'sketchy' ? 'q' : 'e',
+                    "is_nsfw": item.purity !== 'sfw',
+                    "md5": item.id,
                     "preview_url": item.thumbs?.original ?? item.path,
                     "sample_url": item.thumbs?.small ?? item.path,
-                    "file_url": item.path,  
-                    "file_ext": item.file_type ? item.file_type.split('/')[1] : 'jpg',  
+                    "file_url": item.path,
+                    "file_ext": item.file_type ? item.file_type.split('/')[1] : 'jpg',
                     "source": item.source || "",
-                    "color": item.colors[0] || ""  
+                    "color": item.colors[0] || ""
                 }))
-            },  
-            "tagSearchTemplate": "https://wallhaven.cc/api/v1/search",  
-            "tagMapFunc": (response) => {  
+            },
+            "tagSearchTemplate": "https://wallhaven.cc/api/v1/search",
+            "tagMapFunc": (response) => {
                 if (!response.data) return []
                 return response.data.slice(0, 10).map(item => ({
-                    "name": item.tags?.length > 0 ? item.tags[0].name : "",  
-                    "count": ""  
+                    "name": item.tags?.length > 0 ? item.tags[0].name : "",
+                    "count": ""
                 }))
-            }  
-        }  
+            }
+        }
     }
 
     // --- Helpers ---
@@ -132,8 +132,8 @@ Singleton {
         Config.options.wallpapers.showAnimeResults = show
     }
 
-    function setProvider(provider) {  
-        provider = provider.toLowerCase()  
+    function setProvider(provider) {
+        provider = provider.toLowerCase()
         if (providerList.indexOf(provider) === -1) {
             root.addSystemMessage(Translation.tr("Invalid API provider. Supported: \n- ") + providerList.join("\n- "))
             return
@@ -144,8 +144,8 @@ Singleton {
         root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name)
     }
 
-    function clearResponses() {  
-        responses = []  
+    function clearResponses() {
+        responses = []
     }
 
     function addSystemMessage(message, fileUrl = "") {
@@ -160,7 +160,7 @@ Singleton {
     }
 
     function constructRequestUrl(tags, limit = 20, page = 1, imageId = "") {
-        var provider = providers[currentProvider]  
+        var provider = providers[currentProvider]
         var params = []
         var tagString = tags.join(" ")
 

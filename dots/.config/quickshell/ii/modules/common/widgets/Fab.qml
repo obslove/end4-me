@@ -26,7 +26,7 @@ Item {
     FloatingActionButton {
         id: fabWidget
         onClicked: e => root.clicked(e)
-        baseSize: 30 
+        baseSize: 30
         colBackground: Appearance.colors.colPrimaryContainer
         colBackgroundHover: Appearance.colors.colPrimaryContainerHover
         colRipple: Appearance.colors.colPrimaryContainerActive

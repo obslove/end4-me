@@ -85,8 +85,8 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
 
@@ -103,7 +103,7 @@ ContentPage {
                 Item {
                     implicitWidth: 340
                     implicitHeight: 210
-                    
+
                     StyledImage {
                         id: wallpaperPreview
                         anchors.fill: parent
@@ -193,7 +193,7 @@ ContentPage {
                             iconText: "colorize"
                             onClicked: {
                                 Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color"]);
-                            }        
+                            }
                         }
                     }
                 }

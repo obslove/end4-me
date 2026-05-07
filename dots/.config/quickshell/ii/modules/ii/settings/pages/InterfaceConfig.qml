@@ -34,11 +34,11 @@ ContentPage {
     }
 
     ColumnLayout {
-        id: mainLayout 
-        Layout.fillWidth: true   
+        id: mainLayout
+        Layout.fillWidth: true
         Layout.fillHeight: true
         spacing: 20
-    
+
         ContentSection { // I see that for many the overview is important, I put it first why not
             icon: "overview_key"
             shape: MaterialShape.Shape.Gem
@@ -582,7 +582,7 @@ ContentPage {
                     Config.options.wallpaperSelector.useSystemFileDialog = checked;
                 }
             }
-            
+
             ConfigSpinBox {
                 icon: "timer"
                 text: Translation.tr("Wallpaper change interval (min)")
@@ -614,7 +614,7 @@ ContentPage {
 
                     Timer {
                         id: mainFontDebounceTimer
-                        interval: 1000 
+                        interval: 1000
                         running: false
                         onTriggered: {
                             Config.options.appearance.fonts.main = mainFontTextArea.text;

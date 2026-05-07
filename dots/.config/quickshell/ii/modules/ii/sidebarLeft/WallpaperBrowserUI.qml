@@ -1,32 +1,32 @@
-import qs  
-import qs.services  
-import qs.modules.common  
-import qs.modules.common.widgets  
-import qs.modules.common.functions  
-import qs.modules.ii.sidebarLeft.wallpaperBrowser  
-import QtQuick  
-import QtQuick.Controls  
-import QtQuick.Layouts  
-import Qt5Compat.GraphicalEffects  
-import Quickshell  
-  
-Item {  
-    id: root  
-    property real padding: 4  
-    property var inputField: searchInputField  
-    property string commandPrefix: "/"  
-    property string currentService: WallpaperBrowser.currentProvider ?? "unsplash"  
-    property var suggestionQuery: ""  
-    property var suggestionList: []  
+import qs
+import qs.services
+import qs.modules.common
+import qs.modules.common.widgets
+import qs.modules.common.functions
+import qs.modules.ii.sidebarLeft.wallpaperBrowser
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
+import Quickshell
+
+Item {
+    id: root
+    property real padding: 4
+    property var inputField: searchInputField
+    property string commandPrefix: "/"
+    property string currentService: WallpaperBrowser.currentProvider ?? "unsplash"
+    property var suggestionQuery: ""
+    property var suggestionList: []
     property int imageLimit: 20
-    readonly property var responses: WallpaperBrowser.responses  
-    property int lastResponseLength: 0  
-    property string downloadPath: Config.options.wallpapers.paths.download 
+    readonly property var responses: WallpaperBrowser.responses
+    property int lastResponseLength: 0
+    property string downloadPath: Config.options.wallpapers.paths.download
     property string nsfwPath: Config.options.wallpapers.paths.nsfw
-    property real scrollOnNewResponse: 100  
-    property real pullLoadingGap: 100  
-    property bool pullLoading: false  
-    property real normalizedPullDistance: 0  
+    property real scrollOnNewResponse: 100
+    property real pullLoadingGap: 100
+    property bool pullLoading: false
+    property real normalizedPullDistance: 0
 
     property var sortOptions: ({
         "unsplash": ["relevant", "latest"],
@@ -40,164 +40,164 @@ Item {
         }
         return true
     }
-      
-    onFocusChanged: focus => {  
+
+    onFocusChanged: focus => {
         if (focus) root.inputField.forceActiveFocus()
-    }  
-      
-    ColumnLayout {  
+    }
+
+    ColumnLayout {
         id: columnLayout
-        anchors.fill: parent  
+        anchors.fill: parent
         anchors.margins: 4
-        spacing: 10  
-          
-        Item {  
-            Layout.fillWidth: true  
-            Layout.fillHeight: true  
-              
-            layer.enabled: true  
-            layer.effect: OpacityMask {  
-                maskSource: Rectangle {  
-                    width: columnLayout.width  
-                    height: columnLayout.height  
-                    radius: Appearance.rounding.small  
-                }  
+        spacing: 10
+
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            layer.enabled: true
+            layer.effect: OpacityMask {
+                maskSource: Rectangle {
+                    width: columnLayout.width
+                    height: columnLayout.height
+                    radius: Appearance.rounding.small
+                }
             }
-              
-            ScrollEdgeFade {  
-                z: 1  
-                target: responseListView  
-                vertical: true  
-            }  
-              
-            StyledListView {  
-                id: responseListView  
+
+            ScrollEdgeFade {
+                z: 1
+                target: responseListView
+                vertical: true
+            }
+
+            StyledListView {
+                id: responseListView
                 anchors.fill: parent
-                visible: root.responses.length > 0 
+                visible: root.responses.length > 0
 
                 function nextPage() {
-                    root.pullLoading = true  
+                    root.pullLoading = true
                     root.handleInput(`${root.commandPrefix}next`)
                 }
 
                 property var modelValues: root.responses
                 onModelValuesChanged: responseListView.positionViewAtEnd()
-                
-                model: ScriptModel {  
+
+                model: ScriptModel {
                     values: root.responses
-                }  
-                delegate: WallpaperResponse {  
-                    responseData: modelData  
-                    tagInputField: root.inputField  
-                    downloadPath: root.downloadPath  
-                    nsfwPath: root.nsfwPath  
-                } 
+                }
+                delegate: WallpaperResponse {
+                    responseData: modelData
+                    tagInputField: root.inputField
+                    downloadPath: root.downloadPath
+                    nsfwPath: root.nsfwPath
+                }
 
                 onDragEnded: {
                     if (responseListView.verticalOvershoot > root.pullLoadingGap)
                         responseListView.nextPage()
-                }  
-            }  
+                }
+            }
 
-            PagePlaceholder {  
-                shown: root.responses.length === 0  
+            PagePlaceholder {
+                shown: root.responses.length === 0
                 icon: "panorama"
-                description: Translation.tr("Type %1service to get started").arg(root.commandPrefix)  
-                title: Translation.tr("Wallpapers")  
-                shape: MaterialShape.Shape.Puffy  
-            } 
-              
-            ScrollToBottomButton {  
-                z: 3  
-                target: responseListView  
-            }  
-              
+                description: Translation.tr("Type %1service to get started").arg(root.commandPrefix)
+                title: Translation.tr("Wallpapers")
+                shape: MaterialShape.Shape.Puffy
+            }
+
+            ScrollToBottomButton {
+                z: 3
+                target: responseListView
+            }
+
             MaterialLoadingIndicator {
                 visible: WallpaperBrowser.runningRequests > 0
-                z: 4  
-                anchors {  
-                    horizontalCenter: parent.horizontalCenter  
-                    bottom: parent.bottom  
-                    bottomMargin: 20 + (root.pullLoading ? 0 : Math.max(0, (root.normalizedPullDistance - 0.5) * 50))  
-                }  
-                loading: WallpaperBrowser.runningRequests > 0  
-            }  
-        }  
-          
-        DescriptionBox {  
-            text: root.suggestionList[suggestions.selectedIndex]?.description ?? ""  
-            showArrows: root.suggestionList.length > 1  
-        }  
-          
-        FlowButtonGroup {  
-            id: suggestions  
-            visible: root.suggestionList.length > 0 && searchInputField.text.length > 0  
-            property int selectedIndex: 0  
-            Layout.fillWidth: true  
-            spacing: 5  
-              
-            Repeater {  
-                id: suggestionRepeater  
-                model: {  
-                    suggestions.selectedIndex = 0;  
-                    return root.suggestionList.slice(0, 10);  
-                }  
-                delegate: ApiCommandButton {  
-                    id: commandButton  
-                    colBackground: suggestions.selectedIndex === index ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer  
-                    bounce: false  
-                    contentItem: StyledText {  
-                        font.pixelSize: Appearance.font.pixelSize.small  
-                        color: Appearance.m3colors.m3onSurface  
-                        horizontalAlignment: Text.AlignHCenter  
-                        text: modelData.displayName ?? modelData.name  
-                    }  
-                    onHoveredChanged: {  
+                z: 4
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    bottom: parent.bottom
+                    bottomMargin: 20 + (root.pullLoading ? 0 : Math.max(0, (root.normalizedPullDistance - 0.5) * 50))
+                }
+                loading: WallpaperBrowser.runningRequests > 0
+            }
+        }
+
+        DescriptionBox {
+            text: root.suggestionList[suggestions.selectedIndex]?.description ?? ""
+            showArrows: root.suggestionList.length > 1
+        }
+
+        FlowButtonGroup {
+            id: suggestions
+            visible: root.suggestionList.length > 0 && searchInputField.text.length > 0
+            property int selectedIndex: 0
+            Layout.fillWidth: true
+            spacing: 5
+
+            Repeater {
+                id: suggestionRepeater
+                model: {
+                    suggestions.selectedIndex = 0;
+                    return root.suggestionList.slice(0, 10);
+                }
+                delegate: ApiCommandButton {
+                    id: commandButton
+                    colBackground: suggestions.selectedIndex === index ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer
+                    bounce: false
+                    contentItem: StyledText {
+                        font.pixelSize: Appearance.font.pixelSize.small
+                        color: Appearance.m3colors.m3onSurface
+                        horizontalAlignment: Text.AlignHCenter
+                        text: modelData.displayName ?? modelData.name
+                    }
+                    onHoveredChanged: {
                         if (commandButton.hovered) suggestions.selectedIndex = index
-                    }  
+                    }
                     onClicked: suggestions.acceptSuggestion(modelData.name)
-                }  
-            }  
-              
-            function acceptSuggestion(word) {  
+                }
+            }
+
+            function acceptSuggestion(word) {
                 const words = searchInputField.text.trim().split(/\s+/)
                 words[words.length > 0 ? words.length - 1 : 0] = word
                 searchInputField.text = words.join(" ") + " "
                 searchInputField.cursorPosition = searchInputField.text.length
                 searchInputField.forceActiveFocus()
-            }  
-              
-            function acceptSelectedWord() {  
+            }
+
+            function acceptSelectedWord() {
                 if (suggestions.selectedIndex >= 0 && suggestions.selectedIndex < suggestionRepeater.count) {
                     suggestions.acceptSuggestion(root.suggestionList[suggestions.selectedIndex].name)
                 }
-            }  
-        }  
-          
-        Rectangle {  
-            id: searchInputContainer  
-            property real spacing: 5  
-            Layout.fillWidth: true  
-            radius: Appearance.rounding.normal - root.padding  
-            color: Appearance.colors.colLayer2  
-            implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin + statusRowLayout.implicitHeight + statusRowLayout.anchors.bottomMargin + spacing, 45)  
-            clip: true  
+            }
+        }
 
-            RowLayout {  
-                id: inputFieldRowLayout  
-                anchors.left: parent.left  
-                anchors.right: parent.right  
-                anchors.top: parent.top  
-                anchors.margins: 10  
-                spacing: 10  
-                  
-                StyledTextArea {  
-                    id: searchInputField  
-                    Layout.fillWidth: true  
+        Rectangle {
+            id: searchInputContainer
+            property real spacing: 5
+            Layout.fillWidth: true
+            radius: Appearance.rounding.normal - root.padding
+            color: Appearance.colors.colLayer2
+            implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin + statusRowLayout.implicitHeight + statusRowLayout.anchors.bottomMargin + spacing, 45)
+            clip: true
+
+            RowLayout {
+                id: inputFieldRowLayout
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 10
+                spacing: 10
+
+                StyledTextArea {
+                    id: searchInputField
+                    Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.topMargin: 6  
+                    Layout.topMargin: 6
                     placeholderText: Translation.tr("Search wallpapers...")
-                      
+
                     onTextChanged: {
                         const text = searchInputField.text
                         const prefix = root.commandPrefix
@@ -236,8 +236,8 @@ Item {
                                 .map(cmd => ({ name: `${prefix}${cmd.name}`, description: cmd.description }))
                         }
                     }
-                      
-                    Keys.onPressed: event => {  
+
+                    Keys.onPressed: event => {
                         if (event.key === Qt.Key_Return && event.modifiers & Qt.ShiftModifier) {
                             searchInputField.insert(searchInputField.cursorPosition, "\n")
                         } else if (event.key === Qt.Key_Return) {
@@ -260,13 +260,13 @@ Item {
                             event.accepted = true
                         }
                     }
-                }  
-                  
-                RippleButton {  
-                    id: searchButton  
-                    Layout.preferredWidth: 40  
-                    Layout.preferredHeight: 40  
-                    enabled: searchInputField.text.trim().length > 0  
+                }
+
+                RippleButton {
+                    id: searchButton
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: 40
+                    enabled: searchInputField.text.trim().length > 0
                     colBackground: enabled ? Appearance.colors.colPrimary : "transparent"
                     colBackgroundHover: enabled ? Appearance.colors.colPrimaryHover : "transparent"
                     onClicked: {
@@ -281,46 +281,46 @@ Item {
                         color: searchButton.enabled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2Disabled
                         text: "image_search"
                     }
-                }  
-            }  
-              
-            RowLayout {  
-                id: statusRowLayout  
-                anchors.left: parent.left  
-                anchors.right: parent.right  
-                anchors.bottom: parent.bottom  
-                anchors.bottomMargin: 5  
-                anchors.leftMargin: 10  
-                anchors.rightMargin: 5  
-                spacing: 8  
-                  
-                ApiInputBoxIndicator {  
-                    icon: "wallpaper"  
+                }
+            }
+
+            RowLayout {
+                id: statusRowLayout
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 5
+                anchors.leftMargin: 10
+                anchors.rightMargin: 5
+                spacing: 8
+
+                ApiInputBoxIndicator {
+                    icon: "wallpaper"
                     text: root.currentService === "wallhaven" ? "Wallhaven" : "Unsplash"
                     tooltipText: Translation.tr("Current service: %1\nSet it with %2service SERVICE").arg(root.currentService === "wallhaven" ? "Wallhaven" : "Unsplash").arg(root.commandPrefix)
                 }
 
-                ApiInputBoxIndicator {  
-                    icon: "filter_alt"  
-                    text: WallpaperBrowser.currentSortType  
+                ApiInputBoxIndicator {
+                    icon: "filter_alt"
+                    text: WallpaperBrowser.currentSortType
                     tooltipText: Translation.tr("Current sort type: %1\nSet it with %2sort SORT_TYPE").arg(WallpaperBrowser.currentSortType).arg(root.commandPrefix)
-                }  
-                  
-                ApiInputBoxIndicator {  
-                    icon: "key"  
-                    text: ""  
+                }
+
+                ApiInputBoxIndicator {
+                    icon: "key"
+                    text: ""
                     tooltipText: Translation.tr("API key is set\nChange with %1api YOUR_API_KEY").arg(root.commandPrefix)
-                }  
-                  
-                Item { Layout.fillWidth: true }  
-                  
-                ButtonGroup {  
-                    padding: 0  
-                    Repeater {  
+                }
+
+                Item { Layout.fillWidth: true }
+
+                ButtonGroup {
+                    padding: 0
+                    Repeater {
                         model: [{ name: "service" }, { name: "clear" }]
-                        delegate: ApiCommandButton {  
+                        delegate: ApiCommandButton {
                             property string commandRepresentation: `${root.commandPrefix}${modelData.name}`
-                            buttonText: commandRepresentation  
+                            buttonText: commandRepresentation
                             downAction: () => {
                                 if (modelData.name === "clear") {
                                     root.handleInput(commandRepresentation)
@@ -330,14 +330,14 @@ Item {
                                 searchInputField.cursorPosition = searchInputField.text.length
                                 searchInputField.forceActiveFocus()
                             }
-                        }  
-                    }  
-                }  
-            }  
-        }  
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    property var allCommands: [  
+    property var allCommands: [
         { name: "api", description: Translation.tr("Set API key for current service. Usage: %1api YOUR_API_KEY").arg(root.commandPrefix), execute: args => {
             if (root.currentService === "wallhaven") {
                 WallpaperBrowser.addSystemMessage(Translation.tr("Wallhaven doesn't require an API key"))
@@ -423,8 +423,8 @@ Item {
                 WallpaperBrowser.makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1)
             }
         }}
-    ]  
-      
+    ]
+
     function handleInput(inputText) {
         responseListView.positionViewAtEnd()
         if (inputText.startsWith(root.commandPrefix)) {

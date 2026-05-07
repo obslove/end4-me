@@ -17,10 +17,10 @@ ProgressBar {
     property color trackColor: ColorUtils.transparentize(highlightColor, 0.5) ?? "#F1D3F9"
     property alias radius: contentItem.radius
     property string text
-    property bool showTip: true 
-    property real tipWidth: 2   
-    property real tipHeight: 10  
-    
+    property bool showTip: true
+    property real tipWidth: 2
+    property real tipHeight: 10
+
     default property Item textMask: Item {
         width: valueBarWidth
         height: valueBarHeight
@@ -30,24 +30,24 @@ ProgressBar {
             text: root.text
         }
     }
-    
+
     text: Math.round(value * 100)
     font {
         pixelSize: 13
         weight: text.length > 2 ? Font.Medium : Font.DemiBold
     }
-    
+
     background: Item {
         implicitHeight: valueBarHeight
         implicitWidth: valueBarWidth + (root.showTip ? root.tipWidth + 1 : 0)
     }
-    
+
     contentItem: Item {
         id: contentItem
         anchors.fill: parent
         property alias radius: mainRect.radius
         visible: false
-        
+
         Rectangle {
             id: mainRect
             anchors {
@@ -58,7 +58,7 @@ ProgressBar {
             width: root.valueBarWidth
             radius: 6
             color: root.trackColor
-            
+
             Rectangle {
                 id: progressFill
                 anchors {
@@ -91,7 +91,7 @@ ProgressBar {
                 color: root.highlightColor
             }
         }
-        
+
         // Tiny box
         Rectangle {
             id: batteryTip
@@ -105,16 +105,16 @@ ProgressBar {
             height: root.tipHeight
             radius: 1
             color: root.trackColor
-            
+
             Rectangle {
                 anchors.fill: parent
                 radius: parent.radius
                 color: root.highlightColor
-                visible: root.visualPosition > 0.95 
+                visible: root.visualPosition > 0.95
             }
         }
     }
-    
+
     OpacityMask {
         id: roundingMask
         visible: false
@@ -141,7 +141,7 @@ ProgressBar {
             }
         }
     }
-    
+
     OpacityMask {
         anchors.fill: parent
         source: roundingMask

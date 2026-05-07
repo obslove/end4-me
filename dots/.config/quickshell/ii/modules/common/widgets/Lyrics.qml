@@ -15,7 +15,7 @@ Item {
     property color textColor: "white"
     property color activeColor: "white"
     property color dimColor: Qt.rgba(1, 1, 1, 0.35)
-    
+
     property color indicatorColor: Appearance.colors.colPrimaryContainer
     property color indicatorShapeColor: Appearance.colors.colOnPrimaryContainer
 
@@ -189,7 +189,7 @@ Item {
                     loading: root.status === "loading"
                     colBg: root.indicatorColor
                     colShape: root.indicatorShapeColor
-                    implicitSize: 48 
+                    implicitSize: 48
                 }
 
                 StyledText {

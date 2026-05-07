@@ -22,7 +22,7 @@ Rectangle {
     property real scale: Math.min(root.maxHeight / imageHeight, root.width / imageWidth)
     onFilePathChanged: refresh()
     visible: filePath !== ""
-    
+
 
     function refresh() {
         root.mimeType = "";

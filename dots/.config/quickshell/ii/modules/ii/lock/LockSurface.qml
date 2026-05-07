@@ -69,7 +69,7 @@ MouseArea {
         }
         if (event.key === Qt.Key_Escape) { // Esc to clear
             root.context.currentText = "";
-        } 
+        }
         forceFieldFocus();
     }
     Keys.onReleased: event => {
@@ -160,7 +160,7 @@ MouseArea {
             Keys.onPressed: event => {
                 root.context.resetClearTimer();
             }
-            
+
             layer.enabled: true
             layer.effect: OpacityMask {
                 maskSource: Rectangle {
@@ -249,36 +249,36 @@ MouseArea {
             text: SystemInfo.username
         }
 
-        // Media player info 
+        // Media player info
         Loader {
             Layout.leftMargin: 2
             Layout.rightMargin: 2
             Layout.alignment: Qt.AlignVCenter
             active: MprisController.activePlayer !== null
             visible: active
-            
+
             sourceComponent: Item {
                 implicitWidth: mediaRow.implicitWidth
                 implicitHeight: mediaRow.implicitHeight
-                
+
                 readonly property MprisPlayer activePlayer: MprisController.activePlayer
                 readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || ""
-                
+
                 Timer {
                     running: activePlayer?.playbackState == MprisPlaybackState.Playing
                     interval: Config.options.resources.updateInterval
                     repeat: true
                     onTriggered: activePlayer.positionChanged()
                 }
-                
+
                 RowLayout {
                     id: mediaRow
                     spacing: 8
                     anchors.centerIn: parent
-                    
+
                     Image {
                         Layout.alignment: Qt.AlignVCenter
-                        source: activePlayer?.trackArtUrl && activePlayer.trackArtUrl !== "" ? 
+                        source: activePlayer?.trackArtUrl && activePlayer.trackArtUrl !== "" ?
                                 activePlayer.trackArtUrl : "../../assets/icons/cover.png"
                         fillMode: Image.PreserveAspectCrop
                         cache: false
@@ -296,16 +296,16 @@ MouseArea {
                             }
                         }
                     }
-                    
+
                     Column {
                         Layout.alignment: Qt.AlignVCenter
                         spacing: -2
-                        
+
                         StyledText {
                             horizontalAlignment: Text.AlignLeft
                             elide: Text.ElideRight
                             maximumLineCount: 1
-                            width: Math.min(implicitWidth, 180) 
+                            width: Math.min(implicitWidth, 180)
                             color: Appearance.colors.colOnSurfaceVariant
                             text: {
                                 var artist = activePlayer?.trackArtist || " ";
@@ -313,12 +313,12 @@ MouseArea {
                             }
                             font.pixelSize: Appearance.font.pixelSize.smaller
                         }
-                        
+
                         StyledText {
                             horizontalAlignment: Text.AlignLeft
                             elide: Text.ElideRight
                             maximumLineCount: 1
-                            width: Math.min(implicitWidth, 180) 
+                            width: Math.min(implicitWidth, 180)
                             color: Appearance.colors.colOnSurfaceVariant
                             text: {
                                 var title = cleanedTitle;
@@ -328,7 +328,7 @@ MouseArea {
                             font.pixelSize: Appearance.font.pixelSize.small
                         }
                     }
-                    
+
                     ClippedFilledCircularProgress {
                         id: mediaCircProg
                         Layout.alignment: Qt.AlignVCenter
@@ -337,12 +337,12 @@ MouseArea {
                         implicitSize: 24
                         colPrimary: Appearance.colors.colOnSurfaceVariant
                         enableAnimation: false
-                        
+
                         Item {
                             anchors.centerIn: parent
                             width: mediaCircProg.implicitSize
                             height: mediaCircProg.implicitSize
-                            
+
                             MaterialSymbol {
                                 anchors.centerIn: parent
                                 fill: 1
@@ -466,7 +466,7 @@ MouseArea {
         Layout.fillHeight: true
         Layout.leftMargin: 10
         Layout.rightMargin: 10
-        
+
 
         MaterialSymbol {
             anchors.verticalCenter: parent.verticalCenter

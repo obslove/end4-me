@@ -121,7 +121,7 @@ Item {
         radius: Appearance.rounding.full
         implicitWidth: 32
         implicitHeight: 32
-        
+
         MaterialSymbol {
             anchors.centerIn: parent
             fill: 1

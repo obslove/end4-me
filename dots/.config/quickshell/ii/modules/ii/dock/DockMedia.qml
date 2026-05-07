@@ -118,7 +118,7 @@ Item {
             z: 0
         }
 
-        // Blur art 
+        // Blur art
         Image {
             id: blurredArt
             anchors.fill: parent

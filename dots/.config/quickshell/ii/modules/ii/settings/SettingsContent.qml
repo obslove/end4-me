@@ -17,16 +17,16 @@ Item {
         target: GlobalStates
         function onSettingsPageChanged() {
             if (GlobalStates.settingsPage === "") return
-            
+
             let parts = GlobalStates.settingsPage.split(":");
             let pageName = parts[0];
             let searchTerm = parts.length > 1 ? parts[1] : "";
 
             const idx = root.pages.findIndex(p => p.name.toLowerCase() === pageName.toLowerCase());
-            
+
             if (idx >= 0) {
                 root.currentPage = idx;
-                
+
                 if (searchTerm !== "") {
                     let loader = pagesRepeater.itemAt(idx);
                     if (loader && loader.item && typeof loader.item.goTo === "function") {

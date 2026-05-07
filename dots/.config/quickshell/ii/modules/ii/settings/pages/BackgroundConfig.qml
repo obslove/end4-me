@@ -63,17 +63,12 @@ ContentPage {
                         {
                             displayName: Translation.tr("Circle"),
                             icon: "circle",
-                            value: "circle"
+                            value: "circleSelect"
                         },
                         {
                             displayName: Translation.tr("Circle Pit"),
                             icon: "blur_circular",
                             value: "circlePit"
-                        },
-                        {
-                            displayName: Translation.tr("Select"),
-                            icon: "lasso_select",
-                            value: "circleSelect"
                         },
                         {
                             displayName: Translation.tr("Magic"),
@@ -94,6 +89,16 @@ ContentPage {
                             displayName: Translation.tr("Fade"),
                             icon: "gradient",
                             value: "transition"
+                        },
+                        {
+                            displayName: Translation.tr("Pixelate"),
+                            icon: "grain",
+                            value: "pixelate"
+                        },
+                        {
+                            displayName: Translation.tr("Stripes"),
+                            icon: "texture_minus",
+                            value: "stripes"
                         },
                         {
                             displayName: Translation.tr("Random"),

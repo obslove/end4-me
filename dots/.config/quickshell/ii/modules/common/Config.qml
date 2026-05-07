@@ -78,7 +78,7 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
 
-            property string panelFamily: "ii" // "ii", "waffle"
+            property string panelFamily: "ii"
 
             property JsonObject policies: JsonObject {
                 property int ai: 1 // 0: No | 1: Yes | 2: Local
@@ -231,7 +231,7 @@ Singleton {
                     }
                 }
                 property string wallpaperPath: ""
-                property string wallpaperAnimation: "circle"
+                property string wallpaperAnimation: "magic"
                 property string thumbnailPath: ""
                 property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {

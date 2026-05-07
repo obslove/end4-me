@@ -177,7 +177,6 @@ Item {
                                 value: root.player?.position / root.player?.length
                                 onMoved: {
                                     root.player.position = value * root.player.length
-                                    lyricsComp.restartLyrics()
                                 }
                             }
                         }

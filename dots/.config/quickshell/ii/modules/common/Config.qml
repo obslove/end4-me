@@ -418,6 +418,17 @@ Singleton {
             property JsonObject media: JsonObject {
                 // Attempt to remove dupes (the aggregator playerctl one and browsers' native ones when there's plasma browser integration)
                 property bool filterDuplicatePlayers: true
+                property string preferredPlayer: ""
+                property bool popupAllPlayers: true
+                property list<string> popupPlayers: []
+            }
+
+            property JsonObject lyricsService: JsonObject {
+                property bool enable: true
+                property bool enableLrclib: true
+                property string style: "scroller" // Options: "scroller", "static"
+                property bool useGradientMask: true
+                property int fontSize: 18
             }
 
             property JsonObject networking: JsonObject {

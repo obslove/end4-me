@@ -18,7 +18,9 @@ Singleton {
 	id: root;
 	property list<MprisPlayer> players: Mpris.players.values.filter(player => isRealPlayer(player));
 	property MprisPlayer trackedPlayer: null;
-	property MprisPlayer activePlayer: trackedPlayer ?? Mpris.players.values[0] ?? null;
+	property string preferredPlayerId: Config.options.media.preferredPlayer ?? "";
+	property MprisPlayer preferredPlayer: preferredPlayerId.length > 0 ? players.find(player => playerId(player) === preferredPlayerId) ?? null : null;
+	property MprisPlayer activePlayer: preferredPlayer ?? trackedPlayer ?? players[0] ?? null;
 	signal trackChanged(reverse: bool);
 
 	property bool __reverse: false;
@@ -41,6 +43,87 @@ Singleton {
             !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
     }
 
+	function playerId(player) {
+		return player?.desktopEntry || player?.identity || player?.dbusName || String(player?.uniqueId ?? "");
+	}
+
+	function playerName(player) {
+		return player?.identity || player?.desktopEntry || player?.dbusName || Translation.tr("Unknown Player");
+	}
+
+	function selectPreferredPlayer(player) {
+		Config.options.media.preferredPlayer = player ? playerId(player) : "";
+		setActivePlayer(player);
+	}
+
+	function isPreferredPlayer(player) {
+		return preferredPlayerId.length > 0 && playerId(player) === preferredPlayerId;
+	}
+
+	function popupPlayerIds() {
+		return Config.options.media.popupPlayers ?? [];
+	}
+
+	function playerShownInPopup(player) {
+		if (isPreferredPlayer(player)) {
+			return true;
+		}
+		if (Config.options.media.popupAllPlayers) {
+			return true;
+		}
+		return Array.from(popupPlayerIds()).includes(playerId(player));
+	}
+
+	function pinPreferredPlayer(players) {
+		if (!preferredPlayer) {
+			return players;
+		}
+
+		const preferredId = playerId(preferredPlayer);
+		const rest = players.filter(player => playerId(player) !== preferredId);
+		return [preferredPlayer, ...rest];
+	}
+
+	function selectedPopupPlayers() {
+		const ids = Array.from(popupPlayerIds());
+		return pinPreferredPlayer(players.filter(player => isPreferredPlayer(player) || ids.includes(playerId(player))));
+	}
+
+	function availablePopupPlayers() {
+		const ids = Array.from(popupPlayerIds());
+		return players.filter(player => !isPreferredPlayer(player) && !ids.includes(playerId(player)));
+	}
+
+	function setPlayerShownInPopup(player, shown) {
+		const id = playerId(player);
+		if (!id) {
+			return;
+		}
+
+		let ids = Array.from(popupPlayerIds());
+		const index = ids.indexOf(id);
+		if (shown && index < 0) {
+			ids.push(id);
+		} else if (!shown && index >= 0) {
+			ids.splice(index, 1);
+		}
+		Config.options.media.popupPlayers = ids;
+	}
+
+	function selectAllPopupPlayers() {
+		Config.options.media.popupPlayers = players.map(player => playerId(player));
+	}
+
+	function fallbackPlayer() {
+		return players.find(player => player.playbackState.isPlaying) ?? players[0] ?? null;
+	}
+
+	onPreferredPlayerIdChanged: {
+		if (preferredPlayerId.length === 0 && (!trackedPlayer || players.indexOf(trackedPlayer) < 0)) {
+			trackedPlayer = fallbackPlayer();
+		}
+	}
+
 	// Original stuff from fox below
 	Instantiator {
 		model: Mpris.players;
@@ -50,28 +133,19 @@ Singleton {
 			target: modelData;
 
 			Component.onCompleted: {
-				if (root.trackedPlayer == null || modelData.isPlaying) {
+				if (root.preferredPlayerId.length === 0 && root.isRealPlayer(modelData) && (root.trackedPlayer == null || modelData.isPlaying)) {
 					root.trackedPlayer = modelData;
 				}
 			}
 
 			Component.onDestruction: {
-				if (root.trackedPlayer == null || !root.trackedPlayer.isPlaying) {
-					for (const player of Mpris.players.values) {
-						if (player.playbackState.isPlaying) {
-							root.trackedPlayer = player;
-							break;
-						}
-					}
-
-					if (trackedPlayer == null && Mpris.players.values.length != 0) {
-						trackedPlayer = Mpris.players.values[0];
-					}
+				if (root.preferredPlayerId.length === 0 && (root.trackedPlayer == null || !root.trackedPlayer.isPlaying)) {
+					root.trackedPlayer = root.fallbackPlayer();
 				}
 			}
 
 			function onPlaybackStateChanged() {
-				if (root.trackedPlayer !== modelData) root.trackedPlayer = modelData;
+				if (root.preferredPlayerId.length === 0 && root.isRealPlayer(modelData) && root.trackedPlayer !== modelData) root.trackedPlayer = modelData;
 			}
 		}
 	}
@@ -154,11 +228,11 @@ Singleton {
 	}
 
 	function setActivePlayer(player: MprisPlayer) {
-		const targetPlayer = player ?? Mpris.players[0];
+		const targetPlayer = player ?? players[0];
 		console.log(`[Mpris] Active player ${targetPlayer} << ${activePlayer}`)
 
 		if (targetPlayer && this.activePlayer) {
-			this.__reverse = Mpris.players.indexOf(targetPlayer) < Mpris.players.indexOf(this.activePlayer);
+			this.__reverse = players.indexOf(targetPlayer) < players.indexOf(this.activePlayer);
 		} else {
 			// always animate forward if going to null
 			this.__reverse = false;

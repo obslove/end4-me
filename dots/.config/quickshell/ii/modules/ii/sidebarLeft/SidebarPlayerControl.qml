@@ -15,7 +15,7 @@ import Quickshell.Services.Mpris
 
 Item {
     id: root
-    property var player: Mpris.players.values[playerSelector.currentIndex] ?? Mpris.players.values[0]
+    property var player: MprisController.activePlayer
     property var artUrl: player?.trackArtUrl ?? ""
     property string artDownloadLocation: Directories.coverArt
     property string artFileName: Qt.md5(artUrl)
@@ -32,6 +32,8 @@ Item {
     property real maxVisualizerValue: 1000
     property int visualizerSmoothing: 2
     property real radius
+    readonly property real playerPosition: player?.position ?? 0
+    readonly property real playerLength: Math.max(player?.length ?? 0, 1)
 
     property string displayedArtFilePath: root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
 
@@ -96,16 +98,6 @@ Item {
             anchors.fill: parent
             anchors.margins: parent.height * 0.04
             spacing: 0
-
-            // ── Player selector ──
-            StyledComboBox {
-                id: playerSelector
-                visible: Mpris.players.values.length > 1
-                Layout.fillWidth: true
-                Layout.bottomMargin: 8
-                model: Mpris.players.values.map(p => p.identity ?? p.desktopEntry ?? "Unknown")
-                currentIndex: 0
-            }
 
             // ── Album art ──
             Rectangle {
@@ -228,7 +220,7 @@ Item {
                     color: blendedColors.colSubtext
                     font.letterSpacing: -0.4
                     font.features: { "tnum": 1 }
-                    text: StringUtils.friendlyTimeForSeconds(root.player?.position ?? 0)
+                    text: StringUtils.friendlyTimeForSeconds(root.playerPosition)
                 }
 
                 Item {
@@ -244,8 +236,12 @@ Item {
                             highlightColor: blendedColors.colPrimary
                             trackColor: blendedColors.colSecondaryContainer
                             handleColor: blendedColors.colPrimary
-                            value: (root.player?.position ?? 0) / (root.player?.length ?? 1)
-                            onMoved: root.player.position = value * root.player.length
+                            value: root.playerPosition / root.playerLength
+                            onMoved: {
+                                if (root.player) {
+                                    root.player.position = value * root.playerLength;
+                                }
+                            }
                         }
                     }
 
@@ -261,7 +257,7 @@ Item {
                             wavy: root.player?.isPlaying ?? false  
                             highlightColor: blendedColors.colPrimary
                             trackColor: blendedColors.colSecondaryContainer
-                            value: (root.player?.position ?? 0) / (root.player?.length ?? 1)
+                            value: root.playerPosition / root.playerLength
                         }
                     }
                 }

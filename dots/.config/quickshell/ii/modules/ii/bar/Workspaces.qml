@@ -14,7 +14,7 @@ import Qt5Compat.GraphicalEffects
 
 Item {
     id: root
-    property bool vertical: false
+    property bool vertical: Config.options.bar.vertical
     property bool borderless: Config.options.bar.borderless
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property Toplevel activeWindow: ToplevelManager.activeToplevel
@@ -235,22 +235,34 @@ Item {
                             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                         }
                     }
-                    Rectangle { // Dot instead of ws number
+                    MaterialSymbol {
                         id: wsDot
                         opacity: (Config.options?.bar.workspaces.alwaysShowNumbers
                             || root.showNumbers
                             || (Config.options?.bar.workspaces.showAppIcons && workspaceButtonBackground.biggestWindow)
-                            ) ? 0 : 1
+                        ) ? 0 : 1
                         visible: opacity > 0
                         anchors.centerIn: parent
-                        width: workspaceButtonWidth * 0.18
-                        height: width
-                        radius: width / 2
-                        color: (root.effectiveActiveWorkspaceId == button.workspaceValue) ? 
-                            Appearance.m3colors.m3onPrimary : 
-                            (workspaceOccupied[index] ? Appearance.m3colors.m3onSecondaryContainer : 
+                        iconSize: workspaceButtonWidth * 0.55
+                        color: (root.effectiveActiveWorkspaceId == button.workspaceValue) ?
+                            Appearance.m3colors.m3onPrimary :
+                            (workspaceOccupied[index] ? Appearance.m3colors.m3onSecondaryContainer :
                                 Appearance.colors.colOnLayer1Inactive)
-
+                        text: {
+                            switch (button.workspaceValue) {
+                                case 1:  return "code"
+                                case 2:  return "public"
+                                case 3:  return "music_note"
+                                case 4:  return "edit_square"
+                                case 5:  return "image"
+                                case 6:  return "forum"
+                                case 7:  return "browser_updated"
+                                case 8:  return "finance_mode"
+                                case 9:  return "monitor"
+                                case 10: return "analytics"
+                                default: return "circle"
+                            }
+                        }
                         Behavior on opacity {
                             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                         }

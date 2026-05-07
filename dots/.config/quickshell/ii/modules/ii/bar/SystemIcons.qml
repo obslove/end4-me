@@ -1,13 +1,17 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Quickshell.Services.UPower
 import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.common.functions
 
 Item {
     id: root
+    property bool borderless: Config.options.bar.borderless
+    property bool showDate: Config.options.bar.verbose
     property bool vertical: Config.options.bar.vertical
 
     implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : flow.implicitWidth + 10
@@ -24,17 +28,19 @@ Item {
         id: flow
         anchors.centerIn: parent
         flow: root.vertical ? Flow.TopToBottom : Flow.LeftToRight
-        spacing: root.vertical ? 6 : 10
+        spacing: 10
 
-        MaterialSymbol {
-            text: Audio.sink?.audio?.muted ? "volume_off" : "volume_up"
-            iconSize: Appearance.font.pixelSize.larger
-            color: Appearance.colors.colOnLayer1
+        Revealer {
+            reveal: true
+            MaterialSymbol {
+                text: Audio.sink?.audio?.muted ? "volume_off" : "volume_up"
+                iconSize: Appearance.font.pixelSize.larger
+                color: Appearance.colors.colOnLayer1
+            }
         }
 
         Revealer {
             reveal: Audio.source?.audio?.muted ?? false
-            vertical: root.vertical
             MaterialSymbol {
                 text: "mic_off"
                 iconSize: Appearance.font.pixelSize.larger
@@ -42,8 +48,9 @@ Item {
             }
         }
 
-        HyprlandXkbIndicator {
-            color: Appearance.colors.colOnLayer1
+        Loader {
+            source: "HyprlandXkbIndicator.qml"
+            onLoaded: item.color = Appearance.colors.colOnLayer1
         }
 
         MaterialSymbol {
@@ -59,8 +66,13 @@ Item {
             color: Appearance.colors.colOnLayer1
         }
 
-        NotificationUnreadCount {
-            visible: Notifications.silent || Notifications.unread > 0
+        Loader {
+            id: notifLoader
+            active: Notifications.silent || Notifications.unread > 0
+            visible: active
+            width: active ? item?.implicitWidth ?? 0 : 0
+            height: active ? item?.implicitHeight ?? 0 : 0
+            source: "NotificationUnreadCount.qml"
         }
     }
 }

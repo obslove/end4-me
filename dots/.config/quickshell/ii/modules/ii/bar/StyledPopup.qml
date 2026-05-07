@@ -8,17 +8,18 @@ import Quickshell.Wayland
 
 LazyLoader {
     id: root
-
     property Item hoverTarget
     default property Item contentItem
     property real popupBackgroundMargin: 0
-
     active: hoverTarget && hoverTarget.containsMouse
 
     component: PanelWindow {
         id: popupWindow
-        color: "transparent"
 
+        // Bring contentItem reference into this scope
+        property Item innerContent: root.contentItem
+
+        color: "transparent"
         anchors.left: !Config.options.bar.vertical || (Config.options.bar.vertical && !Config.options.bar.bottom)
         anchors.right: Config.options.bar.vertical && Config.options.bar.bottom
         anchors.top: Config.options.bar.vertical || (!Config.options.bar.vertical && !Config.options.bar.bottom)
@@ -30,26 +31,35 @@ LazyLoader {
         mask: Region {
             item: popupBackground
         }
-
         exclusionMode: ExclusionMode.Ignore
         exclusiveZone: 0
+
         margins {
             left: {
-                if (!Config.options.bar.vertical) return root.QsWindow?.mapFromItem(
-                    root.hoverTarget, 
-                    (root.hoverTarget.width - popupBackground.implicitWidth) / 2, 0
-                ).x;
-                return Appearance.sizes.verticalBarWidth
+                if (!Config.options.bar.vertical) {
+                    const base = root.QsWindow?.mapFromItem(
+                        root.hoverTarget,
+                        (root.hoverTarget.width - popupBackground.implicitWidth) / 2, 0
+                    ).x
+                    const margin = Appearance.sizes.elevationMargin
+                    const maxLeft = popupWindow.screen.width - popupBackground.implicitWidth - margin - 10
+                    return Math.max(margin, Math.min(base, maxLeft))
+                }
+                if (!Config.options.bar.bottom) return Appearance.sizes.verticalBarWidth
+                return 0
             }
             top: {
-                if (!Config.options.bar.vertical) return Appearance.sizes.barHeight;
-                return root.QsWindow?.mapFromItem(
-                    root.hoverTarget, 
-                    (root.hoverTarget.height - popupBackground.implicitHeight) / 2, 0
-                ).y;
+                if (!Config.options.bar.vertical) return Appearance.sizes.barHeight
+                const base = root.QsWindow?.mapFromItem(
+                    root.hoverTarget,
+                    0, (root.hoverTarget.height - popupBackground.implicitHeight) / 2
+                ).y  
+                const margin = Appearance.sizes.elevationMargin
+                const maxTop = popupWindow.screen.height - popupBackground.implicitHeight - margin - 15
+                return Math.max(margin, Math.min(base, maxTop))
             }
-            right: Appearance.sizes.verticalBarWidth
-            bottom: Appearance.sizes.barHeight
+            right: Config.options.bar.vertical && Config.options.bar.bottom ? Appearance.sizes.verticalBarWidth : 0  
+            bottom: Config.options.bar.vertical ? 0 : Appearance.sizes.barHeight  
         }
         WlrLayershell.namespace: "quickshell:popup"
         WlrLayershell.layer: WlrLayer.Overlay
@@ -60,7 +70,8 @@ LazyLoader {
 
         Rectangle {
             id: popupBackground
-            readonly property real margin: 10
+            readonly property real margin: 8
+
             anchors {
                 fill: parent
                 leftMargin: Appearance.sizes.elevationMargin + root.popupBackgroundMargin * (!popupWindow.anchors.left)
@@ -68,14 +79,23 @@ LazyLoader {
                 topMargin: Appearance.sizes.elevationMargin + root.popupBackgroundMargin * (!popupWindow.anchors.top)
                 bottomMargin: Appearance.sizes.elevationMargin + root.popupBackgroundMargin * (!popupWindow.anchors.bottom)
             }
-            implicitWidth: root.contentItem.implicitWidth + margin * 2
-            implicitHeight: root.contentItem.implicitHeight + margin * 2
-            color: Appearance.m3colors.m3surfaceContainer
-            radius: Appearance.rounding.small
-            children: [root.contentItem]
 
+            // Use local reference instead of crossing LazyLoader scope boundary
+            implicitWidth: (popupWindow.innerContent?.implicitWidth ?? 0) + margin * 2
+            implicitHeight: (popupWindow.innerContent?.implicitHeight ?? 0) + margin * 2
+
+            color: Appearance.colors.colLayer1Base
+            radius: Appearance.rounding.normal
             border.width: 1
             border.color: Appearance.colors.colLayer0Border
+
+            // Reparent content here once the window is ready
+            Component.onCompleted: {
+                if (popupWindow.innerContent) {
+                    popupWindow.innerContent.parent = popupBackground
+                    popupWindow.innerContent.anchors.centerIn = popupBackground
+                }
+            }
         }
     }
 }

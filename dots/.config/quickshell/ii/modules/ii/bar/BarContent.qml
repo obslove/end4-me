@@ -15,14 +15,15 @@ Item {
     width: parent.width
 
     readonly property real barPadding: 0
-    property var screen: root.QsWindow.window?.screen
 
     function getWidgetUrl(name) {
-        if (!name)
-            return "";
-        const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
-        return Qt.resolvedUrl(`./${formattedName}.qml`);
+        if (!name) return "";
+        let formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+        return Qt.resolvedUrl("./" + formattedName + ".qml");
     }
+
+    property var screen: root.QsWindow.window?.screen
+    property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
 
     Rectangle {
         id: barBackground
@@ -36,10 +37,11 @@ Item {
         border.color: Appearance.colors.colLayer0Border
     }
 
+    // Center
     Item {
         id: contentContainer
         anchors.fill: barBackground
-        anchors.margins: root.barPadding
+        anchors.margins: root.barPadding 
 
         Item {
             id: absoluteCenter
@@ -51,84 +53,64 @@ Item {
                 id: middleRow
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.middleLayout
                     delegate: BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillHeight: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.middleLayout.length
-
-                        Loader {
+                        Loader { 
                             Layout.fillHeight: true
-                            source: root.getWidgetUrl(modelData)
+                            source: root.getWidgetUrl(modelData) 
                         }
                     }
                 }
             }
         }
 
+        // Left
         Item {
-            anchors {
-                left: parent.left
-                leftMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
-                top: parent.top
-                bottom: parent.bottom
-            }
+            anchors.left: parent.left
+            anchors.leftMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             width: leftRow.implicitWidth
 
             RowLayout {
                 id: leftRow
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.leftLayout
                     delegate: BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillHeight: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.leftLayout.length
-
-                        Loader {
-                            Layout.fillHeight: true
-                            source: root.getWidgetUrl(modelData)
-                        }
+                        Loader { Layout.fillHeight: true; source: root.getWidgetUrl(modelData) }
                     }
                 }
             }
         }
 
+        // Right
         Item {
-            anchors {
-                right: parent.right
-                rightMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
-                top: parent.top
-                bottom: parent.bottom
-            }
+            anchors.right: parent.right
+            anchors.rightMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             width: rightRow.implicitWidth
 
             RowLayout {
                 id: rightRow
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.rightLayout
                     delegate: BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillHeight: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.rightLayout.length
-
-                        Loader {
-                            Layout.fillHeight: true
-                            source: root.getWidgetUrl(modelData)
-                        }
+                        Loader { Layout.fillHeight: true; source: root.getWidgetUrl(modelData) }
                     }
                 }
             }

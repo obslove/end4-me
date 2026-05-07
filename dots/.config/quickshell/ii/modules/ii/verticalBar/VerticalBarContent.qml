@@ -16,30 +16,14 @@ Item {
     height: parent.height
 
     readonly property real barPadding: 0
-    property var screen: root.QsWindow.window?.screen
 
     function getWidgetUrl(name) {
-        switch (name) {
-        case "resources": return Qt.resolvedUrl("./Resources.qml");
-        case "media": return Qt.resolvedUrl("./VerticalMedia.qml");
-        case "clockWidget": return Qt.resolvedUrl("./VerticalClockWidget.qml");
-        case "batteryIndicator": return Qt.resolvedUrl("./BatteryIndicator.qml");
-        case "workspaces": return Qt.resolvedUrl("../bar/Workspaces.qml");
-        case "leftSidebarButton": return Qt.resolvedUrl("../bar/LeftSidebarButton.qml");
-        case "sysTray": return Qt.resolvedUrl("../bar/SysTray.qml");
-        case "utilButtons": return Qt.resolvedUrl("../bar/UtilButtons.qml");
-        case "systemIcons": return Qt.resolvedUrl("../bar/SystemIcons.qml");
-        case "activeWindow": return Qt.resolvedUrl("../bar/ActiveWindow.qml");
-        case "weatherBar": return Qt.resolvedUrl("../bar/WeatherBar.qml");
-        case "powerButton": return Qt.resolvedUrl("../bar/PowerButton.qml");
-        case "updatesCount": return Qt.resolvedUrl("../bar/UpdatesCount.qml");
-        default:
-            if (!name)
-                return "";
-            const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
-            return Qt.resolvedUrl(`../bar/${formattedName}.qml`);
-        }
+        if (!name) return "";
+        let formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+        return Qt.resolvedUrl("../bar/" + formattedName + ".qml");  // ← apunta a /bar/
     }
+
+    property var screen: root.QsWindow.window?.screen
 
     Rectangle {
         id: barBackground
@@ -58,6 +42,7 @@ Item {
         anchors.fill: barBackground
         anchors.margins: root.barPadding
 
+        // Center
         Item {
             id: absoluteCenter
             anchors.centerIn: parent
@@ -68,23 +53,19 @@ Item {
                 id: middleCol
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.middleLayout
                     delegate: Bar.BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillWidth: true
                         vertical: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.middleLayout.length
-
                         Loader {
                             Layout.fillWidth: true
                             source: root.getWidgetUrl(modelData)
                             onLoaded: {
                                 if (item && "vertical" in item)
-                                    item.vertical = true;
+                                    item.vertical = true
                             }
                         }
                     }
@@ -92,36 +73,31 @@ Item {
             }
         }
 
+        // Top
         Item {
-            anchors {
-                top: parent.top
-                topMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
-                left: parent.left
-                right: parent.right
-            }
+            anchors.top: parent.top
+            anchors.topMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
+            anchors.left: parent.left
+            anchors.right: parent.right
             height: topCol.implicitHeight
 
             ColumnLayout {
                 id: topCol
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.leftLayout
                     delegate: Bar.BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillWidth: true
                         vertical: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.leftLayout.length
-
                         Loader {
                             Layout.fillWidth: true
                             source: root.getWidgetUrl(modelData)
                             onLoaded: {
                                 if (item && "vertical" in item)
-                                    item.vertical = true;
+                                    item.vertical = true
                             }
                         }
                     }
@@ -129,36 +105,31 @@ Item {
             }
         }
 
+        // Bottom
         Item {
-            anchors {
-                bottom: parent.bottom
-                bottomMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
-                left: parent.left
-                right: parent.right
-            }
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: Config.options.bar.cornerStyle === 1 ? 4 : 10
+            anchors.left: parent.left
+            anchors.right: parent.right
             height: bottomCol.implicitHeight
 
             ColumnLayout {
                 id: bottomCol
                 anchors.fill: parent
                 spacing: 2
-
                 Repeater {
                     model: Config.options.bar.layouts.rightLayout
                     delegate: Bar.BarGroup {
-                        required property var modelData
-                        required property int index
                         Layout.fillWidth: true
                         vertical: true
                         currentIndex: index
                         totalCount: Config.options.bar.layouts.rightLayout.length
-
                         Loader {
                             Layout.fillWidth: true
                             source: root.getWidgetUrl(modelData)
                             onLoaded: {
                                 if (item && "vertical" in item)
-                                    item.vertical = true;
+                                    item.vertical = true
                             }
                         }
                     }

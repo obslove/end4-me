@@ -24,6 +24,13 @@ Scope {
     property real popupRounding: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
     property list<real> visualizerPoints: []
 
+    readonly property string mediaPosition: {
+        if (Config.options.bar.layouts.leftLayout.includes("media")) return "left"
+        if (Config.options.bar.layouts.middleLayout.includes("media")) return "center"
+        if (Config.options.bar.layouts.rightLayout.includes("media")) return "right"
+        return "center"
+    }
+
     function filterDuplicatePlayers(players) {
         let filtered = [];
         let used = new Set();
@@ -98,10 +105,29 @@ Scope {
                 right: Config.options.bar.vertical && Config.options.bar.bottom
             }
             margins {
-                top: Config.options.bar.vertical ? ((panelWindow.screen.height / 2) - widgetHeight * 1.5) : Appearance.sizes.barHeight
+                top: Config.options.bar.vertical
+                    ? (!Config.options.bar.bottom
+                        ? (root.mediaPosition === "left" ? Appearance.sizes.hyprlandGapsOut
+                            : root.mediaPosition === "right" ? panelWindow.screen.height - widgetHeight - Appearance.sizes.hyprlandGapsOut
+                            : (panelWindow.screen.height / 2) - (widgetHeight / 2))
+                        : ((panelWindow.screen.height / 2) - widgetHeight * 1.5))
+                    : Appearance.sizes.barHeight
                 bottom: Appearance.sizes.barHeight
-                left: Config.options.bar.vertical ? Appearance.sizes.barHeight : ((panelWindow.screen.width / 2) - (osdWidth / 2) - widgetWidth)
-                right: Appearance.sizes.barHeight
+                left: {
+                    if (Config.options.bar.vertical) {
+                        if (!Config.options.bar.bottom) return Appearance.sizes.verticalBarWidth + Appearance.sizes.hyprlandGapsOut
+                        return (panelWindow.screen.width / 2) - (widgetWidth / 2)
+                    }
+                    if (root.mediaPosition === "left") return Appearance.sizes.hyprlandGapsOut - 5
+                    if (root.mediaPosition === "center") return (panelWindow.screen.width / 2) - (widgetWidth / 2)
+                    if (root.mediaPosition === "right") return panelWindow.screen.width - widgetWidth - Appearance.sizes.hyprlandGapsOut
+                    return (panelWindow.screen.width / 2) - (widgetWidth / 2)
+                }
+                right: {
+                    if (Config.options.bar.vertical && Config.options.bar.bottom)
+                        return Appearance.sizes.verticalBarWidth + Appearance.sizes.hyprlandGapsOut
+                    return Appearance.sizes.barHeight
+                }
             }
 
             mask: Region {
@@ -130,12 +156,12 @@ Scope {
                     model: ScriptModel {
                         values: root.meaningfulPlayers
                     }
-                    delegate: PlayerControl {
+                    delegate: Player {
                         required property MprisPlayer modelData
                         player: modelData
                         visualizerPoints: root.visualizerPoints
                         implicitWidth: root.widgetWidth
-                        implicitHeight: root.widgetHeight
+                        implicitHeight: showLyrics ? 290 : Appearance.sizes.mediaControlsHeight
                         radius: root.popupRounding
                     }
                 }

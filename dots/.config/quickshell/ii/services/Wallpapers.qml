@@ -135,11 +135,13 @@ Singleton {
     // Thumbnail generation
     function generateThumbnail(size: string) {
         if (!["normal", "large", "x-large", "xx-large"].includes(size)) throw new Error("Invalid thumbnail size");
-        thumbgenProc.directory = root.directory
+        const directory = FileUtils.trimFileProtocol(root.directory)
+        const quotedDirectory = StringUtils.shellSingleQuoteEscape(directory)
+        thumbgenProc.directory = directory
         thumbgenProc.running = false
         thumbgenProc.command = [
             "bash", "-c",
-            `${thumbgenScriptPath} --size ${size} --machine_progress -d ${FileUtils.trimFileProtocol(root.directory)} || ${generateThumbnailsMagickScriptPath} --size ${size} -d ${FileUtils.trimFileProtocol(root.directory)}`,
+            `'${StringUtils.shellSingleQuoteEscape(thumbgenScriptPath)}' --size ${size} --machine_progress -d '${quotedDirectory}' || '${StringUtils.shellSingleQuoteEscape(generateThumbnailsMagickScriptPath)}' --size ${size} -d '${quotedDirectory}'`,
         ]
         // console.log("[Wallpapers] Updating thumbnails with command ", thumbgenProc.command.join(" "))
         root.thumbnailGenerationProgress = 0

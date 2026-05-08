@@ -4,11 +4,12 @@ import Quickshell
 
 Singleton {
     // Formats
-    readonly property list<string> validImageTypes: ["jpeg", "png", "webp", "tiff", "svg"]
-    readonly property list<string> validImageExtensions: ["jpg", "jpeg", "png", "webp", "tif", "tiff", "svg"]
+    readonly property list<string> validImageTypes: ["jpeg", "png", "webp", "tiff", "svg", "avif", "bmp"]
+    readonly property list<string> validImageExtensions: ["jpg", "jpeg", "png", "webp", "tif", "tiff", "svg", "avif", "bmp"]
 
     function isValidImageByName(name: string): bool {
-        return validImageExtensions.some(t => name.endsWith(`.${t}`));
+        const lowerName = name.toLowerCase();
+        return validImageExtensions.some(t => lowerName.endsWith(`.${t}`));
     }
 
     // Thumbnails

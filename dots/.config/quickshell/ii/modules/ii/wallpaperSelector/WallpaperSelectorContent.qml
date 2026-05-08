@@ -29,9 +29,25 @@ MouseArea {
     ]
 
     function updateThumbnails() {
+        if (grid.cellWidth <= 0 || grid.cellHeight <= 0 || Wallpapers.folderModel.count <= 0) return;
         const totalImageMargin = (Appearance.sizes.wallpaperSelectorItemMargins + Appearance.sizes.wallpaperSelectorItemPadding) * 2;
         const thumbnailSizeName = Images.thumbnailSizeNameForDimensions(grid.cellWidth - totalImageMargin, grid.cellHeight - totalImageMargin);
         Wallpapers.generateThumbnail(thumbnailSizeName);
+    }
+
+    Timer {
+        id: thumbnailRefreshTimer
+        interval: 80
+        repeat: false
+        onTriggered: root.updateThumbnails()
+    }
+
+    Connections {
+        target: Wallpapers
+
+        function onDirectoryChanged() {
+            thumbnailRefreshTimer.restart();
+        }
     }
 
     function handleFilePasting(event) {
@@ -262,6 +278,11 @@ MouseArea {
                         boundsBehavior: Flickable.StopAtBounds
                         bottomMargin: extraOptions.implicitHeight
                         ScrollBar.vertical: StyledScrollBar {}
+
+                        Component.onCompleted: thumbnailRefreshTimer.restart()
+                        onCellWidthChanged: thumbnailRefreshTimer.restart()
+                        onCellHeightChanged: thumbnailRefreshTimer.restart()
+                        onCountChanged: thumbnailRefreshTimer.restart()
 
                         function moveSelection(delta) {
                             currentIndex = Math.max(0, Math.min(grid.model.count - 1, currentIndex + delta));

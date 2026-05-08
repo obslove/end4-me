@@ -103,14 +103,16 @@ Item {
                             required property int index
                             property int colIndex: index
                             property int workspaceValue: root.workspaceGroup * root.workspacesShown + getWsInCell(row.index, colIndex)
+                            property bool occupied: root.windows.some(win => win.workspace?.id === workspaceValue)
                             property color defaultWorkspaceColor: Appearance.colors.colSurfaceContainerLow
+                            property color occupiedWorkspaceColor: Appearance.colors.colSurfaceContainer
                             property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
                             property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                             property bool hoveredWhileDragging: false
 
                             implicitWidth: root.workspaceImplicitWidth
                             implicitHeight: root.workspaceImplicitHeight
-                            color: hoveredWhileDragging ? hoveredWorkspaceColor : defaultWorkspaceColor
+                            color: hoveredWhileDragging ? hoveredWorkspaceColor : occupied ? occupiedWorkspaceColor : defaultWorkspaceColor
                             property bool workspaceAtLeft: colIndex === 0
                             property bool workspaceAtRight: colIndex === Config.options.overview.columns - 1
                             property bool workspaceAtTop: row.index === 0
@@ -124,6 +126,7 @@ Item {
 
                             StyledText {
                                 anchors.centerIn: parent
+                                opacity: workspace.occupied ? 0 : 1
                                 text: workspace.workspaceValue
                                 font {
                                     pixelSize: root.workspaceNumberSize * root.scale
@@ -133,6 +136,9 @@ Item {
                                 color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
+                                Behavior on opacity {
+                                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                                }
                             }
 
                             MouseArea {

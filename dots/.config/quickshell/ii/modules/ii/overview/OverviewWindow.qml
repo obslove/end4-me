@@ -96,7 +96,7 @@ Item { // Window
 
         Rectangle {
             anchors.fill: parent
-            color: Appearance.colors.colOverviewSurfaceContainer
+            color: Appearance.colors.colSurfaceContainer
         }
 
         ScreencopyView {

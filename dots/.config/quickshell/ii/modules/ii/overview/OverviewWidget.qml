@@ -80,7 +80,7 @@ Item {
         implicitWidth: workspaceColumnLayout.implicitWidth + padding * 2
         implicitHeight: workspaceColumnLayout.implicitHeight + padding * 2
         radius: root.largeWorkspaceRadius + padding
-        color: Appearance.colors.colOverviewBackgroundSurfaceContainer
+        color: Appearance.colors.colBackgroundSurfaceContainer
 
         Column { // Workspaces
             id: workspaceColumnLayout
@@ -104,8 +104,8 @@ Item {
                             property int colIndex: index
                             property int workspaceValue: root.workspaceGroup * root.workspacesShown + getWsInCell(row.index, colIndex)
                             property bool occupied: root.windows.some(win => win.workspace?.id === workspaceValue)
-                            property color defaultWorkspaceColor: Appearance.colors.colOverviewSurfaceContainerLow
-                            property color occupiedWorkspaceColor: Appearance.colors.colOverviewSurfaceContainer
+                            property color defaultWorkspaceColor: Appearance.colors.colSurfaceContainerLow
+                            property color occupiedWorkspaceColor: Appearance.colors.colSurfaceContainer
                             property color hoveredWorkspaceColor: ColorUtils.mix(defaultWorkspaceColor, Appearance.colors.colLayer1Hover, 0.1)
                             property color hoveredBorderColor: Appearance.colors.colLayer2Hover
                             property bool hoveredWhileDragging: false

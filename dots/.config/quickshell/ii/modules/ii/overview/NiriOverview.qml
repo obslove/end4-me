@@ -325,7 +325,7 @@ Item {
                         width: root.monitorW * 0.15
                         height: root.wsHeight
                         radius: Appearance.rounding.normal
-                        color: Appearance.colors.colOverviewSurfaceContainerLow
+                        color: Appearance.colors.colSurfaceContainerLow
                         z: 1
 
                         StyledText {

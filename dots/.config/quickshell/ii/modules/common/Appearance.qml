@@ -31,12 +31,8 @@ Singleton {
         return Math.max(0, Math.min(0.22, y)) - 0.12 * (m3colors.darkmode ? 0 : 1)
     }
     property real autoContentTransparency: 0.9
-    property real configuredBackgroundTransparency: Config?.options.appearance.transparency.automatic ? autoBackgroundTransparency : Config?.options.appearance.transparency.backgroundTransparency
-    property real configuredContentTransparency: Config?.options.appearance.transparency.automatic ? autoContentTransparency : Config?.options.appearance.transparency.contentTransparency
-    property real backgroundTransparency: Config?.options.appearance.transparency.enable ? configuredBackgroundTransparency : 0
-    property real contentTransparency: configuredContentTransparency
-    property real overviewBackgroundTransparency: Config?.options.overview.blurBackground ? configuredBackgroundTransparency : 0
-    property real overviewContentTransparency: Config?.options.overview.blurBackground ? configuredContentTransparency : 0
+    property real backgroundTransparency: Config?.options.appearance.transparency.enable ? Config?.options.appearance.transparency.automatic ? autoBackgroundTransparency : Config?.options.appearance.transparency.backgroundTransparency : 0
+    property real contentTransparency: Config?.options.appearance.transparency.automatic ? autoContentTransparency : Config?.options.appearance.transparency.contentTransparency
 
     m3colors: QtObject {
         property bool darkmode: true
@@ -181,10 +177,6 @@ Singleton {
         property color colSurfaceContainer: ColorUtils.solveOverlayColor(m3colors.m3surfaceContainerLow, m3colors.m3surfaceContainer, 1 - root.contentTransparency)
         property color colSurfaceContainerHigh: ColorUtils.solveOverlayColor(m3colors.m3surfaceContainer, m3colors.m3surfaceContainerHigh, 1 - root.contentTransparency)
         property color colSurfaceContainerHighest: ColorUtils.solveOverlayColor(m3colors.m3surfaceContainerHigh, m3colors.m3surfaceContainerHighest, 1 - root.contentTransparency)
-        property color colOverviewBackgroundSurfaceContainer: ColorUtils.transparentize(m3colors.m3surfaceContainer, root.overviewBackgroundTransparency)
-        property color colOverviewSurfaceContainerLow: ColorUtils.solveOverlayColor(m3colors.m3background, m3colors.m3surfaceContainerLow, 1 - root.overviewContentTransparency)
-        property color colOverviewSurfaceContainer: ColorUtils.solveOverlayColor(m3colors.m3surfaceContainerLow, m3colors.m3surfaceContainer, 1 - root.overviewContentTransparency)
-        property color colOverviewSurfaceContainerHigh: ColorUtils.solveOverlayColor(m3colors.m3surfaceContainer, m3colors.m3surfaceContainerHigh, 1 - root.overviewContentTransparency)
         property color colSurfaceContainerHighestHover: ColorUtils.mix(m3colors.m3surfaceContainerHighest, m3colors.m3onSurface, 0.95)
         property color colSurfaceContainerHighestActive: ColorUtils.mix(m3colors.m3surfaceContainerHighest, m3colors.m3onSurface, 0.85)
         property color colOnSurface: m3colors.m3onSurface

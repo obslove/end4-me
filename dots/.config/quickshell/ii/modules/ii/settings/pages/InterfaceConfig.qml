@@ -68,6 +68,14 @@ ContentPage {
                     Config.options.overview.windowPreviews = checked;
                 }
             }
+            ConfigSwitch {
+                buttonIcon: "blur_on"
+                text: Translation.tr("Blur background")
+                checked: Config.options.overview.blurBackground
+                onCheckedChanged: {
+                    Config.options.overview.blurBackground = checked;
+                }
+            }
             ContentSubsection {
                 title: Translation.tr("Style")
 

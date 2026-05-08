@@ -53,6 +53,7 @@ Item { // Window
     property bool compactMode: Appearance.font.pixelSize.smaller * 4 > targetWindowHeight || Appearance.font.pixelSize.smaller * 4 > targetWindowWidth
 
     property bool indicateXWayland: windowData?.xwayland ?? false
+    property bool windowPreviews: Config.options.overview.windowPreviews
 
     x: initX
     y: initY
@@ -90,11 +91,21 @@ Item { // Window
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
 
-    ScreencopyView {
-        id: windowPreview
+    Item {
         anchors.fill: parent
-        captureSource: GlobalStates.overviewOpen ? root.toplevel : null
-        live: true
+
+        Rectangle {
+            anchors.fill: parent
+            color: Appearance.colors.colSurfaceContainer
+        }
+
+        ScreencopyView {
+            id: windowPreview
+            anchors.fill: parent
+            visible: root.windowPreviews
+            captureSource: (root.windowPreviews && GlobalStates.overviewOpen) ? root.toplevel : null
+            live: root.windowPreviews
+        }
 
         // Color overlay for interactions
         Rectangle {

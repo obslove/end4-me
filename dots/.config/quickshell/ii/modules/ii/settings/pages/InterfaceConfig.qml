@@ -60,6 +60,14 @@ ContentPage {
                     Config.options.overview.centerIcons = checked;
                 }
             }
+            ConfigSwitch {
+                buttonIcon: "preview"
+                text: Translation.tr("Window previews")
+                checked: Config.options.overview.windowPreviews
+                onCheckedChanged: {
+                    Config.options.overview.windowPreviews = checked;
+                }
+            }
             ContentSubsection {
                 title: Translation.tr("Style")
 

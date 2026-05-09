@@ -38,10 +38,12 @@ Item {
         return Qt.resolvedUrl(artFilePath)
     }
 
-    property color artDominantColor: ColorUtils.mix(
-        colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
-        Appearance.colors.colPrimaryContainer,
-        0.8)
+    property color artDominantColor: root.displayedArtFilePath !== ""
+        ? ColorUtils.mix(
+            colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
+            Appearance.colors.colPrimaryContainer,
+            0.8)
+        : Appearance.colors.colPrimaryContainer
 
     property QtObject blendedColors: AdaptedMaterialScheme {
         color: root.artDominantColor
@@ -49,7 +51,6 @@ Item {
 
     onArtFilePathChanged: {
         if (!root.artUrl || root.artUrl.length === 0) {
-            root.artDominantColor = Appearance.m3colors.m3secondaryContainer
             root.artDownloaded = false
             return
         }

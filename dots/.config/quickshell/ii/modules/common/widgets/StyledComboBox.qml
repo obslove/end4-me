@@ -15,6 +15,16 @@ ComboBox {
     property color colBackground: Appearance.colors.colSecondaryContainer
     property color colBackgroundHover: Appearance.colors.colSecondaryContainerHover
     property color colBackgroundActive: Appearance.colors.colSecondaryContainerActive
+    property color colContent: Appearance.colors.colOnSecondaryContainer
+    property color colPopupBackground: Appearance.m3colors.m3surfaceContainerHigh
+    property color colSelectedBackground: Appearance.colors.colSecondaryContainer
+    property color colSelectedBackgroundHover: Appearance.colors.colSecondaryContainerHover
+    property color colSelectedBackgroundActive: Appearance.colors.colSecondaryContainerActive
+    property color colSelectedText: Appearance.colors.colOnSecondaryContainer
+    property color colDelegateBackground: Appearance.colors.colLayer3
+    property color colDelegateBackgroundHover: Appearance.colors.colLayer3Hover
+    property color colDelegateBackgroundActive: Appearance.colors.colLayer3Active
+    property color colDelegateText: Appearance.colors.colOnLayer3
 
     implicitHeight: 40
     Layout.fillWidth: true
@@ -39,7 +49,7 @@ ComboBox {
         y: root.height / 2 - height / 2
         text: "keyboard_arrow_down"
         iconSize: Appearance.font.pixelSize.larger
-        color: Appearance.colors.colOnSecondaryContainer
+        color: root.colContent
 
         rotation: root.popup.visible ? 180 : 0
         Behavior on rotation {
@@ -70,14 +80,14 @@ ComboBox {
                         return root.buttonIcon;
                     }
                     iconSize: Appearance.font.pixelSize.larger
-                    color: Appearance.colors.colOnSecondaryContainer
+                    color: root.colContent
                 }
             }
 
             StyledText {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                color: Appearance.colors.colOnSecondaryContainer
+                color: root.colContent
                 text: root.displayText
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -94,16 +104,16 @@ ComboBox {
         required property int index
         property color color: {
             if (root.currentIndex === itemDelegate.index) {
-                if (itemDelegate.down) return Appearance.colors.colSecondaryContainerActive;
-                if (itemDelegate.hovered) return Appearance.colors.colSecondaryContainerHover;
-                return Appearance.colors.colSecondaryContainer;
+                if (itemDelegate.down) return root.colSelectedBackgroundActive;
+                if (itemDelegate.hovered) return root.colSelectedBackgroundHover;
+                return root.colSelectedBackground;
             } else {
-                if (itemDelegate.down) return Appearance.colors.colLayer3Active;
-                if (itemDelegate.hovered) return Appearance.colors.colLayer3Hover;
-                return ColorUtils.transparentize(Appearance.colors.colLayer3);
+                if (itemDelegate.down) return root.colDelegateBackgroundActive;
+                if (itemDelegate.hovered) return root.colDelegateBackgroundHover;
+                return ColorUtils.transparentize(root.colDelegateBackground);
             }
         }
-        property color colText: (root.currentIndex === itemDelegate.index) ? Appearance.colors.colOnSecondaryContainer : Appearance.colors.colOnLayer3
+        property color colText: (root.currentIndex === itemDelegate.index) ? root.colSelectedText : root.colDelegateText
 
         background: Rectangle {
             anchors.fill: parent
@@ -192,7 +202,7 @@ ComboBox {
                 id: popupBackground
                 anchors.fill: parent
                 radius: Appearance.rounding.normal
-                color: Appearance.m3colors.m3surfaceContainerHigh
+                color: root.colPopupBackground
             }
         }
 

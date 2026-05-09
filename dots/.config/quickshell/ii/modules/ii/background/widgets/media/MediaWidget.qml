@@ -27,6 +27,16 @@ AbstractBackgroundWidget {
     property string artDownloadLocation: Directories.coverArt
     property string artFileName: Qt.md5(artUrl)
     property string artFilePath: `${artDownloadLocation}/${artFileName}`
+    property color artDominantColor: root.displayedArtFilePath !== ""
+        ? ColorUtils.mix(
+            colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
+            Appearance.colors.colPrimaryContainer,
+            0.8
+        )
+        : Appearance.colors.colPrimaryContainer
+    property QtObject blendedColors: AdaptedMaterialScheme {
+        color: root.artDominantColor
+    }
 
     property real widgetSize: 200
     property real controlsSize: 55
@@ -48,6 +58,13 @@ AbstractBackgroundWidget {
     onExited:  { hovering = false }
 
     onArtFilePathChanged: updateArt()
+
+    ColorQuantizer {
+        id: colorQuantizer
+        source: root.displayedArtFilePath
+        depth: 0
+        rescaleSize: 1
+    }
 
     function updateArt() {
         if (!root.artUrl || root.artUrl.length === 0) {
@@ -124,7 +141,7 @@ AbstractBackgroundWidget {
         MaterialShape {
             id: shadowShape
             anchors.fill: parent
-            color: Appearance.colors.colPrimaryContainer
+            color: blendedColors.colPrimaryContainer
             shape: getShape(Config.options.background.widgets.media.backgroundShape)
             visible: false
         }
@@ -138,7 +155,7 @@ AbstractBackgroundWidget {
             id: artBackground
             anchors.fill: parent
             z: 0
-            color: Appearance.colors.colPrimaryContainer
+            color: blendedColors.colPrimaryContainer
             shape: getShape(Config.options.background.widgets.media.backgroundShape)
 
             layer.enabled: true
@@ -179,7 +196,7 @@ AbstractBackgroundWidget {
                     implicitWidth: controlsSize * 2
                     implicitHeight: controlsSize - 10
                     radius: Appearance.rounding.full
-                    color: Appearance.colors.colSecondaryContainer
+                    color: blendedColors.colSecondaryContainer
 
                     Column {
                         anchors.centerIn: parent
@@ -188,7 +205,7 @@ AbstractBackgroundWidget {
                         Text {
                             width: controlsSize * 2 - 12
                             text: root.currentPlayer?.trackArtist ?? ""
-                            color: Appearance.colors.colOnSecondaryContainer
+                            color: blendedColors.colOnSecondaryContainer
                             font.pixelSize: 10
                             font.weight: Font.Bold
                             elide: Text.ElideRight
@@ -198,7 +215,7 @@ AbstractBackgroundWidget {
                         Text {
                             width: controlsSize * 2 - 12
                             text: root.currentPlayer?.trackTitle ?? ""
-                            color: Appearance.colors.colOnSecondaryContainer
+                            color: blendedColors.colOnSecondaryContainer
                             font.pixelSize: 9
                             opacity: 0.6
                             elide: Text.ElideRight
@@ -220,7 +237,7 @@ AbstractBackgroundWidget {
                         anchors.bottom: parent.bottom
                         width: 0
                         height: Config.options.background.widgets.media.showLyrics ? 16 : 0
-                        color: Appearance.colors.colSecondaryContainer
+                        color: blendedColors.colSecondaryContainer
                         radius: 0
                     }
 
@@ -229,7 +246,7 @@ AbstractBackgroundWidget {
                         anchors.right: theRect.left
                         anchors.top: theRect.top
                         implicitSize: cornerRadius
-                        color: Appearance.colors.colSecondaryContainer
+                        color: blendedColors.colSecondaryContainer
                         corner: RoundCorner.CornerEnum.TopRight
                     }
 
@@ -238,7 +255,7 @@ AbstractBackgroundWidget {
                         anchors.left: theRect.right
                         anchors.top: theRect.top
                         implicitSize: cornerRadius
-                        color: Appearance.colors.colSecondaryContainer
+                        color: blendedColors.colSecondaryContainer
                         corner: RoundCorner.CornerEnum.TopLeft
                     }
 
@@ -255,7 +272,7 @@ AbstractBackgroundWidget {
                             width: 320
                             height: 250
                             radius: Appearance.rounding.normal
-                            color: Appearance.colors.colSecondaryContainer
+                            color: blendedColors.colSecondaryContainer
 
                             Lyrics {
                                 id: lyricsComp
@@ -263,11 +280,11 @@ AbstractBackgroundWidget {
                                 anchors.margins: 16
                                 textAlignment: Text.AlignHCenter
                                 player: root.currentPlayer
-                                textColor: Appearance.colors.colOnLayer0
-                                activeColor: Appearance.colors.colPrimary
-                                dimColor: Appearance.colors.colSubtext
-                                indicatorColor: Appearance.colors.colPrimary
-                                indicatorShapeColor: Appearance.colors.colOnPrimary
+                                textColor: blendedColors.colOnLayer0
+                                activeColor: blendedColors.colPrimary
+                                dimColor: blendedColors.colSubtext
+                                indicatorColor: blendedColors.colPrimary
+                                indicatorShapeColor: blendedColors.colOnPrimary
                             }
                         }
                     }
@@ -284,11 +301,11 @@ AbstractBackgroundWidget {
             }
             sourceComponent: ControlButton {
                 buttonRadius: root.currentPlayer?.isPlaying ? Appearance.rounding.normal : controlsSize / 2
-                colBackground: Appearance.colors.colTertiaryContainer
-                colBackgroundHover: Appearance.colors.colTertiaryContainerHover
-                colRipple: Appearance.colors.colTertiaryContainerActive
+                colBackground: root.currentPlayer?.isPlaying ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
+                colBackgroundHover: root.currentPlayer?.isPlaying ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
+                colRipple: root.currentPlayer?.isPlaying ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive
                 symbolText: root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
-                symbolColor: Appearance.colors.colSecondary
+                symbolColor: root.currentPlayer?.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
                 onClicked: {
                     root.currentPlayer.togglePlaying()
                 }
@@ -317,8 +334,8 @@ AbstractBackgroundWidget {
                 anchors.centerIn: parent
                 iconSize: root.widgetSize / 4
                 shape: MaterialShape.Shape.Cookie12Sided
-                color: Appearance.colors.colOnSecondaryContainer
-                colSymbol: Appearance.colors.colPrimaryContainer
+                color: blendedColors.colOnSecondaryContainer
+                colSymbol: blendedColors.colPrimaryContainer
             }
         }
     }

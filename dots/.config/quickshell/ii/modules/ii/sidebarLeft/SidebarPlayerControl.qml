@@ -20,7 +20,7 @@ Item {
     property string artDownloadLocation: Directories.coverArt
     property string artFileName: Qt.md5(artUrl)
     property string artFilePath: `${artDownloadLocation}/${artFileName}`
-    property color artDominantColor: Config.options.sidebar.media.artColors
+    property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
             (colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary),
             Appearance.colors.colPrimaryContainer,
@@ -33,7 +33,11 @@ Item {
     property int visualizerSmoothing: 2
     property real radius
 
-    property string displayedArtFilePath: root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
+    property string displayedArtFilePath: {
+        if (!root.downloaded) return ""
+        if (root.artUrl.startsWith("file://")) return root.artUrl
+        return Qt.resolvedUrl(artFilePath)
+    }
 
     Timer {
         running: root.player?.playbackState == MprisPlaybackState.Playing
@@ -44,7 +48,11 @@ Item {
 
     onArtFilePathChanged: {
         if (!root.artUrl || root.artUrl.length == 0) {
-            root.artDominantColor = Appearance.m3colors.m3secondaryContainer
+            root.downloaded = false
+            return
+        }
+        if (root.artUrl.startsWith("file://")) {
+            root.downloaded = true
             return
         }
         coverArtDownloader.targetFile = root.artUrl
@@ -79,7 +87,7 @@ Item {
         anchors.rightMargin: 4
         anchors.topMargin: -1
         anchors.bottomMargin: 4
-        color: Appearance.colors.colLayer2
+        color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
         radius: Appearance.rounding.normal
 
         WaveVisualizer {
@@ -115,6 +123,19 @@ Item {
                     const index = model.findIndex(item => MprisController.playerMatchesId(root.player, item.value));
                     return index >= 0 ? index : 0;
                 }
+                colBackground: blendedColors.colSecondaryContainer
+                colBackgroundHover: blendedColors.colSecondaryContainerHover
+                colBackgroundActive: blendedColors.colSecondaryContainerActive
+                colContent: blendedColors.colOnSecondaryContainer
+                colPopupBackground: blendedColors.colLayer1
+                colSelectedBackground: blendedColors.colSecondaryContainer
+                colSelectedBackgroundHover: blendedColors.colSecondaryContainerHover
+                colSelectedBackgroundActive: blendedColors.colSecondaryContainerActive
+                colSelectedText: blendedColors.colOnSecondaryContainer
+                colDelegateBackground: blendedColors.colLayer1
+                colDelegateBackgroundHover: blendedColors.colSecondaryContainerHover
+                colDelegateBackgroundActive: blendedColors.colSecondaryContainerActive
+                colDelegateText: blendedColors.colOnLayer1
                 onActivated: index => {
                     Config.options.media.preferredPlayer = model[index]?.value ?? "";
                 }
@@ -226,7 +247,7 @@ Item {
                 indicatorShapeColor: {
                     let c = blendedColors.colOnPrimaryContainer
                     if (c && c != "#000000" && c != "#ffffff" && c != "transparent") return c
-                    return blendedColors.colPrimary || Appearance.colors.colPrimary
+                    return blendedColors.colPrimary
                 }
             }
 

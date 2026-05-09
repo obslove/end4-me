@@ -32,11 +32,29 @@ Item {
     property string artFileName:         Qt.md5(artUrl)
     property string artFilePath:         `${artDownloadLocation}/${artFileName}`
     property bool   artDownloaded:       false
+    property color artDominantColor: root.displayedArtFilePath !== ""
+        ? ColorUtils.mix(
+            colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
+            Appearance.colors.colPrimaryContainer,
+            0.8
+        )
+        : Appearance.colors.colPrimaryContainer
+
+    property QtObject blendedColors: AdaptedMaterialScheme {
+        color: root.artDominantColor
+    }
 
     property string displayedArtFilePath: {
         if (!root.artDownloaded) return ""
         if (root.artUrl.startsWith("file://")) return root.artUrl
         return Qt.resolvedUrl(artFilePath)
+    }
+
+    ColorQuantizer {
+        id: colorQuantizer
+        source: root.displayedArtFilePath
+        depth: 0
+        rescaleSize: 1
     }
 
     onArtFilePathChanged: {
@@ -96,7 +114,7 @@ Item {
             implicitSize: 20
             lineWidth: Appearance.rounding.unsharpen
             value: root.activePlayer?.position / root.activePlayer?.length
-            colPrimary: Appearance.colors.colOnSecondaryContainer
+            colPrimary: root.blendedColors.colOnSecondaryContainer
             enableAnimation: false
             Item {
                 anchors.centerIn: parent
@@ -107,7 +125,7 @@ Item {
                     fill: 1
                     text: root.activePlayer?.isPlaying ? "pause" : "music_note"
                     iconSize: Appearance.font.pixelSize.normal
-                    color: Appearance.m3colors.m3onSecondaryContainer
+                    color: root.blendedColors.colOnSecondaryContainer
                 }
             }
         }
@@ -117,7 +135,7 @@ Item {
     Rectangle {
         visible: root.vertical && root.isMaterial
         anchors.centerIn: parent
-        color: Appearance.colors.colSecondaryContainer
+        color: root.blendedColors.colSecondaryContainer
         radius: Appearance.rounding.full
         implicitWidth: 32
         implicitHeight: 32
@@ -127,7 +145,7 @@ Item {
             fill: 1
             text: root.activePlayer?.isPlaying ? "pause" : "music_note"
             iconSize: Appearance.font.pixelSize.normal
-            color: Appearance.colors.colOnSecondaryContainer
+            color: root.blendedColors.colOnSecondaryContainer
         }
     }
 
@@ -145,7 +163,7 @@ Item {
                 implicitSize: 20
                 lineWidth: Appearance.rounding.unsharpen
                 value: root.activePlayer?.position / root.activePlayer?.length
-                colPrimary: Appearance.colors.colOnSecondaryContainer
+                colPrimary: root.blendedColors.colOnSecondaryContainer
                 enableAnimation: false
                 Item {
                     anchors.centerIn: parent
@@ -156,7 +174,7 @@ Item {
                         fill: 1
                         text: root.activePlayer?.isPlaying ? "pause" : "music_note"
                         iconSize: Appearance.font.pixelSize.normal
-                        color: Appearance.m3colors.m3onSecondaryContainer
+                        color: root.blendedColors.colOnSecondaryContainer
                     }
                 }
             }
@@ -167,7 +185,7 @@ Item {
                 Layout.rightMargin: 0
                 horizontalAlignment: Text.AlignHCenter
                 elide: Text.ElideRight
-                color: Appearance.colors.colOnLayer1
+                color: root.blendedColors.colOnLayer1
                 text: `${root.cleanedTitle}${root.activePlayer?.trackArtist ? ' • ' + root.activePlayer.trackArtist : ''}`
             }
         }
@@ -181,7 +199,7 @@ Item {
         anchors.centerIn: parent
         sourceComponent: Rectangle {
             id: card
-            color: Appearance.colors.colSecondaryContainer
+            color: root.blendedColors.colSecondaryContainer
             radius: Appearance.rounding.full
             implicitHeight: 30
             implicitWidth: innerRow.implicitWidth + 8
@@ -197,7 +215,7 @@ Item {
                     implicitWidth: 26
                     implicitHeight: 26
                     radius: Appearance.rounding.full
-                    color: Appearance.colors.colSecondaryContainer
+                    color: root.blendedColors.colSecondaryContainer
                     Layout.alignment: Qt.AlignVCenter
 
                     layer.enabled: true
@@ -225,7 +243,7 @@ Item {
                         fill: 1
                         text: "music_note"
                         iconSize: Appearance.font.pixelSize.normal
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: root.blendedColors.colOnSecondaryContainer
                         visible: root.displayedArtFilePath === ""
                     }
                 }
@@ -240,7 +258,7 @@ Item {
                         id: artistText
                         text: root.trackArtist
                         font.pixelSize: Appearance.font.pixelSize.smaller
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: root.blendedColors.colOnSecondaryContainer
                         elide: Text.ElideRight
                         Layout.maximumWidth: 120
                         Behavior on text {
@@ -256,7 +274,7 @@ Item {
                         Layout.topMargin: !root.activePlayer ? -13 : 0
                         text: StringUtils.cleanMusicTitle(root.trackTitle) || Translation.tr("No media")
                         font.pixelSize: Appearance.font.pixelSize.smallie
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: root.blendedColors.colOnSecondaryContainer
                         elide: Text.ElideRight
                         opacity: 0.7
                         Layout.maximumWidth: 120
@@ -275,9 +293,9 @@ Item {
                     implicitWidth: 40
                     implicitHeight: 23
                     buttonRadius: root.isPlaying ? Appearance.rounding.normal : 13
-                    colBackground: root.isPlaying ? Appearance.colors.colPrimary : ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
-                    colBackgroundHover: root.isPlaying ? Appearance.colors.colPrimaryHover : Appearance.colors.colPrimaryContainerHover
-                    colRipple: root.isPlaying ? Appearance.colors.colPrimaryActive : Appearance.colors.colPrimaryContainerActive
+                    colBackground: root.isPlaying ? root.blendedColors.colPrimary : ColorUtils.transparentize(root.blendedColors.colLayer0, 0.8)
+                    colBackgroundHover: root.isPlaying ? root.blendedColors.colPrimaryHover : root.blendedColors.colSecondaryContainerHover
+                    colRipple: root.isPlaying ? root.blendedColors.colPrimaryActive : root.blendedColors.colSecondaryContainerActive
                     downAction: () => root.activePlayer?.togglePlaying()
                     contentItem: MaterialSymbol {
                         anchors.centerIn: parent
@@ -285,7 +303,7 @@ Item {
                         text: root.isPlaying ? "pause" : "play_arrow"
                         iconSize: Appearance.font.pixelSize.large
                         fill: 1
-                        color: root.isPlaying ? Appearance.colors.colOnPrimary : Appearance.colors.colOnPrimaryContainer
+                        color: root.isPlaying ? root.blendedColors.colOnPrimary : root.blendedColors.colOnSecondaryContainer
                     }
                 }
 
@@ -296,8 +314,8 @@ Item {
                     Layout.leftMargin: -4
                     buttonRadius: 13
                     colBackground: "transparent"
-                    colBackgroundHover: Appearance.colors.colPrimaryContainerHover
-                    colRipple: Appearance.colors.colPrimaryContainerActive
+                    colBackgroundHover: root.blendedColors.colSecondaryContainerHover
+                    colRipple: root.blendedColors.colSecondaryContainerActive
                     downAction: () => root.activePlayer?.next()
                     contentItem: MaterialSymbol {
                         anchors.centerIn: parent
@@ -305,7 +323,7 @@ Item {
                         text: "skip_next"
                         iconSize: Appearance.font.pixelSize.large
                         fill: 1
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: root.blendedColors.colOnSecondaryContainer
                     }
                 }
             }

@@ -337,6 +337,11 @@ ContentPage {
                 checked: Config.options.bar.workspaces.showAppIcons
                 onCheckedChanged: { Config.options.bar.workspaces.showAppIcons = checked; }
             }
+            ConfigSwitch {
+                buttonIcon: "auto_awesome_motion"; text: Translation.tr("Dynamic workspaces")
+                checked: Config.options.bar.workspaces.dynamicWorkspaces
+                onCheckedChanged: { Config.options.bar.workspaces.dynamicWorkspaces = checked; }
+            }
             ConfigSpinBox {
                 icon: "view_column"; text: Translation.tr("Workspaces shown")
                 value: Config.options.bar.workspaces.shown

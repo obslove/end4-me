@@ -25,6 +25,9 @@ Singleton {
 	property bool __reverse: false;
 
 	property var activeTrack;
+	property int positionTick: 0;
+	property string seekingPlayerId: "";
+	property real seekingPosition: 0;
 
 	readonly property bool hasActivePlasmaIntegration: Mpris.players.values.some(
 		p => p.dbusName?.startsWith('org.mpris.MediaPlayer2.plasma-browser-integration')
@@ -96,6 +99,63 @@ Singleton {
 		return normalized.length > 0 && playerAliases(player).includes(normalized);
 	}
 
+	function isSeekingPlayer(player) {
+		return seekingPlayerId.length > 0 && playerMatchesId(player, seekingPlayerId);
+	}
+
+	function displayPosition(player) {
+		if (positionTick < 0) {
+			return 0;
+		}
+		if (!player) {
+			return 0;
+		}
+		if (isSeekingPlayer(player)) {
+			return seekingPosition;
+		}
+		return Math.max(0, player.position ?? 0);
+	}
+
+	function beginSeek(player, position) {
+		if (!player) {
+			return;
+		}
+		seekingPlayerId = playerId(player);
+		seekingPosition = Math.max(0, position ?? 0);
+		positionTick++;
+	}
+
+	function updateSeek(player, position) {
+		if (!player || !isSeekingPlayer(player)) {
+			return;
+		}
+		seekingPosition = Math.max(0, position ?? 0);
+		positionTick++;
+	}
+
+	function finishSeek(player, position, resumePlayback) {
+		if (!player) {
+			return;
+		}
+
+		const targetPosition = Math.max(0, position ?? 0);
+		player.position = targetPosition;
+		player.positionChanged();
+		seekingPlayerId = "";
+		seekingPosition = 0;
+		positionTick++;
+
+		if (resumePlayback) {
+			Qt.callLater(() => {
+				if (player.canPlay) {
+					player.play();
+				} else if (player.canTogglePlaying && !player.isPlaying) {
+					player.togglePlaying();
+				}
+			});
+		}
+	}
+
 	function isSelectablePlayer(player) {
 		return player && players.some(candidate => playerMatchesId(candidate, playerId(player)));
 	}
@@ -110,6 +170,20 @@ Singleton {
 	}
 
 	// Original stuff from fox below
+	Timer {
+		interval: 250
+		repeat: true
+		running: root.players.length > 0 || root.seekingPlayerId.length > 0
+		onTriggered: {
+			for (const player of root.players) {
+				if (player.playbackState == MprisPlaybackState.Playing) {
+					player.positionChanged();
+				}
+			}
+			root.positionTick++;
+		}
+	}
+
 	Instantiator {
 		model: Mpris.players;
 

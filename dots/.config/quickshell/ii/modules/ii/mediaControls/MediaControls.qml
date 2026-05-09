@@ -80,7 +80,7 @@ Scope {
 
     Process {
         id: cavaProc
-        running: mediaControlsLoader.active
+        running: root.realPlayers.some(player => player.playbackState == MprisPlaybackState.Playing)
         onRunningChanged: {
             if (!cavaProc.running) {
                 root.visualizerPoints = [];

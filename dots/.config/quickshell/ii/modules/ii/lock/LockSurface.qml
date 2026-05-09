@@ -264,13 +264,6 @@ MouseArea {
                 readonly property MprisPlayer activePlayer: MprisController.activePlayer
                 readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || ""
 
-                Timer {
-                    running: activePlayer?.playbackState == MprisPlaybackState.Playing
-                    interval: Config.options.resources.updateInterval
-                    repeat: true
-                    onTriggered: activePlayer.positionChanged()
-                }
-
                 RowLayout {
                     id: mediaRow
                     spacing: 8
@@ -333,7 +326,7 @@ MouseArea {
                         id: mediaCircProg
                         Layout.alignment: Qt.AlignVCenter
                         lineWidth: Appearance.rounding.unsharpen
-                        value: activePlayer?.position / activePlayer?.length
+                        value: MprisController.displayPosition(activePlayer) / Math.max(activePlayer?.length ?? 0, 1)
                         implicitSize: 24
                         colPrimary: Appearance.colors.colOnSurfaceVariant
                         enableAnimation: false

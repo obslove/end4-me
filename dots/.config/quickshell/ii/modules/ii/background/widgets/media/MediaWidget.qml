@@ -24,9 +24,6 @@ AbstractBackgroundWidget {
     readonly property var playerList: MprisController.players
     property MprisPlayer currentPlayer: MprisController.activePlayer
     property var artUrl: currentPlayer?.trackArtUrl
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName: Qt.md5(artUrl)
-    property string artFilePath: `${artDownloadLocation}/${artFileName}`
     property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
             colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
@@ -42,12 +39,8 @@ AbstractBackgroundWidget {
     property real controlsSize: 55
     property real buttonIconSize: 30
 
-    property bool downloaded: false
-    property string displayedArtFilePath: {
-        if (!root.downloaded) return ""
-        if (root.artUrl && root.artUrl.startsWith("file://")) return root.artUrl
-        return root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
-    }
+    readonly property bool downloaded: mediaArtSource.ready
+    readonly property string displayedArtFilePath: mediaArtSource.source
 
     implicitHeight: contentItem.implicitHeight
     implicitWidth: contentItem.implicitWidth
@@ -57,28 +50,16 @@ AbstractBackgroundWidget {
     onEntered: { hovering = true }
     onExited:  { hovering = false }
 
-    onArtFilePathChanged: updateArt()
+    MediaArtSource {
+        id: mediaArtSource
+        artUrl: root.artUrl ?? ""
+    }
 
     ColorQuantizer {
         id: colorQuantizer
         source: root.displayedArtFilePath
         depth: 0
         rescaleSize: 1
-    }
-
-    function updateArt() {
-        if (!root.artUrl || root.artUrl.length === 0) {
-            root.downloaded = false
-            return
-        }
-        if (root.artUrl.startsWith("file://")) {
-            root.downloaded = true
-            return
-        }
-        coverArtDownloader.targetFile = root.artUrl
-        coverArtDownloader.artFilePath = root.artFilePath
-        root.downloaded = false
-        coverArtDownloader.running = true
     }
 
     function getShape(name) {
@@ -119,16 +100,6 @@ AbstractBackgroundWidget {
             case "Bun":           return MaterialShape.Shape.Bun
             case "Heart":         return MaterialShape.Shape.Heart
             default:              return MaterialShape.Shape.Cookie4Sided
-        }
-    }
-
-    Process {
-        id: coverArtDownloader
-        property string targetFile: root.artUrl
-        property string artFilePath: root.artFilePath
-        command: ["bash", "-c", `[ -f ${artFilePath} ] || curl -sSL '${targetFile}' -o '${artFilePath}'`]
-        onExited: (exitCode, exitStatus) => {
-            root.downloaded = true
         }
     }
 

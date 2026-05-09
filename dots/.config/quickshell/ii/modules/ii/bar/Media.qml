@@ -28,10 +28,7 @@ Item {
     property bool   isPlaying:   activePlayer?.isPlaying   ?? false
     property bool   hasTrack:    trackTitle.length > 0
 
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName:         Qt.md5(artUrl)
-    property string artFilePath:         `${artDownloadLocation}/${artFileName}`
-    property bool   artDownloaded:       false
+    readonly property bool artDownloaded: mediaArtSource.ready
     property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
             colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary,
@@ -44,11 +41,7 @@ Item {
         color: root.artDominantColor
     }
 
-    property string displayedArtFilePath: {
-        if (!root.artDownloaded) return ""
-        if (root.artUrl.startsWith("file://")) return root.artUrl
-        return Qt.resolvedUrl(artFilePath)
-    }
+    readonly property string displayedArtFilePath: mediaArtSource.source
 
     ColorQuantizer {
         id: colorQuantizer
@@ -57,40 +50,14 @@ Item {
         rescaleSize: 1
     }
 
-    onArtFilePathChanged: {
-        if (!root.artUrl || root.artUrl.length === 0) {
-            root.artDownloaded = false
-            return
-        }
-        if (root.artUrl.startsWith("file://")) {
-            root.artDownloaded = true
-            return
-        }
-        artDownloader.targetFile  = root.artUrl
-        artDownloader.artFilePath = root.artFilePath
-        root.artDownloaded = false
-        artDownloader.running = true
-    }
-
-    Process {
-        id: artDownloader
-        property string targetFile:  root.artUrl
-        property string artFilePath: root.artFilePath
-        command: ["bash", "-c",
-            `[ -f ${artFilePath} ] || curl -sSL '${targetFile}' -o '${artFilePath}'`]
-        onExited: { root.artDownloaded = true }
+    MediaArtSource {
+        id: mediaArtSource
+        artUrl: root.artUrl
     }
 
     Layout.fillHeight: true
     implicitWidth:  vertical ? Appearance.sizes.verticalBarWidth : (isMaterial ? materialRow.implicitWidth : Math.min(rowLayout.implicitWidth + 8, 280))
     implicitHeight: vertical ? (isMaterial ? 26 : mediaCircProg.implicitHeight + 6) : Appearance.sizes.barHeight
-
-    Timer {
-        running: activePlayer?.playbackState == MprisPlaybackState.Playing
-        interval: Config.options.resources.updateInterval
-        repeat: true
-        onTriggered: activePlayer.positionChanged()
-    }
 
     MouseArea {
         anchors.fill: parent
@@ -113,7 +80,7 @@ Item {
         sourceComponent: ClippedFilledCircularProgress {
             implicitSize: 20
             lineWidth: Appearance.rounding.unsharpen
-            value: root.activePlayer?.position / root.activePlayer?.length
+            value: MprisController.displayPosition(root.activePlayer) / Math.max(root.activePlayer?.length ?? 0, 1)
             colPrimary: root.blendedColors.colOnSecondaryContainer
             enableAnimation: false
             Item {
@@ -162,7 +129,7 @@ Item {
                 Layout.leftMargin: 3
                 implicitSize: 20
                 lineWidth: Appearance.rounding.unsharpen
-                value: root.activePlayer?.position / root.activePlayer?.length
+                value: MprisController.displayPosition(root.activePlayer) / Math.max(root.activePlayer?.length ?? 0, 1)
                 colPrimary: root.blendedColors.colOnSecondaryContainer
                 enableAnimation: false
                 Item {

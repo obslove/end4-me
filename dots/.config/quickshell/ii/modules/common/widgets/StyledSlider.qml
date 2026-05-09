@@ -55,6 +55,7 @@ Slider {
     property real waveAmplitudeMultiplier: wavy ? 0.5 : 0
     property real waveFrequency: 6
     property real waveFps: 60
+    signal pointerPressed()
 
     leftPadding: handleMargins
     rightPadding: handleMargins
@@ -91,7 +92,10 @@ Slider {
 
     MouseArea {
         anchors.fill: parent
-        onPressed: (mouse) => mouse.accepted = false
+        onPressed: (mouse) => {
+            root.pointerPressed()
+            mouse.accepted = false
+        }
         cursorShape: root.pressed ? Qt.ClosedHandCursor : Qt.PointingHandCursor 
     }
 

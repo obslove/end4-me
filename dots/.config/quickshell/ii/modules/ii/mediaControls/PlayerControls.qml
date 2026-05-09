@@ -116,7 +116,7 @@ Item {
                     color: root.blendedColors.colSubtext
                     elide: Text.ElideRight
                     font.features: { "tnum": 1 }
-                    text: `${StringUtils.friendlyTimeForSeconds(root.player?.position)} / ${StringUtils.friendlyTimeForSeconds(root.player?.length)}`
+                    text: `${StringUtils.friendlyTimeForSeconds(MprisController.displayPosition(root.player))} / ${StringUtils.friendlyTimeForSeconds(root.player?.length)}`
                 }
 
                 RowLayout {
@@ -141,13 +141,12 @@ Item {
                             id: sliderLoader
                             anchors.fill: parent
                             active: root.player?.canSeek ?? false
-                            sourceComponent: StyledSlider {
+                            sourceComponent: MediaSeekSlider {
+                                player: root.player
                                 configuration: StyledSlider.Configuration.Wavy
                                 highlightColor: root.blendedColors.colPrimary
                                 trackColor: root.blendedColors.colSecondaryContainer
                                 handleColor: root.blendedColors.colPrimary
-                                value: root.player?.position / root.player?.length
-                                onMoved: root.player.position = value * root.player.length
                             }
                         }
 
@@ -163,7 +162,7 @@ Item {
                                 wavy: root.player?.isPlaying
                                 highlightColor: root.blendedColors.colPrimary
                                 trackColor: root.blendedColors.colSecondaryContainer
-                                value: root.player?.position / root.player?.length
+                                value: MprisController.displayPosition(root.player) / Math.max(root.player?.length ?? 0, 1)
                             }
                         }
                     }

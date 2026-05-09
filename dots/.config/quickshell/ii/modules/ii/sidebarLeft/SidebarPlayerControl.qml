@@ -17,9 +17,6 @@ Item {
     id: root
     property var player: MprisController.activePlayer
     property var artUrl: player?.trackArtUrl ?? ""
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName: Qt.md5(artUrl)
-    property string artFilePath: `${artDownloadLocation}/${artFileName}`
     property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
             (colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary),
@@ -27,46 +24,16 @@ Item {
             0.8
           )
         : Appearance.colors.colPrimaryContainer
-    property bool downloaded: false
+    readonly property bool downloaded: mediaArtSource.ready
     property list<real> visualizerPoints: []
     property real maxVisualizerValue: 1000
     property int visualizerSmoothing: 2
     property real radius
+    readonly property string displayedArtFilePath: mediaArtSource.source
 
-    property string displayedArtFilePath: {
-        if (!root.downloaded) return ""
-        if (root.artUrl.startsWith("file://")) return root.artUrl
-        return Qt.resolvedUrl(artFilePath)
-    }
-
-    Timer {
-        running: root.player?.playbackState == MprisPlaybackState.Playing
-        interval: Config.options.resources.updateInterval
-        repeat: true
-        onTriggered: root.player?.positionChanged()
-    }
-
-    onArtFilePathChanged: {
-        if (!root.artUrl || root.artUrl.length == 0) {
-            root.downloaded = false
-            return
-        }
-        if (root.artUrl.startsWith("file://")) {
-            root.downloaded = true
-            return
-        }
-        coverArtDownloader.targetFile = root.artUrl
-        coverArtDownloader.artFilePath = root.artFilePath
-        root.downloaded = false
-        coverArtDownloader.running = true
-    }
-
-    Process {
-        id: coverArtDownloader
-        property string targetFile: root.artUrl
-        property string artFilePath: root.artFilePath
-        command: ["bash", "-c", `[ -f ${artFilePath} ] || curl -sSL '${targetFile}' -o '${artFilePath}'`]
-        onExited: (exitCode, exitStatus) => { root.downloaded = true }
+    MediaArtSource {
+        id: mediaArtSource
+        artUrl: root.artUrl
     }
 
     ColorQuantizer {
@@ -262,7 +229,7 @@ Item {
                     color: blendedColors.colSubtext
                     font.letterSpacing: -0.4
                     font.features: { "tnum": 1 }
-                    text: StringUtils.friendlyTimeForSeconds(root.player?.position ?? 0)
+                    text: StringUtils.friendlyTimeForSeconds(MprisController.displayPosition(root.player))
                 }
 
                 Item {
@@ -273,15 +240,13 @@ Item {
                         id: sliderLoader
                         anchors.fill: parent
                         active: root.player?.canSeek ?? false
-                        sourceComponent: StyledSlider {
+                        sourceComponent: MediaSeekSlider {
+                            player: root.player
                             configuration: StyledSlider.Configuration.Wavy
                             highlightColor: blendedColors.colPrimary
                             trackColor: blendedColors.colSecondaryContainer
                             handleColor: blendedColors.colPrimary
-                            value: (root.player?.position ?? 0) / (root.player?.length ?? 1)
-                            onMoved: {root.player.position = value * root.player.length
-                                lyricsComp.restartLyrics()
-                            }
+                            onSeekCommitted: lyricsComp.restartLyrics()
                         }
                     }
 
@@ -297,7 +262,7 @@ Item {
                             wavy: root.player?.isPlaying ?? false
                             highlightColor: blendedColors.colPrimary
                             trackColor: blendedColors.colSecondaryContainer
-                            value: (root.player?.position ?? 0) / (root.player?.length ?? 1)
+                            value: MprisController.displayPosition(root.player) / Math.max(root.player?.length ?? 0, 1)
                         }
                     }
                 }

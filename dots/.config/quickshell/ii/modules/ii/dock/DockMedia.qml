@@ -27,16 +27,8 @@ Item {
     property bool   isPlaying:   player?.isPlaying   ?? false
     property bool   hasTrack:    trackTitle.length > 0
 
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName:         Qt.md5(artUrl)
-    property string artFilePath:         `${artDownloadLocation}/${artFileName}`
-    property bool   artDownloaded:       false
-
-    property string displayedArtFilePath: {
-        if (!root.artDownloaded) return ""
-        if (root.artUrl.startsWith("file://")) return root.artUrl
-        return Qt.resolvedUrl(artFilePath)
-    }
+    readonly property bool artDownloaded: mediaArtSource.ready
+    readonly property string displayedArtFilePath: mediaArtSource.source
 
     property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
@@ -49,30 +41,9 @@ Item {
         color: root.artDominantColor
     }
 
-    onArtFilePathChanged: {
-        if (!root.artUrl || root.artUrl.length === 0) {
-            root.artDownloaded = false
-            return
-        }
-
-        if (root.artUrl.startsWith("file://")) {
-            root.artDownloaded = true
-            return
-        }
-
-        artDownloader.targetFile  = root.artUrl
-        artDownloader.artFilePath = root.artFilePath
-        root.artDownloaded = false
-        artDownloader.running = true
-    }
-
-    Process {
-        id: artDownloader
-        property string targetFile:  root.artUrl
-        property string artFilePath: root.artFilePath
-        command: ["bash", "-c",
-            `[ -f ${artFilePath} ] || curl -sSL '${targetFile}' -o '${artFilePath}'`]
-        onExited: { root.artDownloaded = true }
+    MediaArtSource {
+        id: mediaArtSource
+        artUrl: root.artUrl
     }
 
     ColorQuantizer {

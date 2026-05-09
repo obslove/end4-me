@@ -16,64 +16,27 @@ Item {
     id: root
     required property MprisPlayer player
     property var artUrl: player?.trackArtUrl ?? ""
-    property string artDownloadLocation: Directories.coverArt
-    property string artFileName: Qt.md5(artUrl)
-    property string artFilePath: `${artDownloadLocation}/${artFileName}`
     property color artDominantColor: root.displayedArtFilePath !== ""
         ? ColorUtils.mix(
             (colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary),
             Appearance.colors.colPrimaryContainer,
             0.8)
         : Appearance.colors.colPrimaryContainer
-    property bool downloaded: false
+    readonly property bool downloaded: mediaArtSource.ready
     property list<real> visualizerPoints: []
     property real maxVisualizerValue: 1000
     property int visualizerSmoothing: 2
     property real radius
     property bool showLyrics: false
-
-    property string displayedArtFilePath: {
-        if (!root.downloaded) return ""
-        if (root.artUrl.startsWith("file://")) return root.artUrl
-        return Qt.resolvedUrl(artFilePath)
-    }
+    readonly property string displayedArtFilePath: mediaArtSource.source
 
     property QtObject blendedColors: AdaptedMaterialScheme {
         color: artDominantColor
     }
 
-    Timer {
-        running: root.player?.playbackState == MprisPlaybackState.Playing
-        interval: Config.options.resources.updateInterval
-        repeat: true
-        onTriggered: root.player.positionChanged()
-    }
-
-    onArtFilePathChanged: {
-        if (!root.artUrl || root.artUrl.length === 0) {
-            root.downloaded = false
-            return
-        }
-
-        if (root.artUrl.startsWith("file://")) {
-            root.downloaded = true
-            return
-        }
-
-        coverArtDownloader.targetFile = root.artUrl
-        coverArtDownloader.artFilePath = root.artFilePath
-        root.downloaded = false
-        coverArtDownloader.running = true
-    }
-
-    Process {
-        id: coverArtDownloader
-        property string targetFile: root.artUrl
-        property string artFilePath: root.artFilePath
-        command: ["bash", "-c", `[ -f ${artFilePath} ] || curl -4 -sSL '${targetFile}' -o '${artFilePath}'`]
-        onExited: (exitCode, exitStatus) => {
-            root.downloaded = true
-        }
+    MediaArtSource {
+        id: mediaArtSource
+        artUrl: root.artUrl
     }
 
     ColorQuantizer {

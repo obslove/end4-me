@@ -181,7 +181,7 @@ Item {
                     id: artRect
                     implicitWidth: 26
                     implicitHeight: 26
-                    radius: Appearance.rounding.full
+                    radius: Appearance.rounding.sm
                     color: root.blendedColors.colSecondaryContainer
                     Layout.alignment: Qt.AlignVCenter
 

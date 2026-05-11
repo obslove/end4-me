@@ -21,6 +21,8 @@ Scope {
     readonly property real osdWidth: Appearance.sizes.osdWidth
     readonly property real widgetWidth: Appearance.sizes.mediaControlsWidth
     readonly property real widgetHeight: Appearance.sizes.mediaControlsHeight
+    readonly property real lyricsWidgetWidth: 560
+    readonly property real lyricsWidgetHeight: 360
     property real popupRounding: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 1)
     property list<real> visualizerPoints: []
 
@@ -111,7 +113,7 @@ Scope {
 
             exclusionMode: ExclusionMode.Ignore
             exclusiveZone: 0
-            implicitWidth: root.widgetWidth
+            implicitWidth: playerColumnLayout.implicitWidth
             implicitHeight: playerColumnLayout.implicitHeight
             color: "transparent"
             WlrLayershell.namespace: "quickshell:mediaControls"
@@ -126,20 +128,20 @@ Scope {
                 top: Config.options.bar.vertical
                     ? (!Config.options.bar.bottom
                         ? (root.mediaPosition === "left" ? Appearance.sizes.hyprlandGapsOut
-                            : root.mediaPosition === "right" ? panelWindow.screen.height - widgetHeight - Appearance.sizes.hyprlandGapsOut
-                            : (panelWindow.screen.height / 2) - (widgetHeight / 2))
-                        : ((panelWindow.screen.height / 2) - widgetHeight * 1.5))
+                            : root.mediaPosition === "right" ? panelWindow.screen.height - panelWindow.implicitHeight - Appearance.sizes.hyprlandGapsOut
+                            : (panelWindow.screen.height / 2) - (panelWindow.implicitHeight / 2))
+                        : ((panelWindow.screen.height / 2) - panelWindow.implicitHeight * 1.5))
                     : Appearance.sizes.barHeight
                 bottom: Appearance.sizes.barHeight
                 left: {
                     if (Config.options.bar.vertical) {
                         if (!Config.options.bar.bottom) return Appearance.sizes.verticalBarWidth + Appearance.sizes.hyprlandGapsOut
-                        return (panelWindow.screen.width / 2) - (widgetWidth / 2)
+                        return (panelWindow.screen.width / 2) - (panelWindow.implicitWidth / 2)
                     }
                     if (root.mediaPosition === "left") return Appearance.sizes.hyprlandGapsOut - 5
-                    if (root.mediaPosition === "center") return (panelWindow.screen.width / 2) - (widgetWidth / 2)
-                    if (root.mediaPosition === "right") return panelWindow.screen.width - widgetWidth - Appearance.sizes.hyprlandGapsOut
-                    return (panelWindow.screen.width / 2) - (widgetWidth / 2)
+                    if (root.mediaPosition === "center") return (panelWindow.screen.width / 2) - (panelWindow.implicitWidth / 2)
+                    if (root.mediaPosition === "right") return panelWindow.screen.width - panelWindow.implicitWidth - Appearance.sizes.hyprlandGapsOut
+                    return (panelWindow.screen.width / 2) - (panelWindow.implicitWidth / 2)
                 }
                 right: {
                     if (Config.options.bar.vertical && Config.options.bar.bottom)
@@ -178,8 +180,8 @@ Scope {
                         required property MprisPlayer modelData
                         player: modelData
                         visualizerPoints: root.visualizerPoints
-                        implicitWidth: root.widgetWidth
-                        implicitHeight: showLyrics ? 290 : Appearance.sizes.mediaControlsHeight
+                        implicitWidth: showLyrics ? root.lyricsWidgetWidth : root.widgetWidth
+                        implicitHeight: showLyrics ? root.lyricsWidgetHeight : Appearance.sizes.mediaControlsHeight
                         radius: root.popupRounding
                     }
                 }

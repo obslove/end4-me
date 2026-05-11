@@ -52,8 +52,8 @@ Item {
 
             Rectangle {
                 id: artBackground
-                implicitHeight: 150
-                implicitWidth: 150
+                implicitHeight: 190
+                implicitWidth: 190
                 radius: Appearance.rounding.lg
                 color: ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5)
 

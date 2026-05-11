@@ -199,16 +199,30 @@ Singleton {
     }
 
     rounding: QtObject {
-        property int unsharpen: 2
-        property int unsharpenmore: 6
-        property int verysmall: 8
-        property int small: 12
-        property int normal: 17
-        property int large: 23
-        property int verylarge: 30
-        property int full: 9999
-        property int screenRounding: large
-        property int windowRounding: 18
+        readonly property real base: Math.max(0, Config?.options?.appearance?.rounding ?? 17)
+
+        function scaled(defaultValue) {
+            return base <= 0 ? 0 : Math.round(defaultValue * base / 17)
+        }
+
+        property int none: 0
+        property int xs: scaled(8)
+        property int sm: scaled(12)
+        property int md: scaled(17)
+        property int lg: scaled(23)
+        property int xl: scaled(30)
+        property int full: scaled(17)
+
+        property int unsharpen: scaled(2)
+        property int unsharpenmore: scaled(6)
+        property int verysmall: xs
+        property int small: sm
+        property int normal: md
+        property int large: lg
+        property int verylarge: xl
+        property int cardRounding: lg
+        property int screenRounding: lg
+        property int windowRounding: scaled(18)
     }
 
     font: QtObject {

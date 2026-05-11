@@ -39,6 +39,25 @@ ContentPage {
         Layout.fillHeight: true
         spacing: 20
 
+        ContentSection {
+            icon: "rounded_corner"
+            shape: MaterialShape.Shape.Cookie6Sided
+            title: Translation.tr("Appearance")
+
+            ConfigSlider {
+                text: Translation.tr("Corner Radius")
+                value: Config.options.appearance.rounding
+                usePercentTooltip: false
+                buttonIcon: "rounded_corner"
+                from: 0
+                to: 32
+                stopIndicatorValues: [17]
+                onValueChanged: {
+                    Config.options.appearance.rounding = Math.round(value);
+                }
+            }
+        }
+
         ContentSection { // I see that for many the overview is important, I put it first why not
             icon: "overview_key"
             shape: MaterialShape.Shape.Gem

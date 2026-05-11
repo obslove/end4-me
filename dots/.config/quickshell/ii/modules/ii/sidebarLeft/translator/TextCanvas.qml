@@ -18,7 +18,7 @@ Rectangle {
     Layout.fillWidth: true
     implicitHeight: Math.max(150, inputColumn.implicitHeight)
     color: Appearance.colors.colLayer2
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.lg
 
     signal inputTextChanged(); // Signal emitted when text changes
 

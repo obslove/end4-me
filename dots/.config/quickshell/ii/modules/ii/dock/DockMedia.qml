@@ -72,7 +72,7 @@ Item {
         anchors.bottomMargin: Appearance.sizes.hyprlandGapsOut
         anchors.leftMargin:   Appearance.sizes.hyprlandGapsOut
         anchors.rightMargin:  Appearance.sizes.hyprlandGapsOut
-        radius: Appearance.rounding.normal
+        radius: Appearance.rounding.lg
         color:  "transparent"
 
         layer.enabled: true
@@ -128,7 +128,7 @@ Item {
                 implicitWidth:     36
                 implicitHeight:    36
                 color:  ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5)
-                radius: Appearance.rounding.small
+                radius: Appearance.rounding.sm
 
                 layer.enabled: true
                 layer.effect: OpacityMask {
@@ -189,8 +189,8 @@ Item {
                     implicitWidth:  26
                     implicitHeight: 26
                     buttonRadius: root.isPlaying
-                        ? Appearance.rounding.normal
-                        : implicitWidth / 2
+                        ? Appearance.rounding.md
+                        : Appearance.rounding.full
                     colBackground: root.isPlaying
                         ? root.blendedColors.colPrimary
                         : root.blendedColors.colSecondaryContainer

@@ -494,7 +494,7 @@ ContentPage {
                     id: copySourceButton
                     property bool justCopied: false
                     Layout.fillWidth: false
-                    buttonRadius: Appearance.rounding.small
+                    buttonRadius: Appearance.rounding.sm
                     materialIcon: justCopied ? "check" : "content_copy"
                     mainText: justCopied ? Translation.tr("Copied!") : Translation.tr("Copy line")
                     onClicked: {

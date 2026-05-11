@@ -60,7 +60,7 @@ Item {
                 maskSource: Rectangle {
                     width: columnLayout.width
                     height: columnLayout.height
-                    radius: Appearance.rounding.small
+                    radius: Appearance.rounding.sm
                 }
             }
 
@@ -178,7 +178,7 @@ Item {
             id: searchInputContainer
             property real spacing: 5
             Layout.fillWidth: true
-            radius: Appearance.rounding.normal - root.padding
+            radius: Math.max(Appearance.rounding.none, Appearance.rounding.lg - root.padding)
             color: Appearance.colors.colLayer2
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin + statusRowLayout.implicitHeight + statusRowLayout.anchors.bottomMargin + spacing, 45)
             clip: true

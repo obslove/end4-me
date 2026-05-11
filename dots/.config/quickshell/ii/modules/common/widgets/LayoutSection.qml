@@ -122,7 +122,7 @@ ContentSubsection {
                 visible: false
                 width: 3
                 height: 32
-                radius: 2
+                radius: Appearance.rounding.xs
                 color: Appearance.colors.colPrimary
 
                 Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
@@ -170,7 +170,7 @@ ContentSubsection {
             width: parent.width
             implicitHeight: dropdownFlow.implicitHeight + 16
             color: Appearance.colors.colLayer1
-            radius: Appearance.rounding.large
+            radius: Appearance.rounding.lg
             border.width: 1
             border.color: Appearance.colors.colLayer0Border
 

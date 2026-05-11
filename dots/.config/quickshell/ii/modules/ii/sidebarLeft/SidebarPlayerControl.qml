@@ -55,7 +55,7 @@ Item {
         anchors.topMargin: -1
         anchors.bottomMargin: 4
         color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
-        radius: Appearance.rounding.normal
+        radius: Appearance.rounding.lg
 
         WaveVisualizer {
             id: visualizerCanvas
@@ -114,7 +114,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: Math.min(parent.width * 1, parent.height * 0.45)
                 Layout.preferredHeight: Layout.preferredWidth
-                radius: Appearance.rounding.normal
+                radius: Appearance.rounding.lg
                 color: ColorUtils.transparentize(blendedColors.colLayer1, 0.5)
 
                 layer.enabled: true
@@ -287,7 +287,7 @@ Item {
                     property real baseSize: Math.max(42, parent.parent.height * 0.06)
                     implicitWidth: baseSize * 1.5
                     implicitHeight: baseSize * 1.5
-                    buttonRadius: Appearance.rounding.verylarge
+                    buttonRadius: Appearance.rounding.xl
                     colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 0.7)
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
@@ -305,7 +305,7 @@ Item {
                     property real baseSize: Math.max(70, parent.parent.height * 0.1)
                     Layout.fillWidth: true
                     implicitHeight: baseSize
-                    buttonRadius: (root.player?.isPlaying ?? false) ? Appearance.rounding.verylarge : baseSize / 2
+                    buttonRadius: (root.player?.isPlaying ?? false) ? Appearance.rounding.xl : Appearance.rounding.full
                     colBackground: (root.player?.isPlaying ?? false) ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
                     colBackgroundHover: (root.player?.isPlaying ?? false) ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
                     colRipple: (root.player?.isPlaying ?? false) ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive
@@ -326,7 +326,7 @@ Item {
                     property real baseSize: Math.max(42, parent.parent.height * 0.06)
                     implicitWidth: baseSize * 1.5
                     implicitHeight: baseSize * 1.5
-                    buttonRadius: Appearance.rounding.verylarge
+                    buttonRadius: Appearance.rounding.xl
                     colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 0.7)
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
@@ -351,7 +351,7 @@ Item {
                     property real baseSize: Math.max(36, parent.parent.height * 0.05)
                     implicitWidth: baseSize
                     implicitHeight: baseSize
-                    buttonRadius: Appearance.rounding.large
+                    buttonRadius: Appearance.rounding.lg
                     colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 0.7)
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
@@ -373,7 +373,7 @@ Item {
                     property real baseSize: Math.max(36, parent.parent.height * 0.05)
                     Layout.fillWidth: true
                     implicitHeight: baseSize
-                    buttonRadius: Appearance.rounding.large
+                    buttonRadius: Appearance.rounding.lg
                     colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 0.7)
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive
@@ -393,7 +393,7 @@ Item {
                     property real baseSize: Math.max(36, parent.parent.height * 0.05)
                     Layout.fillWidth: true
                     implicitHeight: baseSize
-                    buttonRadius: Appearance.rounding.large
+                    buttonRadius: Appearance.rounding.lg
                     colBackground: ColorUtils.transparentize(blendedColors.colSecondaryContainer, 0.7)
                     colBackgroundHover: blendedColors.colSecondaryContainerHover
                     colRipple: blendedColors.colSecondaryContainerActive

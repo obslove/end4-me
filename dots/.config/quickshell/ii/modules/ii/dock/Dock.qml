@@ -111,7 +111,7 @@ Scope {
                                    ? Appearance.colors.colLayer0 : "transparent"
                             border.width: Config.options.dock.showBackground ? 1 : 0
                             border.color: Appearance.colors.colLayer0Border
-                            radius: Appearance.rounding.normal + 6
+                            radius: Appearance.rounding.xl
                         }
 
                         RowLayout {
@@ -135,7 +135,7 @@ Scope {
                                     baseWidth: 35; baseHeight: 35
                                     visible: Config.options.dock.showPinButton
                                     clickedWidth: baseWidth; clickedHeight: baseHeight + 20
-                                    buttonRadius: Appearance.rounding.normal
+                                    buttonRadius: Appearance.rounding.md
                                     toggled: root.pinned
                                     onClicked: root.pinned = !root.pinned
                                     contentItem: MaterialSymbol {

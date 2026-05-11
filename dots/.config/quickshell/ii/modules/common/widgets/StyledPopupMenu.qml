@@ -48,7 +48,7 @@ Item {
                 implicitWidth: 200
                 implicitHeight: layout.implicitHeight + 16
 
-                radius: Appearance.rounding.normal
+                radius: Appearance.rounding.lg
                 color: Appearance.m3colors.m3surfaceContainer
                 border.width: 1
                 border.color: Appearance.colors.colLayer0Border
@@ -69,7 +69,7 @@ Item {
 
                             Rectangle {
                                 anchors.fill: parent
-                                radius: Appearance.rounding.small
+                                radius: Appearance.rounding.sm
                                 color: itemArea.containsMouse ? Appearance.colors.colLayer2Hover : "transparent"
                             }
 

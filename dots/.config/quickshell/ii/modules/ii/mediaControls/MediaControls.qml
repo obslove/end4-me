@@ -21,7 +21,7 @@ Scope {
     readonly property real osdWidth: Appearance.sizes.osdWidth
     readonly property real widgetWidth: Appearance.sizes.mediaControlsWidth
     readonly property real widgetHeight: Appearance.sizes.mediaControlsHeight
-    property real popupRounding: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
+    property real popupRounding: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 1)
     property list<real> visualizerPoints: []
 
     readonly property string mediaPosition: {

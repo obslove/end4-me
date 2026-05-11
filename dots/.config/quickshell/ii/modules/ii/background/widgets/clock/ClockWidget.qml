@@ -90,7 +90,7 @@ AbstractBackgroundWidget {
             visible: opacity > 0
             implicitHeight: statusTextRow.implicitHeight + 5 * 2
             implicitWidth: statusTextRow.implicitWidth + 5 * 2
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
             color: ColorUtils.transparentize(Appearance.colors.colSecondaryContainer, root.clockStyle === "cookie" ? 0 : 1)
 
             Behavior on implicitWidth {

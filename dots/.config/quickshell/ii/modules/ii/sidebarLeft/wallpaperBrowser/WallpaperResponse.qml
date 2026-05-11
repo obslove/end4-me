@@ -46,7 +46,7 @@ Rectangle {
         }
     }
 
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.lg
     color: Appearance.colors.colLayer1
 
     ColumnLayout {
@@ -61,7 +61,7 @@ Rectangle {
             Rectangle { // Provider name
                 id: providerNameWrapper
                 color: Appearance.colors.colSecondaryContainer
-                radius: Appearance.rounding.small
+                radius: Appearance.rounding.sm
                 implicitWidth: providerName.implicitWidth + 10 * 2
                 implicitHeight: Math.max(providerName.implicitHeight + 5 * 2, 30)
                 Layout.alignment: Qt.AlignVCenter
@@ -105,7 +105,7 @@ Rectangle {
                 maskSource: Rectangle {
                     width: tagsFlickable.width
                     height: tagsFlickable.height
-                    radius: Appearance.rounding.small
+                    radius: Appearance.rounding.sm
                 }
             }
 
@@ -235,7 +235,7 @@ Rectangle {
                         required property var modelData
                         imageData: modelData
                         rowHeight: imageRow.rowHeight
-                        imageRadius: imageRow.modelData.images.length == 1 ? Appearance.rounding.small : Appearance.rounding.normal
+                        imageRadius: imageRow.modelData.images.length == 1 ? Appearance.rounding.xl : Appearance.rounding.lg
                         downloadPath: root.downloadPath
                         nsfwPath: root.nsfwPath
                     }
@@ -257,7 +257,7 @@ Rectangle {
                 responseListView.nextPage()
             }
 
-            buttonRadius: Appearance.rounding.small
+            buttonRadius: Appearance.rounding.sm
             colBackground: Appearance.colors.colSurfaceContainerHighest
             colBackgroundHover: Appearance.colors.colSurfaceContainerHighestHover
             colRipple: Appearance.colors.colSurfaceContainerHighestActive

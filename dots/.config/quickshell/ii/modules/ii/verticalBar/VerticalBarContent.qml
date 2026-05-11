@@ -33,7 +33,7 @@ Item {
             margins: Config.options.bar.cornerStyle === 1 ? Appearance.sizes.hyprlandGapsOut : 0
         }
         color: Config.options.bar.showBackground && Config.options.bar.cornerStyle !== 2 && !root.isMaterial ? Appearance.colors.colLayer0 : "transparent"
-        radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.windowRounding : 0
+        radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.xl : Appearance.rounding.none
         border.width: Config.options.bar.cornerStyle === 1 ? 1 : 0
         border.color: Appearance.colors.colLayer0Border
     }

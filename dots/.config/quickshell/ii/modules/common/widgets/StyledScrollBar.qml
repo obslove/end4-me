@@ -14,7 +14,7 @@ ScrollBar {
     contentItem: Rectangle {
         implicitWidth: 4
         implicitHeight: root.visualSize
-        radius: width / 2
+        radius: Appearance.rounding.full
         color: Appearance.colors.colOnSurfaceVariant
         
         opacity: root.policy === ScrollBar.AlwaysOn || (root.active && root.size < 1.0) ? 0.5 : 0

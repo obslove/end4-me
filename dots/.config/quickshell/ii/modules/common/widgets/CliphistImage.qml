@@ -43,7 +43,7 @@ Rectangle {
     }
 
     color: Appearance.colors.colLayer1
-    radius: Appearance.rounding.small
+    radius: Appearance.rounding.sm
     implicitHeight: imageHeight * scale
     implicitWidth: imageWidth * scale
 

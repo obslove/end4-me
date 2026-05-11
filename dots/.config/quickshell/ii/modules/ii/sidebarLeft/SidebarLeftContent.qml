@@ -66,9 +66,9 @@ Item {
             implicitWidth: swipeView.implicitWidth
             implicitHeight: swipeView.implicitHeight
             topLeftRadius: 0
-            bottomLeftRadius: Appearance.rounding.normal
+            bottomLeftRadius: Appearance.rounding.lg
             topRightRadius: 0
-            bottomRightRadius: Appearance.rounding.normal
+            bottomRightRadius: Appearance.rounding.lg
             color: Appearance.colors.colLayer1
 
             SwipeView { // Content pages
@@ -82,7 +82,7 @@ Item {
                     maskSource: Rectangle {
                         width: swipeView.width
                         height: swipeView.height
-                        radius: Appearance.rounding.small
+                        radius: Appearance.rounding.sm
                     }
                 }
 

@@ -14,7 +14,7 @@ RippleButton {
     implicitHeight: 30
     leftPadding: 6
     rightPadding: 10
-    buttonRadius: Appearance.rounding.verysmall
+    buttonRadius: Appearance.rounding.xs
     colBackground: Appearance.colors.colSurfaceContainerHighest
     colBackgroundHover: Appearance.colors.colSurfaceContainerHighestHover
     colRipple: Appearance.colors.colSurfaceContainerHighestActive

@@ -115,7 +115,7 @@ ContentPage {
                             maskSource: Rectangle {
                                 width: 360
                                 height: 220
-                                radius: Appearance.rounding.normal
+                                radius: Appearance.rounding.lg
                             }
                         }
                     }
@@ -141,7 +141,7 @@ ContentPage {
                         enabled: !randomWallProc.running
                         visible: Config.options.policies.weeb === 1
                         Layout.fillWidth: true
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         materialIcon: "ifl"
                         mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random • Konachan")
                         onClicked: {
@@ -153,7 +153,7 @@ ContentPage {
                         enabled: !randomWallProc.running
                         visible: Config.options.policies.weeb === 1
                         Layout.fillWidth: true
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         materialIcon: "ifl"
                         mainText: randomWallProc.running ? Translation.tr("Be patient...") : Translation.tr("Random • osu! seasonal")
                         onClicked: {

@@ -53,13 +53,13 @@ RippleButton {
                         ColumnLayout {
                             spacing: 4
                             Rectangle {
-                                radius: Appearance.rounding.unsharpenmore
+                                radius: Appearance.rounding.xs
                                 color: lightDarkButtonRoot.previewFg
                                 Layout.fillWidth: true
                                 implicitHeight: 22
                             }
                             Rectangle {
-                                radius: Appearance.rounding.unsharpenmore
+                                radius: Appearance.rounding.xs
                                 color: lightDarkButtonRoot.previewFg
                                 Layout.fillWidth: true
                                 Layout.rightMargin: 45
@@ -94,14 +94,14 @@ RippleButton {
                             }
                         }
                         Rectangle {
-                            radius: Appearance.rounding.unsharpenmore
+                            radius: Appearance.rounding.xs
                             color: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3secondaryContainer : lightDarkButtonRoot.previewFg
                             Layout.fillWidth: true
                             implicitHeight: 30
                         }
                         Rectangle {
-                            topLeftRadius: Appearance.rounding.unsharpenmore
-                            bottomLeftRadius: Appearance.rounding.unsharpenmore
+                            topLeftRadius: Appearance.rounding.xs
+                            bottomLeftRadius: Appearance.rounding.xs
                             topRightRadius: Appearance.rounding.full
                             bottomRightRadius: Appearance.rounding.full
                             color: lightDarkButtonRoot.toggled ? Appearance.m3colors.m3secondaryContainer : lightDarkButtonRoot.previewFg

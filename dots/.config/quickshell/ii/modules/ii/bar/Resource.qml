@@ -20,7 +20,7 @@ Item {
     Component {
         id: outlineStyle
         ClippedOutlineCircularProgress {
-            lineWidth: Appearance.rounding.unsharpen
+            lineWidth: 2
             value: root.percentage
             implicitSize: vertical ? 20 : 20
             colPrimary: root.warning ? Appearance.colors.colError : Appearance.colors.colOnSecondaryContainer
@@ -44,7 +44,7 @@ Item {
     Component {
         id: filledStyle
         ClippedFilledCircularProgress {
-            lineWidth: Appearance.rounding.unsharpen
+            lineWidth: 2
             value: root.percentage
             implicitSize: 20
             colPrimary: root.warning ? Appearance.colors.colError : Appearance.colors.colOnSecondaryContainer

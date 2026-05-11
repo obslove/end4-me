@@ -77,7 +77,7 @@ Item {
                     }
                     implicitWidth: 8
                     implicitHeight: 8
-                    radius: Appearance.rounding.full
+                    radius: implicitWidth / 2
                     color: Appearance.colors.colTertiary
                     Behavior on opacity {
                         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -113,7 +113,7 @@ Item {
                     }
                     implicitWidth: 8
                     implicitHeight: 8
-                    radius: Appearance.rounding.full
+                    radius: implicitWidth / 2
                     color: Appearance.colors.colTertiary
                     Behavior on opacity {
                         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)

@@ -19,7 +19,7 @@ Item {
     property bool done: true
     property bool completed: false
 
-    property real thinkBlockBackgroundRounding: Appearance.rounding.small
+    property real thinkBlockBackgroundRounding: Appearance.rounding.sm
     property real thinkBlockHeaderPaddingVertical: 3
     property real thinkBlockHeaderPaddingHorizontal: 10
     property real thinkBlockComponentSpacing: 2

@@ -32,7 +32,7 @@ AbstractOverlayWidget {
     readonly property string materialSymbol: modelData.materialSymbol ?? "widgets"
     property string title: identifier.replace(/([A-Z])/g, " $1").replace(/^./, function(str){ return str.toUpperCase(); })
     property var persistentStateEntry: Persistent.states.overlay[identifier]
-    property real radius: Appearance.rounding.windowRounding
+    property real radius: Appearance.rounding.xl
     property real minimumWidth: contentItem.implicitWidth
     property real minimumHeight: contentItem.implicitHeight
     property real resizeMargin: 8
@@ -309,7 +309,7 @@ AbstractOverlayWidget {
     component TitlebarButton: RippleButton {
         id: titlebarButton
         required property string materialSymbol
-        buttonRadius: height / 2
+        buttonRadius: Appearance.rounding.full
         implicitHeight: contentItem.implicitHeight
         implicitWidth: implicitHeight
         padding: 0

@@ -108,7 +108,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: Appearance.rounding.normal
+        radius: Appearance.rounding.lg
         color: Appearance.colors.colLayer1
         border.width: 1
         border.color: Appearance.colors.colLayer0Border

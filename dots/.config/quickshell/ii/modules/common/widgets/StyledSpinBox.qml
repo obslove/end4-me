@@ -10,8 +10,8 @@ SpinBox {
     id: root
 
     property real baseHeight: 35
-    property real radius: Appearance.rounding.small
-    property real innerButtonRadius: Appearance.rounding.unsharpen
+    property real radius: Appearance.rounding.md
+    property real innerButtonRadius: Appearance.rounding.xs
     editable: true
 
     opacity: root.enabled ? 1 : 0.4

@@ -56,7 +56,7 @@ Rectangle {
     // Styles/widgets
     property real horizontalPadding: 10
     property real verticalPadding: 10
-    radius: Appearance.rounding.small - anchors.margins
+    radius: Math.max(Appearance.rounding.none, Appearance.rounding.sm - anchors.margins)
     color: Appearance.colors.colLayer2
     implicitHeight: visible ? (contentItem.implicitHeight + verticalPadding * 2) : 0
 
@@ -140,7 +140,7 @@ Rectangle {
                         maskSource: Rectangle {
                             width: imagePreview.width
                             height: imagePreview.height
-                            radius: Appearance.rounding.normal
+                            radius: Appearance.rounding.md
                         }
                     }
 
@@ -149,7 +149,7 @@ Rectangle {
                         color: "transparent"
                         border.width: 1
                         border.color: Appearance.colors.colOutlineVariant
-                        radius: Appearance.rounding.normal
+                        radius: Appearance.rounding.md
                     }
                 }
             }

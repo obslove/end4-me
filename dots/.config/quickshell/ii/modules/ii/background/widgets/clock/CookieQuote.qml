@@ -28,7 +28,7 @@ Item {
 
         implicitWidth: quoteRow.implicitWidth + 8 * 2
         implicitHeight: quoteRow.implicitHeight + 4 * 2
-        radius: Appearance.rounding.small
+        radius: Appearance.rounding.sm
         color: Appearance.colors.colSecondaryContainer
 
         Row {

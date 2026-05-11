@@ -79,7 +79,7 @@ Item {
         anchors.centerIn: parent
         sourceComponent: ClippedFilledCircularProgress {
             implicitSize: 20
-            lineWidth: Appearance.rounding.unsharpen
+            lineWidth: 2
             value: MprisController.displayPosition(root.activePlayer) / Math.max(root.activePlayer?.length ?? 0, 1)
             colPrimary: root.blendedColors.colOnSecondaryContainer
             enableAnimation: false
@@ -128,7 +128,7 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 Layout.leftMargin: 3
                 implicitSize: 20
-                lineWidth: Appearance.rounding.unsharpen
+                lineWidth: 2
                 value: MprisController.displayPosition(root.activePlayer) / Math.max(root.activePlayer?.length ?? 0, 1)
                 colPrimary: root.blendedColors.colOnSecondaryContainer
                 enableAnimation: false
@@ -259,7 +259,7 @@ Item {
                 RippleButton {
                     implicitWidth: 40
                     implicitHeight: 23
-                    buttonRadius: root.isPlaying ? Appearance.rounding.normal : 13
+                    buttonRadius: root.isPlaying ? Appearance.rounding.md : Appearance.rounding.full
                     colBackground: root.isPlaying ? root.blendedColors.colPrimary : ColorUtils.transparentize(root.blendedColors.colLayer0, 0.8)
                     colBackgroundHover: root.isPlaying ? root.blendedColors.colPrimaryHover : root.blendedColors.colSecondaryContainerHover
                     colRipple: root.isPlaying ? root.blendedColors.colPrimaryActive : root.blendedColors.colSecondaryContainerActive
@@ -279,7 +279,7 @@ Item {
                     implicitWidth: 26
                     implicitHeight: 26
                     Layout.leftMargin: -4
-                    buttonRadius: 13
+                    buttonRadius: Appearance.rounding.full
                     colBackground: "transparent"
                     colBackgroundHover: root.blendedColors.colSecondaryContainerHover
                     colRipple: root.blendedColors.colSecondaryContainerActive

@@ -23,7 +23,7 @@ Item {
             horizontalCenter: root.horizontalCenter
         }
         color: Appearance?.colors.colTooltip ?? "#3C4043"
-        radius: Appearance?.rounding.verysmall ?? 7
+        radius: Appearance?.rounding.xs ?? 7
         opacity: shown ? 1 : 0
         implicitWidth: shown ? (tooltipTextObject.implicitWidth + 2 * root.horizontalPadding) : 0
         implicitHeight: shown ? (tooltipTextObject.implicitHeight + 2 * root.verticalPadding) : 0
@@ -50,4 +50,3 @@ Item {
         }
     }   
 }
-

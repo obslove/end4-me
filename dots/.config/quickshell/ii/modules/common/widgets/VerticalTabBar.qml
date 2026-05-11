@@ -49,10 +49,10 @@ Item {
 
             z: isCurrent ? 0 : (totalCount - visualPosition)
 
-            topLeftRadius: Appearance.rounding.normal
-            topRightRadius: Appearance.rounding.normal
-            bottomLeftRadius: isCurrent ? 0 : Appearance.rounding.unsharpenmore
-            bottomRightRadius: isCurrent ? 0 : Appearance.rounding.unsharpenmore
+            topLeftRadius: Appearance.rounding.md
+            topRightRadius: Appearance.rounding.md
+            bottomLeftRadius: isCurrent ? Appearance.rounding.none : Appearance.rounding.xs
+            bottomRightRadius: isCurrent ? Appearance.rounding.none : Appearance.rounding.xs
 
             color: isCurrent
                 ? Appearance.colors.colLayer1
@@ -77,7 +77,7 @@ Item {
                 anchors.bottomMargin: 12
                 width: 30
                 height: 4
-                radius: height / 2
+                radius: Appearance.rounding.full
                 color: Appearance.colors.colSurfaceContainerHighest
                 opacity: 0.6
             }

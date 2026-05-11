@@ -9,8 +9,8 @@ GroupButton {
     baseHeight: 40
     clickedWidth: baseWidth + 20
     toggled: false
-    buttonRadius: (altAction && toggled) ? Appearance?.rounding.normal : Math.min(baseHeight, baseWidth) / 2
-    buttonRadiusPressed: Appearance?.rounding?.small
+    buttonRadius: (altAction && toggled) ? Appearance?.rounding.md : Appearance.rounding.full
+    buttonRadiusPressed: Appearance?.rounding?.sm
 
     contentItem: MaterialSymbol {
         anchors.centerIn: parent

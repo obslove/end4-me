@@ -121,7 +121,7 @@ Item {
 
         Rectangle { // Scrim
             anchors.fill: parent
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.lg
             color: Appearance.colors.colScrim
             MouseArea {
                 hoverEnabled: true
@@ -140,7 +140,7 @@ Item {
             implicitHeight: dialogColumnLayout.implicitHeight
 
             color: Appearance.m3colors.m3surfaceContainerHigh
-            radius: Appearance.rounding.normal
+            radius: Appearance.rounding.lg
 
             function addTask() {
                 if (todoInput.text.length > 0) {
@@ -183,7 +183,7 @@ Item {
 
                     background: Rectangle {
                         anchors.fill: parent
-                        radius: Appearance.rounding.verysmall
+                        radius: Appearance.rounding.md
                         border.width: 2
                         border.color: todoInput.activeFocus ? Appearance.colors.colPrimary : Appearance.m3colors.m3outline
                         color: "transparent"

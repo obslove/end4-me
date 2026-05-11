@@ -80,7 +80,7 @@ Scope {
             color: Appearance.colors.colLayer0
             border.width: 1
             border.color: Appearance.colors.colLayer0Border
-            radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 5
+            radius: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 5)
             z: 1
 
             opacity: GlobalStates.settingsOpen ? 1 : 0

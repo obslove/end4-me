@@ -15,7 +15,7 @@ RippleButton {
     implicitHeight: 38;
 
     toggled: (isToday == 1)
-    buttonRadius: Appearance.rounding.small
+    buttonRadius: Appearance.rounding.sm
     
     contentItem: StyledText {
         anchors.fill: parent
@@ -31,4 +31,3 @@ RippleButton {
         }
     }
 }
-

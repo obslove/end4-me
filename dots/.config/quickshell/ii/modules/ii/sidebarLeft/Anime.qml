@@ -158,7 +158,7 @@ Item {
                 maskSource: Rectangle {
                     width: swipeView.width
                     height: swipeView.height
-                    radius: Appearance.rounding.small
+                    radius: Appearance.rounding.sm
                 }
             }
 
@@ -323,7 +323,7 @@ Item {
             id: tagInputContainer
             property real columnSpacing: 5
             Layout.fillWidth: true
-            radius: Appearance.rounding.normal - root.padding
+            radius: Math.max(Appearance.rounding.none, Appearance.rounding.lg - root.padding)
             color: Appearance.colors.colLayer2
             implicitWidth: tagInputField.implicitWidth
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin 
@@ -443,7 +443,7 @@ Item {
                     Layout.rightMargin: 5
                     implicitWidth: 40
                     implicitHeight: 40
-                    buttonRadius: Appearance.rounding.small
+                    buttonRadius: Appearance.rounding.sm
                     enabled: tagInputField.text.length > 0
                     toggled: enabled
 

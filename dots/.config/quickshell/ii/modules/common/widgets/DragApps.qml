@@ -342,7 +342,7 @@ Item {
                 }
                 clip: true
                 color: Appearance.m3colors.m3surfaceContainer
-                radius: Appearance.rounding.normal
+                radius: Appearance.rounding.lg
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: Appearance.sizes.elevationMargin
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -427,7 +427,7 @@ Item {
                                             maskSource: Rectangle {
                                                 width:  screencopyView.width
                                                 height: screencopyView.height
-                                                radius: Appearance.rounding.small
+                                                radius: Appearance.rounding.sm
                                             }
                                         }
                                     }

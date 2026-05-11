@@ -19,7 +19,7 @@ Scope { // Scope
         baseHeight: 40
         clickedWidth: baseWidth
         clickedHeight: baseHeight + 10
-        buttonRadius: Appearance.rounding.normal
+        buttonRadius: Appearance.rounding.md
     }
 
     Loader {
@@ -73,7 +73,7 @@ Scope { // Scope
                 id: oskBackground
                 anchors.centerIn: parent
                 color: Appearance.colors.colLayer0
-                radius: Appearance.rounding.windowRounding
+                radius: Appearance.rounding.xl
                 property real padding: 10
                 implicitWidth: oskRowLayout.implicitWidth + padding * 2
                 implicitHeight: oskRowLayout.implicitHeight + padding * 2

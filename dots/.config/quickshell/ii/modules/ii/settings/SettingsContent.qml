@@ -175,7 +175,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 color: Appearance.m3colors.m3surfaceContainerLow
-                radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut
+                radius: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut)
 
                 Item {
                     anchors.fill: parent

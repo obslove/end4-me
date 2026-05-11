@@ -33,7 +33,7 @@ Rectangle {
         dialogBackground.implicitHeight = show ? backgroundHeight : 0
     }
 
-    radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
+    radius: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 1)
 
     MouseArea { // Clicking outside the dialog should dismiss
         anchors.fill: parent
@@ -45,7 +45,7 @@ Rectangle {
     Rectangle {
         id: dialogBackground
         anchors.horizontalCenter: parent.horizontalCenter
-        radius: Appearance.rounding.large
+        radius: Appearance.rounding.lg
         color: Appearance.m3colors.m3surfaceContainerHigh // Use opaque version of layer3
         
         property real targetY: root.height / 2 - root.backgroundHeight / 2

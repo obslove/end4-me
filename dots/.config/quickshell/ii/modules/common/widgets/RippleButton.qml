@@ -13,7 +13,7 @@ Button {
     property bool toggled
     property string buttonText
     property bool pointingHandCursor: true
-    property real buttonRadius: Appearance?.rounding?.small ?? 4
+    property real buttonRadius: Appearance?.rounding?.sm ?? 4
     property real buttonRadiusPressed: buttonRadius
     property real buttonEffectiveRadius: root.down ? root.buttonRadiusPressed : root.buttonRadius
     property int rippleDuration: 1200

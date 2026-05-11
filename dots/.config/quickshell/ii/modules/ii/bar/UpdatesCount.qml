@@ -143,7 +143,7 @@ MouseArea {
                     Rectangle {
                         width: 24
                         height: 24
-                        radius: Appearance.rounding.full
+                        radius: width / 2
                         color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
                             : Updates.updateAdvised ? Appearance.colors.colTertiary
                             : Appearance.colors.colPrimary
@@ -208,7 +208,7 @@ MouseArea {
                     Rectangle {
                         width: 24
                         height: 24
-                        radius: Appearance.rounding.full
+                        radius: width / 2
                         color: Updates.updateStronglyAdvised ? Appearance.m3colors.m3error
                             : Updates.updateAdvised ? Appearance.colors.colTertiary
                             : Appearance.colors.colPrimary

@@ -164,7 +164,7 @@ Item {
 
                     RippleButton {
                         anchors.fill: parent
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         hoverEnabled: true
 
                         onClicked: {
@@ -222,7 +222,7 @@ Item {
                                     model: Math.min(slotItem.appEntry?.toplevels?.length ?? 0, 3)
                                     delegate: Rectangle {
                                         required property int index
-                                        radius: Appearance.rounding.full
+                                        radius: Math.min(implicitWidth, implicitHeight) / 2
                                         implicitWidth:  root.vertical
                                             ? 2
                                             : (slotItem.appEntry?.toplevels?.length ?? 0) <= 3 ? 4 : 2
@@ -324,7 +324,7 @@ Item {
 
                     RippleButton {
                         anchors.fill: parent
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         hoverEnabled: true
 
                         onClicked: {
@@ -382,7 +382,7 @@ Item {
                                     model: Math.min(activeSlot.modelData.toplevels.length, 3)
                                     delegate: Rectangle {
                                         required property int index
-                                        radius: Appearance.rounding.full
+                                        radius: Math.min(implicitWidth, implicitHeight) / 2
                                         implicitWidth:  root.vertical
                                             ? 2
                                             : activeSlot.modelData.toplevels.length <= 3 ? 4 : 2

@@ -19,7 +19,7 @@ RippleButton {
     }
     implicitHeight: 35
     horizontalPadding: 10
-    buttonRadius: Appearance.rounding.small
+    buttonRadius: Appearance.rounding.sm
     colBackground: Appearance.colors.colLayer2
 
     contentItem: RowLayout {

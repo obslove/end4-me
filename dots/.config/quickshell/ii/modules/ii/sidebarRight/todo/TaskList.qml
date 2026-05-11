@@ -51,7 +51,7 @@ Item {
                 anchors.bottom: parent.bottom
                 implicitHeight: todoContentRowLayout.implicitHeight
                 color: Appearance.colors.colLayer2
-                radius: Appearance.rounding.small
+                radius: Appearance.rounding.sm
 
                 ColumnLayout {
                     id: todoContentRowLayout

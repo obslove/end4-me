@@ -127,7 +127,7 @@ Item {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         colBackground: recordingItem.isRecording ? Appearance.colors.colPrimaryContainer : "transparent"
-                        buttonRadius: recordingItem.isRecording ? Appearance.rounding.normal : implicitHeight / 2
+                        buttonRadius: recordingItem.isRecording ? Appearance.rounding.md : Appearance.rounding.full
                         onClicked: Quickshell.execDetached([Directories.recordScriptPath])
 
                         Behavior on colBackground { ColorAnimation { duration: 200 } }

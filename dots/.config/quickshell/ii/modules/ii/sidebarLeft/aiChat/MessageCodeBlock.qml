@@ -22,7 +22,7 @@ ColumnLayout {
     property bool isCommandRequest: segmentLang === "command"
     property var displayLang: (isCommandRequest ? "bash" : segmentLang)
 
-    property real codeBlockBackgroundRounding: Appearance.rounding.small
+    property real codeBlockBackgroundRounding: Appearance.rounding.sm
     property real codeBlockHeaderPadding: 3
     property real codeBlockComponentSpacing: 2
 
@@ -32,8 +32,8 @@ ColumnLayout {
         Layout.fillWidth: true
         topLeftRadius: codeBlockBackgroundRounding
         topRightRadius: codeBlockBackgroundRounding
-        bottomLeftRadius: Appearance.rounding.unsharpen
-        bottomRightRadius: Appearance.rounding.unsharpen
+        bottomLeftRadius: Appearance.rounding.xs
+        bottomRightRadius: Appearance.rounding.xs
         color: Appearance.colors.colSurfaceContainerHighest
         implicitHeight: codeBlockTitleBarRowLayout.implicitHeight + codeBlockHeaderPadding * 2
 
@@ -126,10 +126,10 @@ ColumnLayout {
             implicitHeight: lineNumberColumnLayout.implicitHeight
             Layout.fillHeight: true
             Layout.fillWidth: false
-            topLeftRadius: Appearance.rounding.unsharpen
+            topLeftRadius: Appearance.rounding.xs
             bottomLeftRadius: codeBlockBackgroundRounding
-            topRightRadius: Appearance.rounding.unsharpen
-            bottomRightRadius: Appearance.rounding.unsharpen
+            topRightRadius: Appearance.rounding.xs
+            bottomRightRadius: Appearance.rounding.xs
             color: Appearance.colors.colLayer2
 
             ColumnLayout {
@@ -161,9 +161,9 @@ ColumnLayout {
 
         Rectangle { // Code background
             Layout.fillWidth: true
-            topLeftRadius: Appearance.rounding.unsharpen
-            bottomLeftRadius: Appearance.rounding.unsharpen
-            topRightRadius: Appearance.rounding.unsharpen
+            topLeftRadius: Appearance.rounding.xs
+            bottomLeftRadius: Appearance.rounding.xs
+            topRightRadius: Appearance.rounding.xs
             bottomRightRadius: codeBlockBackgroundRounding
             color: Appearance.colors.colLayer2
             implicitHeight: codeColumnLayout.implicitHeight
@@ -202,7 +202,7 @@ ColumnLayout {
                         
                         contentItem: Rectangle {
                             implicitHeight: 6
-                            radius: Appearance.rounding.small
+                            radius: Appearance.rounding.sm
                             color: Appearance.colors.colLayer2Active
                         }
                     }

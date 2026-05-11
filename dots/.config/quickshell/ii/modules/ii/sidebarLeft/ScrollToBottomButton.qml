@@ -30,7 +30,7 @@ RippleButton {
     colBackground: Appearance.colors.colSecondary
     colBackgroundHover: Appearance.colors.colSecondaryHover
     colRipple: Appearance.colors.colSecondaryActive
-    buttonRadius: Appearance.rounding.verysmall
+    buttonRadius: Appearance.rounding.xs
 
     downAction: () => {
         target.positionViewAtEnd()

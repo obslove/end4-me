@@ -28,7 +28,7 @@ Button {
     property string filePrefix: imageData.source?.includes("unsplash") ? "unsplash" : "wallhaven"
     property string fileName: filePrefix + "-" + imageData.id + "." + fileExt
     property int maxTagStringLineLength: 50
-    property real imageRadius: Appearance.rounding.small
+    property real imageRadius: Appearance.rounding.sm
 
     property bool showActions: false
 
@@ -110,7 +110,7 @@ Button {
                     anchors.centerIn: parent
                     opacity: root.showActions ? 1 : 0
                     visible: opacity > 0
-                    radius: Appearance.rounding.small
+                    radius: Appearance.rounding.sm
                     color: Appearance.m3colors.m3surfaceContainer
                     implicitWidth: 200
                     implicitHeight: 125

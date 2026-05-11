@@ -431,7 +431,7 @@ PanelWindow {
                 borderColor: root.windowBorderColor
                 fillColor: targeted ? root.windowFillColor : "transparent"
                 text: `${modelData.class}`
-                radius: Appearance.rounding.windowRounding
+                radius: Appearance.rounding.xl
             }
         }
 
@@ -460,7 +460,7 @@ PanelWindow {
                 borderColor: root.windowBorderColor
                 fillColor: targeted ? root.windowFillColor : "transparent"
                 text: `${modelData.namespace}`
-                radius: Appearance.rounding.windowRounding
+                radius: Appearance.rounding.xl
             }
         }
 

@@ -113,7 +113,7 @@ Item { // Notification item area
         id: background
         width: parent.width
         anchors.left: parent.left
-        radius: Appearance.rounding.small
+        radius: Appearance.rounding.lg
         anchors.leftMargin: root.xOffset
 
         Behavior on anchors.leftMargin {
@@ -219,7 +219,7 @@ Item { // Notification item area
                         maskSource: Rectangle {
                             width: actionsFlickable.width
                             height: actionsFlickable.height
-                            radius: Appearance.rounding.small
+                            radius: Appearance.rounding.sm
                         }
                     }
 

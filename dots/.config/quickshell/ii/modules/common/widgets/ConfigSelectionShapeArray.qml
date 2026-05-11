@@ -70,8 +70,8 @@ Flow {
 
             bounce: false
             toggled: root.currentValue === modelData
-            leftRadius: (toggled || leftmost) ? (height / 2) : Appearance.rounding.unsharpenmore
-            rightRadius: (toggled || rightmost) ? (height / 2) : Appearance.rounding.unsharpenmore
+            leftRadius: (toggled || leftmost) ? Appearance.rounding.full : Appearance.rounding.xs
+            rightRadius: (toggled || rightmost) ? Appearance.rounding.full : Appearance.rounding.xs
             horizontalPadding: 12
             verticalPadding: 8
             colBackground: Appearance.colors.colSecondaryContainer

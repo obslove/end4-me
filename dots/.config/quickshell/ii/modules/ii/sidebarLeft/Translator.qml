@@ -146,7 +146,7 @@ Item {
                     GroupButton { // Swap languages button
                         id: swapButton
                         Layout.preferredWidth: height
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         contentItem: MaterialSymbol {
                             anchors.centerIn: parent
                             horizontalAlignment: Text.AlignHCenter
@@ -169,7 +169,7 @@ Item {
                     GroupButton {
                         id: copyButton
                         baseWidth: height
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         enabled: outputCanvas.displayedText.trim().length > 0
                         contentItem: MaterialSymbol {
                             anchors.centerIn: parent
@@ -185,7 +185,7 @@ Item {
                     GroupButton {
                         id: searchButton
                         baseWidth: height
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: Appearance.rounding.sm
                         enabled: outputCanvas.displayedText.trim().length > 0
                         contentItem: MaterialSymbol {
                             anchors.centerIn: parent
@@ -225,7 +225,7 @@ Item {
             GroupButton {
                 id: pasteButton
                 baseWidth: height
-                buttonRadius: Appearance.rounding.small
+                buttonRadius: Appearance.rounding.sm
                 contentItem: MaterialSymbol {
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
@@ -240,7 +240,7 @@ Item {
             GroupButton {
                 id: deleteButton
                 baseWidth: height
-                buttonRadius: Appearance.rounding.small
+                buttonRadius: Appearance.rounding.sm
                 enabled: inputCanvas.inputTextArea.text.length > 0
                 contentItem: MaterialSymbol {
                     anchors.centerIn: parent

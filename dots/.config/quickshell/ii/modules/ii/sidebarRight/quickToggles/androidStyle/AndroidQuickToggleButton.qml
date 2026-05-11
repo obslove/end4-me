@@ -63,8 +63,8 @@ GroupButton {
     colBackgroundToggled: (altAction && expandedSize) ? Appearance.colors.colLayer2 : Appearance.colors.colPrimary
     colBackgroundToggledHover: (altAction && expandedSize) ? Appearance.colors.colLayer2Hover : Appearance.colors.colPrimaryHover
     colBackgroundToggledActive: (altAction && expandedSize) ? Appearance.colors.colLayer2Active : Appearance.colors.colPrimaryActive
-    buttonRadius: toggled ? Appearance.rounding.large : height / 2
-    buttonRadiusPressed: Appearance.rounding.normal
+    buttonRadius: toggled ? Appearance.rounding.lg : Appearance.rounding.full
+    buttonRadiusPressed: Appearance.rounding.md
     property color colText: (toggled && !(altAction && expandedSize) && enabled) ? Appearance.colors.colOnPrimary : ColorUtils.transparentize(Appearance.colors.colOnLayer2, enabled ? 0 : 0.7)
     property color colIcon: expandedSize ? ((root.toggled) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer3) : colText
 
@@ -102,7 +102,7 @@ GroupButton {
                 id: iconBackground
                 anchors.fill: parent
                 implicitWidth: height
-                radius: root.radius - root.verticalPadding
+                radius: implicitWidth / 2
                 color: {
                     const baseColor = root.toggled ? Appearance.colors.colPrimary : Appearance.colors.colLayer3
                     const transparentizeAmount = (root.altAction && root.expandedSize) ? 0 : 1

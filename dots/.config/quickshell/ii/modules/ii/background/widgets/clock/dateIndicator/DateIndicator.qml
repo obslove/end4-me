@@ -32,7 +32,7 @@ Item {
 
         sourceComponent: RectangleDate {
             color: ColorUtils.mix(root.color, Appearance.colors.colSecondaryContainerHover, 0.5)
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
             implicitWidth: 45 * rectLoader.opacity
             implicitHeight: 30 * rectLoader.opacity
         }

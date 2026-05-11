@@ -10,8 +10,8 @@ Item {
     property int currentIndex: 0
     property int totalCount: 0
 
-    readonly property real fullRadius: height / 2
-    readonly property real midRadius: Config.options.bar.cornerStyle === 2 ? Appearance.rounding.unsharpenmore + 2 : Appearance.rounding.unsharpenmore
+    readonly property real fullRadius: Appearance.rounding.full
+    readonly property real midRadius: Config.options.bar.cornerStyle === 2 ? Appearance.rounding.xs + 2 : Appearance.rounding.xs
 
     property real startRadius: {
         if (totalCount <= 1) return fullRadius;

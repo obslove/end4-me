@@ -61,7 +61,7 @@ Item {
             implicitWidth: root.style === "classic" ? 14 : 0
             implicitHeight: implicitWidth
             color: root.color
-            radius: Appearance.rounding.small
+            radius: implicitWidth / 2
 
             Behavior on implicitWidth {
                 animation: Appearance.animation.elementResize.numberAnimation.createObject(this)

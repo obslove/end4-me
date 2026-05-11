@@ -180,7 +180,7 @@ ContentPage {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: contentRow.implicitHeight + 40
-                radius: Appearance.rounding.cardRounding
+                radius: Appearance.rounding.lg
                 color: "transparent"
 
                 RowLayout {

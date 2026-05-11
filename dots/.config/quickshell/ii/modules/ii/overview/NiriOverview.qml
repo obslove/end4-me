@@ -236,7 +236,7 @@ Item {
         Rectangle {
             anchors.fill: parent
             color: ColorUtils.transparentize(Appearance.colors.colSecondary, 0.6)
-            radius: Appearance.rounding.normal
+            radius: Appearance.rounding.md
             border.width: 2
             border.color: Appearance.colors.colSecondary
         }
@@ -324,7 +324,7 @@ Item {
                         anchors.centerIn: parent
                         width: root.monitorW * 0.15
                         height: root.wsHeight
-                        radius: Appearance.rounding.normal
+                        radius: Appearance.rounding.md
                         color: Appearance.colors.colSurfaceContainerLow
                         z: 1
 
@@ -358,7 +358,7 @@ Item {
                         y: root.getWinYInRow(rowItem.activeWin, rowItem.activeMonData, rowItem.wsFitScale, rowItem.wsBBox)
                         width: root.getWinW(rowItem.activeWin, rowItem.wsFitScale)
                         height: root.getWinH(rowItem.activeWin, rowItem.wsFitScale)
-                        radius: Appearance.rounding.normal
+                        radius: Appearance.rounding.md
                         color: "transparent"
                         border.width: 2
                         border.color: Appearance.colors.colSecondary
@@ -373,7 +373,7 @@ Item {
                     Rectangle {
                         visible: rowItem.isDragTarget && root.isDragging
                         anchors.fill: parent
-                        radius: Appearance.rounding.normal
+                        radius: Appearance.rounding.md
                         color: ColorUtils.transparentize(Appearance.colors.colSecondary, 0.88)
                         border.width: 2
                         border.color: Appearance.colors.colSecondary
@@ -431,10 +431,10 @@ Item {
                                 yOffset: 0
                                 opacity: winContainer.isActiveWin ? 1.0 : 0.75
 
-                                topLeftRadius: Appearance.rounding.normal
-                                topRightRadius: Appearance.rounding.normal
-                                bottomLeftRadius: Appearance.rounding.normal
-                                bottomRightRadius: Appearance.rounding.normal
+                                topLeftRadius: Appearance.rounding.md
+                                topRightRadius: Appearance.rounding.md
+                                bottomLeftRadius: Appearance.rounding.md
+                                bottomRightRadius: Appearance.rounding.md
 
                                 Behavior on opacity {
                                     NumberAnimation { duration: Appearance.animation.elementMoveFast.duration }

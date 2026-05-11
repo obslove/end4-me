@@ -166,7 +166,7 @@ MouseArea {
                 maskSource: Rectangle {
                     width: passwordBox.width - 8
                     height: passwordBox.height
-                    radius: height / 2
+                    radius: Appearance.rounding.full
                 }
             }
 
@@ -325,7 +325,7 @@ MouseArea {
                     ClippedFilledCircularProgress {
                         id: mediaCircProg
                         Layout.alignment: Qt.AlignVCenter
-                        lineWidth: Appearance.rounding.unsharpen
+                        lineWidth: 2
                         value: MprisController.displayPosition(activePlayer) / Math.max(activePlayer?.length ?? 0, 1)
                         implicitSize: 24
                         colPrimary: Appearance.colors.colOnSurfaceVariant

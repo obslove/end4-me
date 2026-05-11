@@ -26,7 +26,7 @@ Rectangle {
     anchors.right: parent?.right
     implicitHeight: columnLayout.implicitHeight + root.messagePadding * 2
 
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.lg
     color: Appearance.colors.colLayer1
 
     function saveMessage() {
@@ -82,7 +82,7 @@ Rectangle {
             implicitWidth: headerRowLayout.implicitWidth + 4 * 2
             implicitHeight: headerRowLayout.implicitHeight + 4 * 2
             color: Appearance.colors.colSecondaryContainer
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
         
             RowLayout { // Header
                 id: headerRowLayout
@@ -360,4 +360,3 @@ Rectangle {
 
     }
 }
-

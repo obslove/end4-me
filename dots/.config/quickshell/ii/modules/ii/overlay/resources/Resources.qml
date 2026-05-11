@@ -110,7 +110,7 @@ StyledOverlayWidget {
             id: graphBg
             Layout.fillWidth: true
             Layout.fillHeight: true
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
             color: Appearance.colors.colSecondaryContainer
             layer.enabled: true
             layer.effect: OpacityMask {

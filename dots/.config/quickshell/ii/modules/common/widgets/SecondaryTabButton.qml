@@ -93,7 +93,7 @@ TabButton {
             fill: parent
             margins: 3
         }
-        radius: Appearance?.rounding.normal
+        radius: Appearance?.rounding.md
         implicitHeight: 42
         color: (root.hovered ? root.colBackgroundHover : root.colBackground)
         layer.enabled: true

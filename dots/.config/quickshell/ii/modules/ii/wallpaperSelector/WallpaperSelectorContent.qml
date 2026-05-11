@@ -145,7 +145,7 @@ MouseArea {
         border.width: 1
         border.color: Appearance.colors.colLayer0Border
         color: Appearance.colors.colLayer0
-        radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
+        radius: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 1)
 
         property int calculatedRows: Math.ceil(grid.count / grid.columns)
 
@@ -163,7 +163,7 @@ MouseArea {
                 implicitWidth: quickDirColumnLayout.implicitWidth
                 implicitHeight: quickDirColumnLayout.implicitHeight
                 color: Appearance.colors.colLayer1
-                radius: wallpaperGridBackground.radius - Layout.margins
+                radius: Math.max(Appearance.rounding.none, wallpaperGridBackground.radius - Layout.margins)
 
                 ColumnLayout {
                     id: quickDirColumnLayout
@@ -199,7 +199,7 @@ MouseArea {
                             colBackgroundToggled: Appearance.colors.colSecondaryContainer
                             colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
                             colRippleToggled: Appearance.colors.colSecondaryContainerActive
-                            buttonRadius: height / 2
+                            buttonRadius: Appearance.rounding.full
                             implicitHeight: 38
 
                             contentItem: RowLayout {
@@ -235,7 +235,7 @@ MouseArea {
                     onNavigateToDirectory: path => {
                         Wallpapers.setDirectory(path.length == 0 ? "/" : path);
                     }
-                    radius: wallpaperGridBackground.radius - Layout.margins
+                    radius: Math.max(Appearance.rounding.none, wallpaperGridBackground.radius - Layout.margins)
                 }
 
                 Item {

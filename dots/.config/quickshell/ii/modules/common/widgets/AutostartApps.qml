@@ -179,7 +179,7 @@ ColumnLayout {
                 RippleButton {
                     width: 36
                     height: 36
-                    buttonRadius: width / 2
+                    buttonRadius: Appearance.rounding.full
                     colBackground: ColorUtils.transparentize(Appearance.colors.colError, 0.85)
                     colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colError, 0.6)
                     colRipple: ColorUtils.transparentize(Appearance.colors.colError, 0.5)

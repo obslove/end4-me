@@ -11,7 +11,7 @@ ComboBox {
     id: root
 
     property string buttonIcon: ""
-    property real buttonRadius: height / 2
+    property real buttonRadius: Appearance.rounding.full
     property color colBackground: Appearance.colors.colSecondaryContainer
     property color colBackgroundHover: Appearance.colors.colSecondaryContainerHover
     property color colBackgroundActive: Appearance.colors.colSecondaryContainerActive
@@ -123,7 +123,7 @@ ComboBox {
 
         background: Rectangle {
             anchors.fill: parent
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
             color: itemDelegate.color
             Behavior on color {
                 animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
@@ -210,7 +210,7 @@ ComboBox {
             Rectangle {
                 id: popupBackground
                 anchors.fill: parent
-                radius: Appearance.rounding.normal
+                radius: Appearance.rounding.lg
                 color: Appearance.m3colors.m3surfaceContainerHigh
             }
         }
@@ -221,7 +221,7 @@ ComboBox {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: searchField.implicitHeight + 8
-                radius: Appearance.rounding.small
+                radius: Appearance.rounding.md
                 color: Appearance.colors.colLayer2
 
                 RowLayout {

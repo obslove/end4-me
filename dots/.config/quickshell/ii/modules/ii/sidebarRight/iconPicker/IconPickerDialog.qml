@@ -64,7 +64,7 @@ WindowDialog {
                 }
                 Rectangle {
                     anchors.fill: parent
-                    radius: 10
+                    radius: Appearance.rounding.md
                     color: Appearance.colors.colLayer1
                     opacity: mouseArea.containsMouse ? 0.3 : 0
                 }

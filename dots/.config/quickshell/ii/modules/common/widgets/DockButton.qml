@@ -7,7 +7,7 @@ RippleButton {
     Layout.fillHeight: true
     Layout.topMargin: Appearance.sizes.elevationMargin - Appearance.sizes.hyprlandGapsOut
     implicitWidth: implicitHeight - topInset - bottomInset
-    buttonRadius: Appearance.rounding.normal
+    buttonRadius: Appearance.rounding.md
 
     background.implicitHeight: 50
 }

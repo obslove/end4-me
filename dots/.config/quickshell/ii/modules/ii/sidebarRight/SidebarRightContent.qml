@@ -57,7 +57,7 @@ Item {
         color: Appearance.colors.colLayer0
         border.width: 1
         border.color: Appearance.colors.colLayer0Border
-        radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 5
+        radius: Math.max(Appearance.rounding.none, Appearance.rounding.xl - Appearance.sizes.hyprlandGapsOut + 5)
 
         ColumnLayout {
             anchors.fill: parent
@@ -239,7 +239,7 @@ Item {
                 left: parent.left
             }
             color: Appearance.colors.colLayer1
-            radius: Appearance.rounding.normal
+            radius: Appearance.rounding.md
             implicitWidth: uptimeRow.implicitWidth + 24
             implicitHeight: uptimeRow.implicitHeight + 8
 

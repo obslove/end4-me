@@ -36,7 +36,7 @@ Rectangle {
     width:  logW * scaleFactor
     height: logH * scaleFactor
 
-    radius: Appearance.rounding.small
+    radius: Appearance.rounding.sm
     z: isDragging ? 100 : isSelected ? 2 : 1
 
     color: {

@@ -277,7 +277,7 @@ Scope {
         property color textColor: Appearance.colors.colOnTooltip
         color: Appearance.colors.colTooltip
         clip: true
-        radius: Appearance.rounding.normal
+        radius: Appearance.rounding.lg
         implicitHeight: descriptionLabelText.implicitHeight + 10 * 2
         implicitWidth: descriptionLabelText.implicitWidth + 15 * 2
 

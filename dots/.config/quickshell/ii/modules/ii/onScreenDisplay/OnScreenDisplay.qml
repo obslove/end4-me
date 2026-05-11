@@ -176,7 +176,7 @@ Scope {
                                 property real padding: 10
                                 implicitHeight: protectionMessageRowLayout.implicitHeight + padding * 2
                                 implicitWidth: protectionMessageRowLayout.implicitWidth + padding * 2
-                                radius: Appearance.rounding.normal
+                                radius: Appearance.rounding.lg
 
                                 RowLayout {
                                     id: protectionMessageRowLayout

@@ -26,7 +26,7 @@ Rectangle {
         return total + rowLayout.spacing * (rowLayout.children.length - 1);
     }
 
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.md
 
     color: "transparent"
     width: root.contentWidth + padding * 2

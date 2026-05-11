@@ -11,7 +11,7 @@ ComboBox {
     id: root
 
     property string buttonIcon: ""
-    property real buttonRadius: height / 2
+    property real buttonRadius: Appearance.rounding.full
     property color colBackground: Appearance.colors.colSecondaryContainer
     property color colBackgroundHover: Appearance.colors.colSecondaryContainerHover
     property color colBackgroundActive: Appearance.colors.colSecondaryContainerActive
@@ -117,7 +117,7 @@ ComboBox {
 
         background: Rectangle {
             anchors.fill: parent
-            radius: Appearance.rounding.small
+            radius: Appearance.rounding.sm
             color: itemDelegate.color
 
             Behavior on color {
@@ -201,7 +201,7 @@ ComboBox {
             Rectangle {
                 id: popupBackground
                 anchors.fill: parent
-                radius: Appearance.rounding.normal
+                radius: Appearance.rounding.lg
                 color: root.colPopupBackground
             }
         }

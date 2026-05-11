@@ -56,7 +56,7 @@ ProgressBar {
                 bottom: parent.bottom
             }
             width: root.valueBarWidth
-            radius: 6
+            radius: Appearance.rounding.xs
             color: root.trackColor
 
             Rectangle {
@@ -87,7 +87,7 @@ ProgressBar {
                         height: parent.height * root.visualPosition
                     }
                 }
-                radius: Appearance.rounding.unsharpen
+                radius: Appearance.rounding.xs
                 color: root.highlightColor
             }
         }
@@ -103,7 +103,7 @@ ProgressBar {
             }
             width: root.tipWidth
             height: root.tipHeight
-            radius: 1
+            radius: Appearance.rounding.xs
             color: root.trackColor
 
             Rectangle {
@@ -137,7 +137,7 @@ ProgressBar {
                 }
                 width: root.tipWidth
                 height: root.tipHeight
-                radius: 1
+                radius: Appearance.rounding.xs
             }
         }
     }

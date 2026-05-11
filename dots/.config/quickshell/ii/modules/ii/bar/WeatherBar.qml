@@ -81,7 +81,7 @@ MouseArea {
                     Rectangle {
                         width: 24
                         height: 24
-                        radius: Appearance.rounding.full
+                        radius: width / 2
                         color: Appearance.colors.colPrimary
 
                         MaterialSymbol {
@@ -149,7 +149,7 @@ MouseArea {
                     Rectangle {
                         width: 24
                         height: 24
-                        radius: Appearance.rounding.full
+                        radius: width / 2
                         color: Appearance.colors.colPrimary
                         Layout.alignment: Qt.AlignHCenter
 

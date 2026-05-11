@@ -21,5 +21,5 @@ RippleButton {
     colBackground: ColorUtils.transparentize(Appearance.colors.colLayer3)
     colBackgroundHover: active ? colBackground : Appearance.colors.colLayer3Hover
     colRipple: Appearance.colors.colLayer3Active
-    buttonRadius: 0
+    buttonRadius: Appearance.rounding.none
 }

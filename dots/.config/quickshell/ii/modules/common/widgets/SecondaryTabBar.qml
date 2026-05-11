@@ -22,10 +22,10 @@ TabBar {
             id: activeIndicator
             z: 9999
             anchors.bottom: parent.bottom
-            topLeftRadius: height
-            topRightRadius: height
-            bottomLeftRadius: 0
-            bottomRightRadius: 0
+            topLeftRadius: Appearance.rounding.full
+            topRightRadius: Appearance.rounding.full
+            bottomLeftRadius: Appearance.rounding.none
+            bottomRightRadius: Appearance.rounding.none
             color: Appearance.colors.colPrimary
             // Animation
             property real baseWidth: root.width / root.count

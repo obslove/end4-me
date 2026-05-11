@@ -54,7 +54,7 @@ Item {
                 id: artBackground
                 implicitHeight: 150
                 implicitWidth: 150
-                radius: 16
+                radius: Appearance.rounding.lg
                 color: ColorUtils.transparentize(root.blendedColors.colLayer1, 0.5)
 
                 layer.enabled: true
@@ -215,7 +215,7 @@ Item {
                     implicitHeight: size
                     downAction: () => root.player.togglePlaying()
 
-                    buttonRadius: root.player?.isPlaying ? Appearance?.rounding.normal : size / 2
+                    buttonRadius: root.player?.isPlaying ? Appearance?.rounding.md : Appearance.rounding.full
                     colBackground: root.player?.isPlaying ? root.blendedColors.colPrimary : root.blendedColors.colSecondaryContainer
                     colBackgroundHover: root.player?.isPlaying ? root.blendedColors.colPrimaryHover : root.blendedColors.colSecondaryContainerHover
                     colRipple: root.player?.isPlaying ? root.blendedColors.colPrimaryActive : root.blendedColors.colSecondaryContainerActive

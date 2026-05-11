@@ -23,7 +23,7 @@ Button {
     property string fileName: decodeURIComponent((imageData.file_url).substring((imageData.file_url).lastIndexOf('/') + 1))
     property string filePath: `${root.previewDownloadPath}/${root.fileName}`
     property int maxTagStringLineLength: 50
-    property real imageRadius: Appearance.rounding.small
+    property real imageRadius: Appearance.rounding.sm
 
     property bool showActions: false
     ImageDownloaderProcess {
@@ -123,7 +123,7 @@ Button {
                     anchors.centerIn: parent
                     opacity: root.showActions ? 1 : 0
                     visible: opacity > 0
-                    radius: Appearance.rounding.small
+                    radius: Appearance.rounding.sm
                     color: Appearance.m3colors.m3surfaceContainer
                     implicitHeight: contextMenuColumnLayout.implicitHeight + radius * 2
                     implicitWidth: contextMenuColumnLayout.implicitWidth

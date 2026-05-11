@@ -37,7 +37,7 @@ RippleButton {
 
     enabled: shape != "empty"
     colBackground: shape == "empty" ? ColorUtils.transparentize(Appearance.colors.colLayer1) : Appearance.colors.colLayer1
-    buttonRadius: Appearance.rounding.small
+    buttonRadius: Appearance.rounding.sm
     implicitWidth: baseWidth * widthMultiplier[shape] || baseWidth
     implicitHeight: baseHeight * heightMultiplier[shape] || baseHeight
     Layout.fillWidth: shape == "space" || shape == "expand"

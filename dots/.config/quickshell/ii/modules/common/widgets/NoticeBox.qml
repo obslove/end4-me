@@ -9,7 +9,7 @@ Rectangle {
     property alias text: noticeText.text
     default property alias data: buttonRow.data
 
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.lg
     color: Appearance.colors.colPrimaryContainer
     implicitWidth: mainRowLayout.implicitWidth + mainRowLayout.anchors.margins * 2
     implicitHeight: mainRowLayout.implicitHeight + mainRowLayout.anchors.margins * 2

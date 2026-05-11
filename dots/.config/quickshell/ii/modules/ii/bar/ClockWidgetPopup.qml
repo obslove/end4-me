@@ -60,7 +60,7 @@ StyledPopup {
 
                     Layout.fillWidth: true
                     height: 56
-                    radius: Appearance.rounding.normal
+                    radius: Appearance.rounding.lg
                     color: isToday
                         ? Appearance.colors.colPrimaryContainer
                         : Appearance.colors.colSurfaceContainerHigh
@@ -136,8 +136,8 @@ StyledPopup {
                         readonly property int total: todoRepeater.count
                         readonly property bool isFirst: index === 0
                         readonly property bool isLast: index === total - 1
-                        readonly property real bigRadius: Appearance.rounding.normal
-                        readonly property real smallRadius: Appearance.rounding.unsharpenmore
+                        readonly property real bigRadius: Appearance.rounding.lg
+                        readonly property real smallRadius: Appearance.rounding.xs
 
                         width: parent.width
                         height: 32
@@ -167,7 +167,7 @@ StyledPopup {
                     width: parent.width
                     height: 64
                     visible: Todo.list.filter(t => !t.done).length === 0
-                    radius: Appearance.rounding.normal
+                    radius: Appearance.rounding.lg
                     color: Appearance.colors.colSurfaceContainerHigh
 
                     StyledText {

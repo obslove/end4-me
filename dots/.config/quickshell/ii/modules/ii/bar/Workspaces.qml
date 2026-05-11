@@ -170,11 +170,11 @@ Item {
                 property bool workspaceVisible: root.isWorkspaceVisible(workspaceIndex)
                 implicitWidth: root.vertical ? workspaceButtonWidth : (workspaceVisible ? workspaceButtonWidth : 0)
                 implicitHeight: root.vertical ? (workspaceVisible ? workspaceButtonWidth : 0) : workspaceButtonWidth
-                radius: (width / 2)
+                radius: Appearance.rounding.full
                 property var previousOccupied: (workspaceOccupied[workspaceIndex - 1] && !(!activeWindow?.activated && root.effectiveActiveWorkspaceId === workspaceValue - 1))
                 property var rightOccupied: (workspaceOccupied[workspaceIndex + 1] && !(!activeWindow?.activated && root.effectiveActiveWorkspaceId === workspaceValue + 1))
-                property var radiusPrev: previousOccupied ? 0 : (width / 2)
-                property var radiusNext: rightOccupied ? 0 : (width / 2)
+                property var radiusPrev: previousOccupied ? Appearance.rounding.none : Appearance.rounding.full
+                property var radiusNext: rightOccupied ? Appearance.rounding.none : Appearance.rounding.full
 
                 topLeftRadius: radiusPrev
                 bottomLeftRadius: root.vertical ? radiusNext : radiusPrev

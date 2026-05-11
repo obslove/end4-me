@@ -209,7 +209,7 @@ AbstractBackgroundWidget {
                         width: 0
                         height: Config.options.background.widgets.media.showLyrics ? 16 : 0
                         color: blendedColors.colSecondaryContainer
-                        radius: 0
+                        radius: Appearance.rounding.none
                     }
 
                     RoundCorner {
@@ -242,7 +242,7 @@ AbstractBackgroundWidget {
                             anchors.bottom: parent.bottom
                             width: 320
                             height: 250
-                            radius: Appearance.rounding.normal
+                            radius: Appearance.rounding.lg
                             color: blendedColors.colSecondaryContainer
 
                             Lyrics {
@@ -271,7 +271,7 @@ AbstractBackgroundWidget {
                 right: parent.right
             }
             sourceComponent: ControlButton {
-                buttonRadius: root.currentPlayer?.isPlaying ? Appearance.rounding.normal : controlsSize / 2
+                buttonRadius: root.currentPlayer?.isPlaying ? Appearance.rounding.md : Appearance.rounding.full
                 colBackground: root.currentPlayer?.isPlaying ? blendedColors.colPrimary : blendedColors.colSecondaryContainer
                 colBackgroundHover: root.currentPlayer?.isPlaying ? blendedColors.colPrimaryHover : blendedColors.colSecondaryContainerHover
                 colRipple: root.currentPlayer?.isPlaying ? blendedColors.colPrimaryActive : blendedColors.colSecondaryContainerActive

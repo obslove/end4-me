@@ -1,5 +1,6 @@
 pragma Singleton
 
+import qs.services
 import qs.modules.common
 import qs.modules.common.models
 import qs.modules.common.functions
@@ -16,7 +17,7 @@ Singleton {
     property string query: ""
 
     function ensurePrefix(prefix) {
-        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.symbols, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
+        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.symbols, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.keybinds, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
             root.query = prefix + root.query.slice(1);
         } else {
             root.query = prefix + root.query;
@@ -179,6 +180,39 @@ Singleton {
                 Cliphist.wipe();
             }
         },
+        {
+            action: "unsplash",
+            execute: args => {
+                if (!args || args.trim().length === 0) {
+                    Quickshell.execDetached(["notify-send", "Unsplash", Translation.tr("Usage: /unsplash YOUR_API_KEY"), "-a", "Shell"]);
+                    return;
+                }
+                KeyringStorage.setNestedField(["apiKeys", "unsplash"], args.trim());
+                Quickshell.execDetached(["notify-send", "Unsplash", Translation.tr("API key saved!"), "-a", "Shell"]);
+            }
+        },
+        {
+            action: "wallhaven",
+            execute: args => {
+                if (!args || args.trim().length === 0) {
+                    Quickshell.execDetached(["notify-send", "Wallhaven", Translation.tr("Usage: /wallhaven YOUR_API_KEY"), "-a", "Shell"]);
+                    return;
+                }
+                KeyringStorage.setNestedField(["apiKeys", "wallhaven"], args.trim());
+                Quickshell.execDetached(["notify-send", "Wallhaven", Translation.tr("API key saved!"), "-a", "Shell"]);
+            }
+        },
+        {
+            action: "pexels",
+            execute: args => {
+                if (!args || args.trim().length === 0) {
+                    Quickshell.execDetached(["notify-send", "Pexels", Translation.tr("Usage: /pexels YOUR_API_KEY"), "-a", "Shell"]);
+                    return;
+                }
+                KeyringStorage.setNestedField(["apiKeys", "pexels"], args.trim());
+                Quickshell.execDetached(["notify-send", "Pexels", Translation.tr("API key saved!"), "-a", "Shell"]);
+            }
+        },
     ]
 
     // Combined built-in and user actions
@@ -302,6 +336,37 @@ Singleton {
                     comment: symTags,
                     execute: () => {
                         Quickshell.clipboardText = symName;
+                    }
+                });
+            }).filter(Boolean);
+        } else if (root.query.startsWith(Config.options.search.prefix.keybinds ?? "<")) {
+            // Keybinds
+            const searchString = StringUtils.cleanPrefix(root.query, Config.options.search.prefix.keybinds ?? "<");
+            const flatBinds = (function flatten(node) {
+                let result = [...(node.keybinds ?? [])];
+                for (const child of (node.children ?? [])) {
+                    result = result.concat(flatten(child));
+                }
+                return result;
+            })(HyprlandKeybinds.keybinds);
+
+            return flatBinds.filter(bind => {
+                if (!bind.comment) return false;
+                if (searchString.length === 0) return true;
+                return bind.comment.toLowerCase().includes(searchString.toLowerCase())
+                    || bind.key.toLowerCase().includes(searchString.toLowerCase());
+            }).map(bind => {
+                const modsStr = bind.mods.join(" + ");
+                const keyStr = modsStr.length > 0 ? `${modsStr} + ${bind.key}` : bind.key;
+                return resultComp.createObject(null, {
+                    name: bind.comment,
+                    iconName: "keyboard",
+                    iconType: LauncherSearchResult.IconType.Material,
+                    verb: keyStr,
+                    type: Translation.tr("Keybind"),
+                    comment: keyStr,
+                    execute: () => {
+                        Quickshell.clipboardText = keyStr;
                     }
                 });
             }).filter(Boolean);

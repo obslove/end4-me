@@ -231,6 +231,13 @@ Singleton {
                         property real x: 800
                         property real y: 500
                     }
+
+                    property JsonObject images: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                    }
                 }
                 property string wallpaperPath: ""
                 property string wallpaperAnimation: "magic"
@@ -525,6 +532,7 @@ Singleton {
                     property string symbols: "."
                     property string math: "="
                     property string shellCommand: "$"
+                    property string keybinds: "<"
                     property string webSearch: "?"
                 }
                 property JsonObject imageSearch: JsonObject {
@@ -637,6 +645,10 @@ Singleton {
 
             property JsonObject wallpaperSelector: JsonObject {
                 property bool useSystemFileDialog: false
+                property bool showBlurBackground: false
+                property bool showHomePath: true
+                property int columns: 4
+                property bool closeAfterSelection: true
                 property int changeInterval: 0
             }
 

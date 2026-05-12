@@ -15,6 +15,7 @@ Item {
     id: root
 
     signal wallpaperSelected(string path)
+    signal updateThumbnailsRequested()
     property real cellWidth: grid.cellWidth
     property real cellHeight: grid.cellHeight
 
@@ -23,6 +24,21 @@ Item {
 
     property int columns: Config.options.wallpaperSelector.columns || 4
     property real previewCellAspectRatio: 4 / 3
+
+    Timer {
+        id: thumbnailRefreshTimer
+        interval: 80
+        repeat: false
+        onTriggered: root.updateThumbnailsRequested()
+    }
+
+    Connections {
+        target: Wallpapers
+
+        function onDirectoryChanged() {
+            thumbnailRefreshTimer.restart()
+        }
+    }
 
     Process {
         id: deleteProc
@@ -130,6 +146,10 @@ Item {
         boundsBehavior: Flickable.StopAtBounds
         ScrollBar.vertical: StyledScrollBar {}
 
+        Component.onCompleted: thumbnailRefreshTimer.restart()
+        onCellWidthChanged: thumbnailRefreshTimer.restart()
+        onCellHeightChanged: thumbnailRefreshTimer.restart()
+        onCountChanged: thumbnailRefreshTimer.restart()
         function moveSelection(delta) {
             currentIndex = Math.max(0, Math.min(grid.model.count - 1, currentIndex + delta));
             positionViewAtIndex(currentIndex, GridView.Contain);

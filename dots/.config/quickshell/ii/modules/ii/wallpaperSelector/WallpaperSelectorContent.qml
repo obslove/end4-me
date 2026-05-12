@@ -29,9 +29,11 @@ MouseArea {
 
     function updateThumbnails() {
         const item = gridLoader.item;
+        if (!item || Wallpapers.folderModel.count <= 0) return;
         const totalImageMargin = (Appearance.sizes.wallpaperSelectorItemMargins + Appearance.sizes.wallpaperSelectorItemPadding) * 2;
         const cellW = item?.cellWidth ?? (wallpaperGridBackground.width / root.columns);
         const cellH = item?.cellHeight ?? (cellW / root.previewCellAspectRatio);
+        if (cellW <= 0 || cellH <= 0) return;
         const thumbnailSizeName = Images.thumbnailSizeNameForDimensions(cellW - totalImageMargin, cellH - totalImageMargin);
         Qt.callLater(() => Wallpapers.generateThumbnail(thumbnailSizeName));
     }
@@ -341,6 +343,7 @@ MouseArea {
                             columns: root.columns
                             previewCellAspectRatio: root.previewCellAspectRatio
                             onWallpaperSelected: path => root.selectWallpaperPath(path)
+                            onUpdateThumbnailsRequested: root.updateThumbnails()
                         }
                     }
 

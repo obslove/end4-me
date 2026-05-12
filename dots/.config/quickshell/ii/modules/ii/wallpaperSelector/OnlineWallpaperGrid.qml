@@ -254,6 +254,11 @@ Item {
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
                     cache: true
+                    onStatusChanged: {
+                        if (status === Image.Error && source !== delegateItem.model.full) {
+                            source = delegateItem.model.full;
+                        }
+                    }
 
                     layer.enabled: true
                     layer.effect: OpacityMask {

@@ -70,19 +70,32 @@ MouseArea {
                         sourceSize.width: wallpaperItemColumnLayout.width
                         sourceSize.height: wallpaperItemColumnLayout.height - wallpaperItemColumnLayout.spacing - wallpaperItemName.height
 
+                        function reloadThumbnail() {
+                            thumbnailImage.source = "";
+                            thumbnailImage.source = thumbnailImage.thumbnailPath;
+                        }
+
+                        function fallbackToOriginal() {
+                            if (thumbnailImage.status !== Image.Error) return;
+                            if (thumbnailImage.source === thumbnailImage.sourcePath) return;
+                            thumbnailImage.source = thumbnailImage.sourcePath;
+                        }
+
+                        onStatusChanged: {
+                            if (status === Image.Error && !Wallpapers.thumbnailGenerationRunning) {
+                                Qt.callLater(fallbackToOriginal);
+                            }
+                        }
+
                         Connections {
                             target: Wallpapers
                             function onThumbnailGenerated(directory) {
-                                if (thumbnailImage.status !== Image.Error) return;
                                 if (FileUtils.parentDirectory(thumbnailImage.sourcePath) !== FileUtils.trimFileProtocol(directory)) return;
-                                thumbnailImage.source = "";
-                                thumbnailImage.source = thumbnailImage.thumbnailPath;
+                                thumbnailImage.reloadThumbnail();
                             }
                             function onThumbnailGeneratedFile(filePath) {
-                                if (thumbnailImage.status !== Image.Error) return;
                                 if (Qt.resolvedUrl(thumbnailImage.sourcePath) !== Qt.resolvedUrl(filePath)) return;
-                                thumbnailImage.source = "";
-                                thumbnailImage.source = thumbnailImage.thumbnailPath;
+                                thumbnailImage.reloadThumbnail();
                             }
                         }
 

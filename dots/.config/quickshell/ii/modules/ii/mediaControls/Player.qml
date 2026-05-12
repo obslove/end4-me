@@ -30,6 +30,14 @@ Item {
     property bool showLyrics: false
     readonly property string displayedArtFilePath: mediaArtSource.source
 
+    Behavior on implicitWidth {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
+
+    Behavior on implicitHeight {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
+
     property QtObject blendedColors: AdaptedMaterialScheme {
         color: artDominantColor
     }

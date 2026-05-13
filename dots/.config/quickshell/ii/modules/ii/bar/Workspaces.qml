@@ -130,9 +130,9 @@ Item {
     WheelHandler {
         onWheel: (event) => {
             if (event.angleDelta.y < 0)
-                Hyprland.dispatch(`hl.dsp.focus({workspace = "r+1"})`);
+                Hyprland.dispatch(`workspace r+1`);
             else if (event.angleDelta.y > 0)
-                Hyprland.dispatch(`hl.dsp.focus({workspace = "r-1"})`);
+                Hyprland.dispatch(`workspace r-1`);
         }
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     }
@@ -142,7 +142,7 @@ Item {
         acceptedButtons: Qt.BackButton
         onPressed: (event) => {
             if (event.button === Qt.BackButton) {
-                Hyprland.dispatch(`hl.dsp.workspace.toggle_special("special")`);
+                Hyprland.dispatch(`togglespecialworkspace special`);
             } 
         }
     }
@@ -251,7 +251,7 @@ Item {
                 property bool workspaceVisible: root.isWorkspaceVisible(workspaceIndex)
                 implicitHeight: vertical ? (workspaceVisible ? workspaceButtonWidth : 0) : Appearance.sizes.barHeight
                 implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : (workspaceVisible ? workspaceButtonWidth : 0)
-                onPressed: Hyprland.dispatch(`hl.dsp.focus({ workspace = ${workspaceValue} })`)
+                onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)
                 width: vertical ? undefined : implicitWidth
                 height: vertical ? implicitHeight : undefined
                 enabled: workspaceVisible

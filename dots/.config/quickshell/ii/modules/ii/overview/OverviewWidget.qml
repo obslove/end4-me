@@ -147,8 +147,8 @@ Item {
                                 acceptedButtons: Qt.LeftButton
                                 onPressed: {
                                     if (root.draggingTargetWorkspace === -1) {
+                                        Hyprland.dispatch(`workspace ${workspace.workspaceValue}`)
                                         GlobalStates.overviewOpen = false
-                                        Hyprland.dispatch(`hl.dsp.focus({ workspace = ${workspace.workspaceValue} })`)
                                     }
                                 }
                             }
@@ -272,7 +272,7 @@ Item {
                             window.Drag.active = false
                             root.draggingFromWorkspace = -1
                             if (targetWorkspace !== -1 && targetWorkspace !== windowData?.workspace.id) {
-                                Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${targetWorkspace}, follow = false, window = "address:${window.windowData?.address}" })`)
+                                Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`)
                                 updateWindowPosition.restart()
                             }
                             else {
@@ -282,18 +282,18 @@ Item {
                                 }
                                 const percentageX = (window.x - xOffset) / root.workspaceImplicitWidth
                                 const percentageY = (window.y - yOffset) / root.workspaceImplicitHeight
-                                Hyprland.dispatch(`hl.dsp.window.move({ x = "${percentageX * root.screen.width}", y = "${percentageY * root.screen.height}", window = "address:${window.windowData?.address}" })`)
+                                Hyprland.dispatch(`movewindowpixel exact ${percentageX * 100}% ${percentageY * 100}%, address:${window.windowData?.address}`)
                             }
                         }
                         onClicked: (event) => {
                             if (!windowData) return;
 
                             if (event.button === Qt.LeftButton) {
+                                Hyprland.dispatch(`focuswindow address:${windowData.address}`)
                                 GlobalStates.overviewOpen = false
-                                Hyprland.dispatch(`hl.dsp.focus({window = "address:${windowData.address}"})`)
                                 event.accepted = true
                             } else if (event.button === Qt.MiddleButton) {
-                                Hyprland.dispatch(`hl.dsp.window.close({window = "address:${windowData.address}"})`)
+                                Hyprland.dispatch(`closewindow address:${windowData.address}`)
                                 event.accepted = true
                             }
                         }
